@@ -1,0 +1,21 @@
+@charset 'UTF-8';
+
+#content {
+	background-color: white;
+	border-radius: 5px;
+}
+
+#main {
+	padding: 3%;
+	border: 1px solid blue;
+}
+
+#sidebar {
+	padding: 3%;
+	border: 1px solid red;
+}
+
+#subnav {
+	background-color: white;
+	height: 40px;
+}
