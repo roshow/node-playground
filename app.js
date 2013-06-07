@@ -9,19 +9,19 @@ var app = express();
 app.use(express.static(__dirname + "/public"));
 
 app.get("/echo", function(req, res){
-	var url_parts = url.parse(req.url,true);
-	var postData = url_parts.query;
-	res.send("echo " + JSON.stringify(postData));
+	var urlz = url.parse(req.query.url,true,true);
+	res.send("echo " + JSON.stringify(urlz));
+	//console.log("query req'ed");
 });
 
 app.get("/getfeed", function(req, res){
-	
-	var url_parts = url.parse(req.url,true);
-	var postData = url_parts.query || null;
 
+	var parsedURL = url.parse(req.query.url,true,true);
+	//chaoskirby.blogspot.com/feeds/posts/default
+	console.log(parsedURL);
 	var httpOpts = {
-		host: "chaoskirby.blogspot.com",
-		path: "/feeds/posts/default",
+		host: parsedURL.host,
+		path: parsedURL.path,
 		method: "GET"
 	};
 
@@ -31,7 +31,7 @@ app.get("/getfeed", function(req, res){
 			str += chunk;
 		});
 		response.on('end', function(){
-			res.send(parser.toJson(str), 200);
+			res.send(str, 200);
 		});
 	};
 
