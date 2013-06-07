@@ -2,8 +2,6 @@
 
 var i, j;
 
-var borderColor = "#B0A78F";
-
 //Google Feed API https://developers.google.com/feed/v1/
 google.load("feeds", "1");
 
@@ -99,13 +97,11 @@ var roshowReader = (function(){
 				title = items[i].getElementsByTagName("title")[0].childNodes[0].data;
 				content = rss ? items[i].getElementsByTagName("encoded")[0] || items[i].getElementsByTagName("description")[0] : items[i].getElementsByTagName("content")[0];
 				content = content.childNodes[0].data;
-				var html = "<div class='item_box'><h1>" + title + "</h1><div>" + content + "</div></div>";
+				var html = "<div class='item_box'><h2>" + title + "</h2><div>" + content + "</div></div>";
 				$("#itemsList").append(html);
 			}
 			console.log("items from update/new feed");
 			$('#itemsList a').attr('target', '_blank');
-			//set borderColor to theme
-			$('.item_box').css('border-color', borderColor);
 			loading = false;
 			$("img").remove("#spinner");
 		},
@@ -159,58 +155,12 @@ var roshowReader = (function(){
 			var feedXML = $.parseXML(xmlStr);
 			this.items_display(feedXML, url);
 			console.log(feedXML);
-		},
-		theme: 0,
-		changeTheme: function() {
-			if (this.theme === 0) {
-				$('.feedList_feed').css('color', '#000000');
-				$('.feedList_feed').css('background-color', '#ffffff');
-				$('body').css('background-color', '#cccccc');
-				$('body').css('color', '#000000');
-				$('#read > div').css('background-color', '#ffffff');
-				$('.item_box').css('border-color', '#cccccc');
-				$('.hover_on').css('background-color', '#000000');
-				$('.hover_on').css('color', '#ffffff');
-				borderColor = "#cccccc";
-				$('.feedList_feed').mouseover(function() {
-					$(this).css('color', '#ffffff');
-					$(this).css('background-color', '#000000');
-				});
-				$('.feedList_feed').mouseout(function() {
-					$(this).css('color', '#000000');
-					$(this).css('background-color', '#ffffff');
-				});
-				this.theme += 1;
-			}
-			else {
-				$('.feedList_feed').css('color', '#5E2612');
-				$('.feedList_feed').css('background-color', '#FDF4DB');
-				$('body').css('background-color', '#B0A78F');
-				$('body').css('color', '#5E2612');
-				$('#read > div').css('background-color', '#FDF4DB');
-				$('.item_box').css('border-color', '#B0A78F');
-				$('hover_on').css('background-color', '#B0A78F');
-				$('hover_on').css('color', '#FDF4DB');
-				borderColor = "#B0A78F";
-				$('.feedList_feed').mouseover(function() {
-					$(this).css('color', '#B0A78F');
-					$(this).css('background-color', '#5E2612');
-				});
-				$('.feedList_feed').mouseout(function() {
-					$(this).css('color', '#5E2612');
-					$(this).css('background-color', '#FDF4DB');
-				});
-				this.theme = 0;
-			}
 		}
 	};
 
 	$(function() {
 		roRead.getSubscriptions();
 
-		$('#themeButton').click(function(){
-			roRead.changeTheme();
-		});
 		$(window).scroll(function() {
 			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
 				offset += 10;

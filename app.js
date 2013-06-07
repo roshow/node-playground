@@ -16,12 +16,11 @@ app.get("/echo", function(req, res){
 
 app.get("/getfeed", function(req, res){
 
-	var parsedURL = url.parse(req.query.url,true,true);
-	//chaoskirby.blogspot.com/feeds/posts/default
-	console.log(parsedURL);
+	var feedURL = url.parse(req.query.url);
+
 	var httpOpts = {
-		host: parsedURL.host,
-		path: parsedURL.path,
+		host: feedURL.host,
+		path: feedURL.path,
 		method: "GET"
 	};
 
@@ -35,13 +34,14 @@ app.get("/getfeed", function(req, res){
 		});
 	};
 
+	//make request, handle error and end request.
 	var request = http.request(httpOpts, httpCB);
 	request.on('error', function(e) { res.send('problem with request: ' + e.message); });
 	request.end();
 });
 
 app.get('*', function(req, res){
-  res.send('404', 404);
+  res.send("404 Error. This path doesn't exist.", 404);
 });
 
 app.listen(3000);

@@ -3,19 +3,35 @@
 	
 	<head>
 		<title>roshow Reader</title>
+		<link rel='stylesheet' type='text/css' href='bootstrap/css/bootstrap.min.css'>
+		<link rel='stylesheet' type='text/css' href='bootstrap/css/bootstrap-responsive.min.css'>
 		<link rel='stylesheet' type='text/css' href='roshowReader.css'>
 		<script type='text/javascript' src='jquery-1.9.1.js'></script>
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<!--script type='text/javascript' src='goauth.js'></script-->
 		<script type='text/javascript' src='roshowReader.js'></script>
 	</head>
 	
 	<body>
-		<div id="header">roshow reader v0.1<button id='themeButton'>change theme</button></div>
-		<div id="read">
-			<div id="feedList"></div>
-			<div id="itemsList"></div>
+		<div class="container">
+
+			<h1>roshow reader v0.1</h1>
+
+			<div class='navbar navbar-inverse'>
+		      <div class='navbar-inner nav-collapse' style="height: auto;">
+		        <ul class="nav">
+		          <li class="active"><a href="#">Home</a></li>
+		        </ul>
+		      </div>
+		    </div>
+
+		    <div id='read' class='row-fluid'>
+				<div id="feedList" class='span3'></div>
+				<div id="itemsList" class='span9'></div>
+			</div>
+
 		</div>
+
+
 	</body>
 
 </html>
