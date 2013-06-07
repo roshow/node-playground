@@ -118,7 +118,7 @@ var roshowReader = (function(){
 					//console.log(result);
 					feedXML = $.parseXML(result);
 					that.items_display(feedXML);
-					console.log("called");
+					console.log(feedXML);
 				}
 			});
 		},
