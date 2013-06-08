@@ -3,7 +3,7 @@ node-playground
 
 A place for me to goof around with Node.
 
-Comics that don't work on node.  
+Feeds that don't work on node.
 e-Orbits
 Shattered Myth
 Valkyrie Squadron

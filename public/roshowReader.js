@@ -97,7 +97,7 @@ var roshowReader = (function(){
 				title = items[i].getElementsByTagName("title")[0].childNodes[0].data;
 				content = rss ? items[i].getElementsByTagName("encoded")[0] || items[i].getElementsByTagName("description")[0] : items[i].getElementsByTagName("content")[0];
 				content = content.childNodes[0].data;
-				var html = "<div class='item_box'><h2>" + title + "</h2><div>" + content + "</div></div>";
+				var html = "<div class='item_box'><h3>" + title + "</h3><div>" + content + "</div></div>";
 				$("#itemsList").append(html);
 			}
 			console.log("items from update/new feed");
