@@ -160,14 +160,13 @@ var roshowReader = (function(){
 
 	$(function() {
 		roRead.getSubscriptions();
-
-		$(window).scroll(function() {
+		/*$(window).scroll(function() {
 			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
 				offset += 10;
 				$("#itemsList").append("<img id='spinner' src='../roReader/spinner.gif' />");
 				roRead.getFeed_now();
 			}
-		});
+		});*/
 	});
 	return roRead;
 }());
