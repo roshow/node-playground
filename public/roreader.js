@@ -5,13 +5,13 @@ var i, j;
 //Google Feed API https://developers.google.com/feed/v1/
 google.load("feeds", "1");
 
-var roshowReader = (function(){
+var roreader = (function(){
 
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
 
-	var roRead = {
+	var roread = {
 		getSubscriptions: function() {
 			var that = this;
 			var xmlhttp;
@@ -61,7 +61,7 @@ var roshowReader = (function(){
 							}
 						}
 
-						html = "<div class='feedList_feed' onclick='roshowReader.toggleFolderFeeds($(this));'><img src='feedList_icon_folder.png' class='feedList_icon' />" + title + "</div><div style='display:none;'>" + innerHtml + "</div>";
+						html = "<div class='feedList_feed' onclick='roreader.toggleFolderFeeds($(this));'><img src='feedList_icon_folder.png' class='feedList_icon' />" + title + "</div><div style='display:none;'>" + innerHtml + "</div>";
 						$("#feedList").append(html);
 
 
@@ -159,14 +159,16 @@ var roshowReader = (function(){
 	};
 
 	$(function() {
-		roRead.getSubscriptions();
+		roread.getSubscriptions();
 		/*$(window).scroll(function() {
 			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
 				offset += 10;
 				$("#itemsList").append("<img id='spinner' src='../roReader/spinner.gif' />");
-				roRead.getFeed_now();
+				roread.getFeed_now();
 			}
 		});*/
 	});
-	return roRead;
+	return roread;
 }());
+
+console.log("loaded roreader.js")
