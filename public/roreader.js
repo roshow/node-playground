@@ -84,26 +84,10 @@ var roreader = (function(){
 		},
 
 		items_display: function(data) {
-			console.log(offset);
-			if(offset === 0){
+			if (data !=="") {
 				$("#itemsList").empty();
-				$("#itemsList")[0].scrollTop = 0;
+				$("#itemsList").append(data);
 			}
-			var title, content, items, L;
-			var rss = (data.getElementsByTagName("rss").length > 0) ? true : false;
-			items = rss ? data.getElementsByTagName("item") : data.getElementsByTagName("entry");
-			L = items.length;
-			for (i = offset; i < L; i++) {
-				title = items[i].getElementsByTagName("title")[0].childNodes[0].data;
-				content = rss ? items[i].getElementsByTagName("encoded")[0] || items[i].getElementsByTagName("description")[0] : items[i].getElementsByTagName("content")[0];
-				content = content.childNodes[0].data;
-				var html = "<div class='item_box'><h3>" + title + "</h3><div>" + content + "</div></div>";
-				$("#itemsList").append(html);
-			}
-			console.log("items from update/new feed");
-			$('#itemsList a').attr('target', '_blank');
-			loading = false;
-			$("img").remove("#spinner");
 		},
 
 		getFeed_now: function () {
@@ -112,9 +96,7 @@ var roreader = (function(){
 				url: "http://localhost:3000/getfeed?url=" + encodeURIComponent(currentURL),
 				success: function(result){
 					//console.log(result);
-					feedXML = $.parseXML(result);
-					that.items_display(feedXML);
-					console.log(feedXML);
+					that.items_display(result);
 				}
 			});
 		},
@@ -130,31 +112,6 @@ var roreader = (function(){
 				loading = true;
 				that.items_display(result.xmlDocument);
 			});
-		},
-
-		//getFeed_php() and parseFeed() deprecated in favor of Google Feed API. 
-		//May want to use again in the future, though, so keeping it.
-		getFeed_php: function(url) {
-			var that = this;
-			$.ajax({
-				url: "proxy.php?url=" + encodeURIComponent(url),
-				type: 'GET',
-				asyn: true,
-				success: function(data) {
-					console.log('php successful');
-					that.parseFeed(data, url);
-				},
-				error: function() {
-					console.log("php error");
-				}
-			});
-		},
-		parseFeed: function(data, url) {
-			var tag = (data.indexOf("</rss>") !== -1) ? "rss" : "feed";
-			var xmlStr = data.slice(data.indexOf("<" + tag), data.lastIndexOf("</" + tag + ">") + ("</" + tag + ">").length);
-			var feedXML = $.parseXML(xmlStr);
-			this.items_display(feedXML, url);
-			console.log(feedXML);
 		}
 	};
 

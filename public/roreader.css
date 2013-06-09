@@ -37,6 +37,7 @@ html,body {
 		#feedList > div {
 			white-space: nowrap;
 			cursor: pointer;
+			overflow: hidden;
 		}
 
 		.feedList_feed {}

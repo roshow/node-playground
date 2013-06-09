@@ -16,28 +16,35 @@ app.get("/echo", function(req, res){
 
 app.get("/getfeed", function(req, res){
 
-	var feedURL = url.parse(req.query.url);
+	if (req && req.query.url !== "") {
 
-	var httpOpts = {
-		host: feedURL.host,
-		path: feedURL.path,
-		method: "GET"
-	};
+		var feedURL = url.parse(req.query.url);
 
-	var httpCB = function(response){
-		var str = '';
-		response.on('data', function (chunk) {
-			str += chunk;
-		});
-		response.on('end', function(){
-			res.send(str, 200);
-		});
-	};
+		var httpOpts = {
+			host: feedURL.host,
+			path: feedURL.path,
+			method: "GET" 
+		};
 
-	//make request, handle error and end request.
-	var request = http.request(httpOpts, httpCB);
-	request.on('error', function(e) { res.send('problem with request: ' + e.message); });
-	request.end();
+		var httpCB = function(response){
+			var str = '';
+			response.on('data', function (chunk) {
+				str += chunk;
+			});
+			response.on('end', function(){
+				json = parser.toJson(str);
+				res.send(JSON.stringify(json), 200);
+			});
+		};
+
+		//make request, handle error and end request.
+		var request = http.request(httpOpts, httpCB);
+		request.on('error', function(e) { res.send('problem with request: ' + e.message); });
+		request.end();
+	}
+	else {
+		res.send("");
+	}
 });
 
 app.get('*', function(req, res){
