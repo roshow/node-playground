@@ -33,7 +33,7 @@ app.get("/getfeed", function(req, res){
 			});
 			response.on('end', function(){
 				json = parser.toJson(str);
-				res.send(JSON.stringify(json), 200);
+				res.send(json, 200);
 			});
 		};
 

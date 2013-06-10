@@ -10,6 +10,37 @@ var roreader = (function(){
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
+	function htmlDecode(value){
+	    return $('<div/>').html($('<div/>').html(value).text()).text();
+	}
+	function parseFeed(data){
+		var feed = [];
+		var L, item;
+		if(data.rss){
+			item = data.rss.channel.item
+			L = item.length;
+			for (i = 0; i < L; i++){
+				feed.push({
+					title: htmlDecode(item[i].title),
+					content: $('<div/>').html(item[i]["content:encoded"]).text(),
+					description: htmlDecode(item[i].description)
+				});
+				console.log($('<div/>').text(item[i]["content:encoded"]));
+			}
+		}
+		else if (data.feed) {
+			item = data.feed.entry
+			L = data.feed.entry.length;
+			for (i = 0; i < L; i++){
+				feed.push({
+					title: item[i].title.$t,
+					content: htmlDecode(item[i].content.$t)
+				})
+			}
+		}
+		console.log(feed);
+		return feed;
+	}
 
 	var roread = {
 		getSubscriptions: function() {
@@ -84,9 +115,13 @@ var roreader = (function(){
 		},
 
 		items_display: function(data) {
-			if (data !=="") {
-				$("#itemsList").empty();
-				$("#itemsList").append(data);
+			$("#itemsList").empty();
+			var feed = parseFeed(data);
+			var L = feed.length;
+			for (i = 0; i < L; i++){
+				var feedContent = feed[i].content || feed[i].description;
+				var html = "<div class='item_box'><h3>" + feed[i].title + "</h3> <br />" + feedContent + "</div>";
+				$("#itemsList").append(html);
 			}
 		},
 
@@ -94,6 +129,7 @@ var roreader = (function(){
 			var that = this;
 			$.ajax({
 				url: "http://localhost:3000/getfeed?url=" + encodeURIComponent(currentURL),
+				dataType: "json",
 				success: function(result){
 					//console.log(result);
 					that.items_display(result);
@@ -128,4 +164,4 @@ var roreader = (function(){
 	return roread;
 }());
 
-console.log("loaded roreader.js")
+console.log("loaded roreader.js");
