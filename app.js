@@ -1,7 +1,8 @@
-var express = require("express");
-var url = require("url");
-var http = require("http");
-var parser = require('xml2json');
+var express = require("express"),
+url = require("url"),
+http = require("http"),
+parser = require('xml2json'),
+request = require('request');
 
 
 var app = express();
@@ -18,21 +19,19 @@ app.get("/getfeed", function(req, res){
 
 	if (req && req.query.url !== "") {
 
-		var feedURL = url.parse(req.query.url);
-
-		var httpOpts = {
+		var feedURL = url.parse(req.query.url),
+		httpOpts = {
 			host: feedURL.host,
 			path: feedURL.path,
 			method: "GET" 
-		};
-
-		var httpCB = function(response){
+		},
+		httpCB = function(response){
 			var str = '';
 			response.on('data', function (chunk) {
 				str += chunk;
 			});
 			response.on('end', function(){
-				json = parser.toJson(str);
+				var json = parser.toJson(str);
 				res.send(json, 200);
 			});
 		};
@@ -41,6 +40,19 @@ app.get("/getfeed", function(req, res){
 		var request = http.request(httpOpts, httpCB);
 		request.on('error', function(e) { res.send('problem with request: ' + e.message); });
 		request.end();
+	}
+	else {
+		res.send("");
+	}
+});
+
+app.get("/getfeed-request", function(req, res){
+
+	if (req && req.query.url !== "") {
+
+		request(req.query.url, function(error, response, body){
+			res.send(parser.toJson(body));
+		});
 	}
 	else {
 		res.send("");

@@ -17,25 +17,24 @@ var roreader = (function(){
 		var feed = [];
 		var L, item;
 		if(data.rss){
-			item = data.rss.channel.item
+			item = data.rss.channel.item;
 			L = item.length;
 			for (i = 0; i < L; i++){
 				feed.push({
 					title: htmlDecode(item[i].title),
-					content: $('<div/>').html(item[i]["content:encoded"]).text(),
+					content: item[i]["content:encoded"],
 					description: htmlDecode(item[i].description)
 				});
-				console.log($('<div/>').text(item[i]["content:encoded"]));
 			}
 		}
 		else if (data.feed) {
-			item = data.feed.entry
+			item = data.feed.entry;
 			L = data.feed.entry.length;
 			for (i = 0; i < L; i++){
 				feed.push({
 					title: item[i].title.$t,
 					content: htmlDecode(item[i].content.$t)
-				})
+				});
 			}
 		}
 		console.log(feed);
