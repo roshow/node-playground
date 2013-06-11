@@ -53,9 +53,6 @@ var roreader = (function(){
 			});
 			this.getFeed_now('http://roshow.net/feed');
 		},
-		toggleFolderFeeds: function(id) {
-			id.next("div").slideToggle('fast');
-		},
 
 		items_display: function(items) {
 			$("#itemsList").empty();
