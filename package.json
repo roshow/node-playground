@@ -11,6 +11,7 @@
     "express": "3.2.6",
     "xml2json": "0.3.2",
     "request": "2.21.0",
-    "feedparser": "0.15.4"
+    "feedparser": "0.15.4",
+    "mongojs": "0.7.5"
   }
 }

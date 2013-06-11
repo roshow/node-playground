@@ -21,7 +21,7 @@ var roreader = (function(){
 				url: "getsubs",
 				dataType: "json",
 				success: function(result){
-					that.feeds_display(result.opml.body.outline);
+					that.feeds_display(result);
 				}
 			});
 		},
@@ -56,7 +56,7 @@ var roreader = (function(){
 
 		items_display: function(items) {
 			$("#itemsList").empty();
-			var html = '';
+			var html = '<div class="item_top"><h4>' + items[0].meta.title +'</h4></div>';
 			var L = items.length;
 			for (i = 0; i < L; i++){
 				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + items[i].description + '</div>';
@@ -70,7 +70,9 @@ var roreader = (function(){
 				url: 'getfeed?url=' + encodeURIComponent(url),
 				dataType: 'json',
 				success: function(result){
-					that.items_display(result);
+					console.log(result[0]);
+					console.log(result[1]);
+					that.items_display(result[1]);
 				}
 			});
 		}
