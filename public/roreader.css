@@ -27,6 +27,14 @@ html,body {
 			background-color: white;
 			height: auto;
 		}
+			.item_box > h3 > a {
+				text-decoration: none;
+				color: black;
+			}
+
+			.item_box > h3 > a:hover {
+				color: #0073C3;
+			}
 
 
 	#feedList {
@@ -40,9 +48,7 @@ html,body {
 			cursor: pointer;
 			overflow: hidden;
 		}
-
-		.feedList_feed {}
-
+		
 		.hover_on{
 			cursor: default;
 			/*colors changed in theme*/

@@ -3,7 +3,7 @@ FeedParser = require('feedparser'),
 request = require('request');
 
 function getfeed(req, res){
-	console.log("handling /getfeed");
+	console.log('handling /getfeed');
 	request(req.query.url)
 	  .pipe(new FeedParser())
 	  .on('error', function(error) {
@@ -17,6 +17,13 @@ function getfeed(req, res){
 	  });
 }
 
+function getsubs(req, res){
+	console.log('handling /getsubs');
+	request('http://localhost:3000/subscriptions.xml', function(error, response, body){
+		res.send(parser.toJson(body));
+	});
+}
+
 function echo(req, res){
 	console.log("handling /echo");
 	res.send('echo ' + JSON.stringify(req.query));
@@ -28,5 +35,6 @@ function error404(req, res){
 }
 
 exports.getfeed = getfeed;
+exports.getsubs = getsubs;
 exports.echo = echo;
 exports.error404 = error404;

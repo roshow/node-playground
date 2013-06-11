@@ -5,6 +5,7 @@ var app = express();
 
 app.use(express.static(__dirname + '/public'));
 
+app.get('/getsubs', handler.getsubs);
 app.get('/getfeed', handler.getfeed);
 app.get('/echo', handler.echo);
 app.get('*', handler.error404);

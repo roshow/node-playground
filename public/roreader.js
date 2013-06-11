@@ -10,112 +10,68 @@ var roreader = (function(){
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
-	function htmlDecode(value){
-	    return $('<div/>').html($('<div/>').html(value).text()).text();
+	function feedTemplate(sub) {
+		return "<div id='" + sub.xmlUrl + "' class='feedList_feed'>" + sub.title + "</div>";
 	}
 
 	var roread = {
 		getSubscriptions: function() {
 			var that = this;
-			var xmlhttp;
-			if (window.XMLHttpRequest) {
-				// code for IE7+, Firefox, Chrome, Opera, Safari
-				xmlhttp = new XMLHttpRequest();
-			}
-			else {
-				// code for IE6, IE5
-				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-
-			xmlhttp.onreadystatechange = function() {
-				if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-					that.feeds_display(xmlhttp.responseXML);
-					that.xmlDoc = xmlhttp.responseXML;
+			$.ajax({
+				url: "getsubs",
+				dataType: "json",
+				success: function(result){
+					that.feeds_display(result.opml.body.outline);
 				}
-			};
-			xmlhttp.open("GET", "subscriptions.xml", false);
-			xmlhttp.send();
-			currentURL = "http://roshow.net/feed/";
-			offset = 0;
-			this.getFeed_now();
-		},
-		feeds_display: function(xmlDoc) {
-			var that = this;
-			var feedTemplate = function(node) {
-				return "<div id='" + node.getAttribute('xmlUrl') + "' class='feedList_feed'>" + node.getAttribute('title') + "</div>";
-			};
-			var L = xmlDoc.childNodes[0].childNodes[3].childNodes.length;
-			for (i = 0; i < L; i++) {
-				var innerHtml = "";
-				var html = "";
-				var thisNode = xmlDoc.childNodes[0].childNodes[3].childNodes[i];
-
-				if (thisNode.nodeType === 1) {
-
-					var title = thisNode.getAttribute('title');
-
-					if (thisNode.hasChildNodes()) {
-
-						var L2 = thisNode.childNodes.length;
-						for (j = 0; j < L2; j++) {
-							var folderNode = thisNode.childNodes[j];
-							if (folderNode.nodeType === 1) {
-								innerHtml += "<span class='indent'>" + feedTemplate(folderNode) + "</span>";
-							}
-						}
-
-						html = "<div class='feedList_feed' onclick='roreader.toggleFolderFeeds($(this));'><img src='feedList_icon_folder.png' class='feedList_icon' />" + title + "</div><div style='display:none;'>" + innerHtml + "</div>";
-						$("#feedList").append(html);
-
-
-					}
-					else {
-						html = feedTemplate(thisNode);
-						$("#feedList").append(html);
-					}
-				}
-			}
-			$(".feedList_feed").click(function(){
-				console.log($(this)[0].id);
-				currentURL = $(this)[0].id;
-				offset = 0;
-				that.getFeed_now();
 			});
 		},
-		toggleFolderFeeds: function(id) {
-			id.next("div").slideToggle('fast');
-		},
-
-		items_display: function(feed) {
-			$("#itemsList").empty();
-			var L = feed.length;
-			for (i = 0; i < L; i++){
-				var html = "<div class='item_box'><h3>" + feed[i].title + "</h3> <br />" + feed[i].description + "</div>";
-				$("#itemsList").append(html);
+		feeds_display: function(subs) {
+			var that = this,
+			L = subs.length,
+			html = '',
+			L2, innerHtml, innerSubs;
+			for (i = 0; i < L; i++) {
+				innerHtml = '';
+				if (subs[i].outline) {
+					innerSubs = (subs[i].outline instanceof Array) ? subs[i].outline : [ subs[i].outline ];
+					L2 = innerSubs.length;
+					for (j = 0; j < L2; j++) {
+						innerHtml += "<span class='indent'>" + feedTemplate(innerSubs[j]) + "</span>";
+					}
+					html += "<div class='feedList_folder'><img src='feedList_icon_folder.png' class='feedList_icon' />" + subs[i].title + "</div><div style='display:none;'>" + innerHtml + "</div>";
+				}
+				else {
+					html += feedTemplate(subs[i]);
+				}
 			}
+			$('#feedList').append(html);
+			$('.feedList_feed').click(function(){
+				that.getFeed_now($(this)[0].id);
+			});
+			$('.feedList_folder').click(function(){
+				$(this).next('div').slideToggle('fast');
+			});
+			this.getFeed_now('http://roshow.net/feed');
 		},
 
-		getFeed_now: function () {
+		items_display: function(items) {
+			$("#itemsList").empty();
+			var html = '';
+			var L = items.length;
+			for (i = 0; i < L; i++){
+				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + items[i].description + '</div>';
+			}
+			$('#itemsList').append(html);
+		},
+
+		getFeed_now: function (url) {
 			var that = this;
 			$.ajax({
-				url: "http://localhost:3000/getfeed?url=" + encodeURIComponent(currentURL),
-				dataType: "json",
+				url: 'getfeed?url=' + encodeURIComponent(url),
+				dataType: 'json',
 				success: function(result){
 					that.items_display(result);
 				}
-			});
-		},
-
-		//google feed
-		getFeed_google: function() {
-			var that = this;
-			var feed = new google.feeds.Feed(currentURL);
-			feed.includeHistoricalEntries();
-			feed.setNumEntries(offset+10);
-			feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
-			feed.load(function(result) {
-				loading = true;
-				that.items_display(result.xmlDocument);
 			});
 		}
 	};
@@ -132,5 +88,3 @@ var roreader = (function(){
 	});
 	return roread;
 }());
-
-console.log("loaded roreader.js");
