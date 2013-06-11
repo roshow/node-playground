@@ -10,8 +10,8 @@ var roreader = (function(){
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
-	function htmlDecode(value){
-	    return $('<div/>').html($('<div/>').html(value).text()).text();
+	function feedTemplate(sub) {
+		return "<div id='" + sub.xmlUrl + "' class='feedList_feed'>" + sub.title + "</div>";
 	}
 
 	var roread = {
@@ -28,54 +28,50 @@ var roreader = (function(){
 		feeds_display: function(subs) {
 			var that = this,
 			L = subs.length,
-			L2, innerHtml, html
-			var feedTemplate = function(sub) {
-				return "<div id='" + sub.xmlUrl + "' class='feedList_feed'>" + sub.title + "</div>";
-			};
+			html = '',
+			L2, innerHtml, innerSubs;
 			for (i = 0; i < L; i++) {
-				html = '';
 				innerHtml = '';
 				if (subs[i].outline) {
-					L2 = subs[i].outline.length;
+					innerSubs = (subs[i].outline instanceof Array) ? subs[i].outline : [ subs[i].outline ];
+					L2 = innerSubs.length;
 					for (j = 0; j < L2; j++) {
-						innerHtml += "<span class='indent'>" + feedTemplate(subs[i].outline[j]) + "</span>";
+						innerHtml += "<span class='indent'>" + feedTemplate(innerSubs[j]) + "</span>";
 					}
-					html = "<div class='feedList_feed' onclick='roreader.toggleFolderFeeds($(this));'><img src='feedList_icon_folder.png' class='feedList_icon' />" + subs[i].title + "</div><div style='display:none;'>" + innerHtml + "</div>";
-					$("#feedList").append(html);
+					html += "<div class='feedList_folder'><img src='feedList_icon_folder.png' class='feedList_icon' />" + subs[i].title + "</div><div style='display:none;'>" + innerHtml + "</div>";
 				}
 				else {
-					html = feedTemplate(subs[i]);
-					$("#feedList").append(html);
+					html += feedTemplate(subs[i]);
 				}
 			}
-			$(".feedList_feed").click(function(){
-				console.log($(this)[0].id);
-				currentURL = $(this)[0].id;
-				offset = 0;
+			$('#feedList').append(html);
+			$('.feedList_feed').click(function(){
 				that.getFeed_now($(this)[0].id);
 			});
-			console.log('subscriptions list via json');
+			$('.feedList_folder').click(function(){
+				$(this).next('div').slideToggle('fast');
+			});
 			this.getFeed_now('http://roshow.net/feed');
 		},
 		toggleFolderFeeds: function(id) {
 			id.next("div").slideToggle('fast');
 		},
 
-		items_display: function(feed) {
+		items_display: function(items) {
 			$("#itemsList").empty();
-			var L = feed.length;
+			var html = '';
+			var L = items.length;
 			for (i = 0; i < L; i++){
-				var html = "<div class='item_box'><h3>" + feed[i].title + "</h3> <br />" + feed[i].description + "</div>";
-				$("#itemsList").append(html);
+				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + items[i].description + '</div>';
 			}
+			$('#itemsList').append(html);
 		},
 
 		getFeed_now: function (url) {
-			var currentURL = url || currentURL;
 			var that = this;
 			$.ajax({
-				url: "getfeed?url=" + encodeURIComponent(currentURL),
-				dataType: "json",
+				url: 'getfeed?url=' + encodeURIComponent(url),
+				dataType: 'json',
 				success: function(result){
 					that.items_display(result);
 				}
@@ -95,5 +91,3 @@ var roreader = (function(){
 	});
 	return roread;
 }());
-
-console.log("loaded roreader.js");
