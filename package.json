@@ -1,6 +1,10 @@
 {
   "name": "roreader",
   "description": "roreader with node server",
+  "author": {
+    "name": "roshow",
+    "url": "http://roshow.net"
+  },
   "version": "0.0.2",
   "private": true,
   "dependencies": {
