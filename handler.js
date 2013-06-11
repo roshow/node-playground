@@ -1,11 +1,7 @@
 var parser = require('xml2json'),
 FeedParser = require('feedparser'),
-request = require('request');
-
-var Db = require("mongojs");
-var databaseUrl = "mydb"; // "username:password@example.com/mydb"
-var collections = ["feeds"];
-var db = Db.connect(databaseUrl, collections);
+request = require('request'),
+db = require('mongojs').connect('mydb', ['feeds']);
 
 function getfeed(req, res){
 	console.log('handling /getfeed');
