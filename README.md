@@ -1,18 +1,14 @@
-node-playground
-===============
+#roreader
+My attempt to build a personal RSS reader using node.js and (eventually) mongodb. The first phase will be a functional RSS reader with my favorite features from Google Reader. Phase 2 will be... something, I'm sure.
 
-A place for me to goof around with Node.
+##install it
+Get the code from github and install the node dependencies inside the local directory:
+<pre>
+  npm install -d
+</pre>
 
-Feeds that don't work on node.
-e-Orbits
-Shattered Myth
-Valkyrie Squadron
-Official Google Reader Blog
-Dating is Miserable
-stillman says
-Today's Special
-SUBWAY DOUCHERY
-The Daily Batman
-Comic RSS Feed
-Saturday Morning Breakfast Cereal (updated daily)
-Blog@Newsarama
+##run it
+Just fire up app.js via node and it will be listening on port 3000:
+<pre>
+  node app.js
+</pre>
