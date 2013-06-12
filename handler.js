@@ -1,7 +1,31 @@
 var parser = require('xml2json'),
-FeedParser = require('feedparser'),
-request = require('request'),
-db = require('mongojs').connect('mydb', ['feeds']);
+  FeedParser = require('feedparser'),
+  request = require('request'),
+  db = require('mongojs').connect('mydb', ['feeds']),
+  googleapis = require('googleapis'),
+  client_id = '90018158841.apps.googleusercontent.com',
+  client_secret = 'K9HzQVn1PATjX5LgQOsaXs40',
+  oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth');
+
+function googleoauth(req, res){
+	console.log('handling /getsubs');1
+	if (!req.query.code) {
+	var url = oauth2Client.generateAuthUrl({
+		approval_prompt: 'force',
+		access_type: 'offline',
+		scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.google.com/reader/api'
+	});
+	res.redirect(url);
+}
+else {
+	oauth2Client.getToken(req.query.code, function(err, tokens) {
+		req.session.google = tokens;
+		console.log(req.query.code);
+		console.log(tokens);
+		res.redirect('/google');
+	});
+}
+}
 
 function getfeed(req, res){
 	console.log('handling /getfeed');
@@ -50,6 +74,7 @@ function getsubs(req, res){
 			importsubs(req, res);
 		}
 		else {
+			console.log(feed.length);
 			res.send(feed);
 		}
 	});
@@ -65,6 +90,7 @@ function error404(req, res){
 	res.send("404 Error. This path doesn't exist.", 404);
 }
 
+exports.googleoauth = googleoauth;
 exports.getfeed = getfeed;
 exports.importsubs = importsubs;
 exports.getsubs = getsubs;
