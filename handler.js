@@ -8,23 +8,42 @@ var parser = require('xml2json'),
   oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth');
 
 function googleoauth(req, res){
-	console.log('handling /getsubs');1
+	console.log('handling /getsubs');
 	if (!req.query.code) {
-	var url = oauth2Client.generateAuthUrl({
-		approval_prompt: 'force',
-		access_type: 'offline',
-		scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.google.com/reader/api'
-	});
-	res.redirect(url);
+		var url = oauth2Client.generateAuthUrl({
+			approval_prompt: 'force',
+			access_type: 'offline',
+			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.google.com/reader/api'
+		});
+		res.redirect(url);
+	}
+	else {
+		oauth2Client.getToken(req.query.code, function(err, tokens) {
+			req.session.google = tokens;
+			res.redirect('/');
+		});
+	}
 }
-else {
-	oauth2Client.getToken(req.query.code, function(err, tokens) {
-		req.session.google = tokens;
-		console.log(req.query.code);
-		console.log(tokens);
-		res.redirect('/google');
-	});
-}
+
+function getroot(req, res){
+	console.log('handling /');
+
+	//pre-load google OAuth for myself to test
+	var googleInfo = { 
+		access_token: 'ya29.AHES6ZRZUSljpdcYu98ZzLXkaj1e7vEgKmacBIYty2qyMA',
+		token_type: 'Bearer',
+		expires_in: 3600,
+		id_token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjMxZGVmMTc2NzhiYzViNTdiODgxNWI3MmNjNTBkM2NjZjFkMzkwNWMifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiY2lkIjoiOTAwMTgxNTg4NDEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhenAiOiI5MDAxODE1ODg0MS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInRva2VuX2hhc2giOiJ3bnlZZnN3NWhGNnhVODI0ZWhGek5BIiwiYXRfaGFzaCI6IndueVlmc3c1aEY2eFU4MjRlaEZ6TkEiLCJhdWQiOiI5MDAxODE1ODg0MS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImlkIjoiMTE1Nzk1ODE5NzM5Nzc2NTc0NDk0Iiwic3ViIjoiMTE1Nzk1ODE5NzM5Nzc2NTc0NDk0IiwiaWF0IjoxMzcxMDY5NDcwLCJleHAiOjEzNzEwNzMzNzB9.CHJ6ApWA-DyzubMPdts14QX3d_4LVSpTygDhjSoK3kjqR35crLk26Y5c4pLlAxFPRwxS8qdtd_kzD56dpezRFHIxqSwbxo2S0ZdbQ6HB2N5EbbLATYRMWLFVLKDQYOmbSKfIaRYNIxRWCxdPEKIFq30CaGcuH4fRBJztegC6Vdc',
+		refresh_token: '1/fIemM5RkGatGgjxm5_S5rMcDDIdTBJH0V8XEO5TrcQQ'
+	};
+	req.session.google = googleInfo;
+	
+	if (!req.session.google){
+		googleoauth(req, res);
+	}
+	else {
+		res.redirect('/roreader.html');
+	}
 }
 
 function getfeed(req, res){
@@ -91,6 +110,7 @@ function error404(req, res){
 }
 
 exports.googleoauth = googleoauth;
+exports.getroot = getroot;
 exports.getfeed = getfeed;
 exports.importsubs = importsubs;
 exports.getsubs = getsubs;
