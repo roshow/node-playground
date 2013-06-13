@@ -13,6 +13,10 @@ app.get('/getsubs', handler.getsubs);
 app.get('/getfeed', handler.getfeed);
 app.get('/echo', handler.echo);
 app.get('/googleoauth', handler.googleoauth);
+app.get('/logout', function(req, res){
+	req.session.google = null;
+	res.send("logged out");
+});
 app.get('*', handler.error404);
 
 app.listen(3000);
