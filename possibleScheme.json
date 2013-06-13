@@ -1,0 +1,44 @@
+users: [
+	{
+		_id: ObjectId(),
+		email: '',
+		first_name: '',
+		last_name: '',
+		google_tokens: {
+			access_token: '',
+			token_type: '',
+			refresh_token: '',
+			id_token: ''
+		},
+		tags: [
+			{
+				_id: ObjectId(),
+				name: ''
+			}
+		],
+		subscriptions: [
+			{
+				feed_id: '',
+				tags: [tag._id]
+			}
+		]
+	}
+
+feeds: [
+		{
+			_id: '',
+			name: '',
+			xmlUrl: '',
+			htmlUrl: ''
+	}
+]
+
+articles: [
+	{
+		title: '',
+		description: '',
+		url: '',
+		article_id: '',
+		feed: feed._id
+	}
+]

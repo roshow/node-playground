@@ -1,11 +1,37 @@
 var parser = require('xml2json'),
 	FeedParser = require('feedparser'),
 	request = require('request'),
-	db = require('mongojs').connect('mydb', ['feeds']),
+	db = require('mongojs').connect('mydb', ['feeds', 'users']),
 	googleapis = require('googleapis'),
 	client_id = '90018158841.apps.googleusercontent.com',
 	client_secret = 'K9HzQVn1PATjX5LgQOsaXs40',
 	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth');
+
+
+function checkDB(err, user, req, res) {
+	db.users.find({
+		email: user.email
+	}, function(err, entry) {
+		if (entry.length === 0) {
+			console.log('new user');
+			db.users.save({
+				_id: user.id,
+				email: user.email,
+				name: user.name,
+				first_name: user.given_name,
+				last_name: user.family_name
+			}, function(err, save){
+				req.session.user = save;
+				res.redirect('/user');
+			});
+		}
+		else {
+			console.log('user exists');
+			req.session.user = entry[0];
+			res.redirect('/user');
+		}
+	});
+}
 
 function googleoauth(req, res) {
 	console.log('handling /googleoauth');
@@ -19,10 +45,20 @@ function googleoauth(req, res) {
 	}
 	else {
 		oauth2Client.getToken(req.query.code, function(err, tokens) {
-			console.log(tokens);
+			//console.log(tokens);
 			req.session.google = tokens;
 			oauth2Client.credentials = tokens;
-			res.redirect('/');
+
+			googleapis
+				.discover('oauth2', 'v2')
+				.execute(function(err, client) {
+				client
+					.oauth2.userinfo.get()
+					.withAuthClient(oauth2Client)
+					.execute(function(err, user){
+						checkDB(err, user, req, res);
+					});
+			});
 		});
 	}
 }
@@ -37,12 +73,12 @@ function getroot(req, res) {
 		var reqOpt = {
 			url: 'https://www.google.com/reader/api/0/subscription/list',
 			qs: {
-				output: 'json', 
+				output: 'json',
 				access_token: req.session.google.access_token,
 				token_type: req.session.google.token_type
 			}
 		};
-		request(reqOpt, function(error, response, body){
+		request(reqOpt, function(error, response, body) {
 			if (error) {
 				console.log(error);
 			}
@@ -100,7 +136,6 @@ function getsubs(req, res) {
 			importsubs(req, res);
 		}
 		else {
-			console.log(feed.length);
 			res.send(feed);
 		}
 	});

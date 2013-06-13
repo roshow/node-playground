@@ -17,6 +17,10 @@ app.get('/logout', function(req, res){
 	req.session.google = null;
 	res.send("logged out");
 });
+app.get('/user', function(req, res){
+	var user = req.session.user;
+	res.send('LOGGED IN AS: ' + user.email +'<br /><a href="/roreader.html" style="text-decoration:none;">CONTINUE TO ROREADER v0.0.2</a>');
+});
 app.get('*', handler.error404);
 
 app.listen(3000);
