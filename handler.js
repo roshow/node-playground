@@ -19,7 +19,8 @@ function checkDB(err, user, req, res) {
 				email: user.email,
 				name: user.name,
 				first_name: user.given_name,
-				last_name: user.family_name
+				last_name: user.family_name,
+				google_tokens: oauth2Client.credentials 
 			}, function(err, save){
 				req.session.user = save;
 				res.redirect('/user');
