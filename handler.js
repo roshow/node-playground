@@ -12,16 +12,16 @@ function getroot(req, res) {
 
 	/*userinfo for testing*/
 	req.session.user = {
-		"_id": "115795819739776574494",
-		"email": "rgarcia@scrollmotion.com",
-		"name": "Rolando Garcia",
+		"_id": "108346745381541061499",
+		"email": "rolando.r.garcia@gmail.com",
 		"first_name": "Rolando",
 		"last_name": "Garcia",
+		"name": "Rolando Garcia",
 		"tokens": {
-			access_token: 'ya29.AHES6ZQQHwb1HfklJgmZANmlemAB02k3Y3SAL3VnsSNfmpufiyX0tQ',
-			token_type: 'Bearer',
-			expires_in: 3600,
-			refresh_token: '1/yuOO-6bETZs4VzYdWAUDQMDpb_qLuMTjc0qq6UT-qJ0'
+			"access_token": "ya29.AHES6ZSnP0KCwqbnBat_QZdhosPuFD43tVEq3E4xTJUOnyc",
+			"token_type": "Bearer",
+			"expires_in": 3600,
+			"refresh_token": "1/USZVDzRXIENcoma2Xy-IO5UaaF2UpUReztLWhwOZvl0"
 		}
 	};
 
@@ -84,7 +84,7 @@ function getsubs(req, res) {
 	console.log('handling /getsubs');
 	var user = req.session.user;
 	roreaderDb.getsubs(user, function(subs) {
-		res.send([user, subs]);
+		res.send(subs);
 	});
 }
 

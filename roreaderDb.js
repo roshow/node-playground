@@ -13,8 +13,7 @@ function login(err, user, callback) {
 				name: user.name,
 				first_name: user.given_name,
 				last_name: user.family_name,
-				tokens: user.tokens,
-				refresh_token: user.refresh_token || null
+				tokens: user.tokens
 			}, function(err, save) {
 				callback(save);
 			});
@@ -27,21 +26,30 @@ function login(err, user, callback) {
 }
 
 function getsubs(user, callback) {
+	console.log('db getsubs');
 	db.users.find({
 		email: user.email
 	}, function(err, doc) {
+		console.log(doc);
 		if (doc[0].subscriptions) {
-			console.log('subs exist');
+			console.log('getting subs');
 			callback(doc[0].subscriptions);
 		}
 		else {
-			console.log('no subs');
+			console.log('importing subs');
+			importsubs(doc[0], callback);
+		}
+	});
+}
+
+function importsubs(user, callback){
+	console.log('parsing subs');
 			var reqOpt = {
 				url: 'https://www.google.com/reader/api/0/subscription/list',
 				qs: {
 					output: 'json',
-					access_token: doc[0].tokens.access_token,
-					token_type: doc[0].tokens.token_type
+					access_token: user.tokens.access_token,
+					token_type: user.tokens.token_type
 				}
 			};
 			request(reqOpt, function(error, response, body) {
@@ -52,35 +60,33 @@ function getsubs(user, callback) {
 					var subs = JSON.parse(body).subscriptions,
 						L = subs.length,
 						parsedSubs = [],
-						parsedFeeds = [];
-					for(i = 0; i < L; i++){
+						parsedFeeds = [],
+						i;
+					for(i=0;i < L;i++){
 						console.log(subs[i]);
 						parsedSubs.push({
 							id: subs[i].id,
 							tags: []
 						});
-						parsedFeeds.push({
-							id: subs[i].id,
+						var feed = {
+							_id: subs[i].id,
 							xmlUrl: subs[i].id.substring(subs[i].id.indexOf('http')),
 							htmlUrl: subs[i].htmlUrl,
 							title: subs[i].title							
-						});
+						};
+						parsedFeeds.push(feed);
+						db.feeds.insert(feed);
 					}
-					//console.log(parsedSubs);
-					callback({subscriptions: parsedSubs, feeds: parsedFeeds});
-					/*
 					db.users.findAndModify({
-					    query: { _id: doc[0]._id },
+					    query: { _id: user._id },
 					    update: { $set: { subscriptions: parsedSubs } },
 					    new: true
 					}, function(err, doc) {
+					    callback([doc, {feeds: parsedFeeds}, subs]);
 						console.log('modified');
-					    callback(doc);
-					});*/
+					});
 				}
 			});
-		}
-	});
 }
 
 
