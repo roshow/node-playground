@@ -8,7 +8,7 @@ app.use(express.session({secret: 'roreaderblahblahblah'}));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', handler.getroot);
-app.get('/importsubs', handler.importsubs);
+//app.get('/importsubs', handler.importsubs_opml);
 app.get('/getsubs', handler.getsubs);
 app.get('/getfeed', handler.getfeed);
 app.get('/echo', handler.echo);
@@ -16,10 +16,6 @@ app.get('/googleoauth', handler.googleoauth);
 app.get('/logout', function(req, res){
 	req.session.google = null;
 	res.send("logged out");
-});
-app.get('/user', function(req, res){
-	var user = req.session.user;
-	res.send(user);
 });
 app.get('*', handler.error404);
 
