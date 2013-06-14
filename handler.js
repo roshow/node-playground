@@ -18,11 +18,12 @@ function getroot(req, res) {
 		"first_name": "Rolando",
 		"last_name": "Garcia",
 		"tokens": {
-			"access_token": "ya29.AHES6ZQFHZKrOXeTfKHF6zcLhDOueV8wKZz7wYJrPZ3MnoXa",
-			"token_type": "Bearer",
-			"expires_in": 3599
+			access_token: 'ya29.AHES6ZQQHwb1HfklJgmZANmlemAB02k3Y3SAL3VnsSNfmpufiyX0tQ',
+			token_type: 'Bearer',
+			expires_in: 3600,
+			refresh_token: '1/yuOO-6bETZs4VzYdWAUDQMDpb_qLuMTjc0qq6UT-qJ0'
 		}
-	};/**/
+	};
 
 	if (!req.session.user) {
 		res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
@@ -37,7 +38,7 @@ function googleoauth(req, res) {
 	console.log('handling /googleoauth');
 	if (!req.query.code) {
 		var url = oauth2Client.generateAuthUrl({
-			//approval_prompt: 'force',
+			approval_prompt: 'force',
 			access_type: 'offline',
 			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/api'
 		});
@@ -45,7 +46,7 @@ function googleoauth(req, res) {
 	}
 	else {
 		oauth2Client.getToken(req.query.code, function(err, tokens) {
-			//console.log(tokens);
+			console.log(tokens);
 			oauth2Client.credentials = tokens;
 
 			googleapis.discover('oauth2', 'v2')
