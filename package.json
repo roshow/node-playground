@@ -13,6 +13,7 @@
     "request": "2.21.0",
     "feedparser": "0.15.4",
     "mongojs": "0.7.5",
-    "googleapis": "0.2.11-alpha"
+    "googleapis": "0.2.11-alpha",
+    "connect-mongo" : "0.3.x"
   }
 }

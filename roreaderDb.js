@@ -1,25 +1,31 @@
 var db = require('mongojs').connect('mydb', ['feeds', 'users', 'feedex']),
 	request = require('request');
 
-function login(err, user, callback) {
+function googleoauth(err, user, callback) {
+	console.log('db googleoauth');
 	db.users.find({
 		email: user.email
 	}, function(err, entry) {
 		if (entry.length === 0) {
 			console.log('new user');
-			db.users.save({
+			var newUser = {
 				_id: user.id,
 				email: user.email,
 				name: user.name,
 				first_name: user.given_name,
 				last_name: user.family_name,
 				tokens: user.tokens
-			}, function(err, save) {
-				callback(save);
+			};
+			db.users.save(newUser, function(err, save) {
+				importsubs(newUser, callback);
 			});
 		}
 		else {
 			console.log('user exists');
+			db.users.findAndModify({
+				query: { _id: entry[0]._id },
+				update: { $set: { tokens: user.tokens } }
+			});
 			callback(entry[0]);
 		}
 	});
@@ -30,20 +36,12 @@ function getsubs(user, callback) {
 	db.users.find({
 		email: user.email
 	}, function(err, doc) {
-		console.log(doc);
-		if (doc[0].subscriptions) {
-			console.log('getting subs');
-			callback(doc[0].subscriptions);
-		}
-		else {
-			console.log('importing subs');
-			importsubs(doc[0], callback);
-		}
+		callback(doc[0]);
 	});
 }
 
 function importsubs(user, callback){
-	console.log('parsing subs');
+	console.log('db importsubs');
 			var reqOpt = {
 				url: 'https://www.google.com/reader/api/0/subscription/list',
 				qs: {
@@ -63,7 +61,6 @@ function importsubs(user, callback){
 						parsedFeeds = [],
 						i;
 					for(i=0;i < L;i++){
-						console.log(subs[i]);
 						parsedSubs.push({
 							id: subs[i].id,
 							tags: []
@@ -82,13 +79,13 @@ function importsubs(user, callback){
 					    update: { $set: { subscriptions: parsedSubs } },
 					    new: true
 					}, function(err, doc) {
-					    callback([doc, {feeds: parsedFeeds}, subs]);
-						console.log('modified');
+					    callback(doc);
 					});
 				}
 			});
 }
 
 
-exports.login = login;
+exports.googleoauth = googleoauth;
 exports.getsubs = getsubs;
+exports.importsubs = importsubs;

@@ -10,26 +10,10 @@ var parser = require('xml2json'),
 function getroot(req, res) {
 	console.log('handling /');
 
-	/*userinfo for testing*/
-	req.session.user = {
-		"_id": "108346745381541061499",
-		"email": "rolando.r.garcia@gmail.com",
-		"first_name": "Rolando",
-		"last_name": "Garcia",
-		"name": "Rolando Garcia",
-		"tokens": {
-			"access_token": "ya29.AHES6ZSnP0KCwqbnBat_QZdhosPuFD43tVEq3E4xTJUOnyc",
-			"token_type": "Bearer",
-			"expires_in": 3600,
-			"refresh_token": "1/USZVDzRXIENcoma2Xy-IO5UaaF2UpUReztLWhwOZvl0"
-		}
-	};
-
 	if (!req.session.user) {
 		res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
 	}
 	else {
-		//go right to getting subs
 		res.redirect('/getsubs');
 	}
 }
@@ -38,29 +22,29 @@ function googleoauth(req, res) {
 	console.log('handling /googleoauth');
 	if (!req.query.code) {
 		var url = oauth2Client.generateAuthUrl({
-			approval_prompt: 'force',
-			access_type: 'offline',
+			//approval_prompt: 'force',
+			//access_type: 'offline',
 			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/api'
 		});
 		res.redirect(url);
 	}
 	else {
 		oauth2Client.getToken(req.query.code, function(err, tokens) {
-			console.log(tokens);
 			oauth2Client.credentials = tokens;
-
 			googleapis.discover('oauth2', 'v2')
 				.execute(function(err, client) {
 				client.oauth2.userinfo.get()
 					.withAuthClient(oauth2Client)
 					.execute(function(err, user) {
-					user.tokens = oauth2Client.credentials;
-					roreaderDb.login(err, user, function(resDB) {
-						req.session.user = resDB;
-						res.redirect('/getsubs');
+						user.tokens = oauth2Client.credentials;
+						roreaderDb.googleoauth(err, user, function(resDB) {
+							req.session.user = resDB;
+							{
+								res.redirect('/');
+							}
+						});
 					});
 				});
-			});
 		});
 	}
 }
@@ -88,6 +72,14 @@ function getsubs(req, res) {
 	});
 }
 
+function importsubs(req, res) {
+	console.log('handling /importsubs');
+	var user = req.session.user;
+	roreaderDb.importsubs(user, function(doc) {
+		res.send(doc);
+	});
+}
+
 function echo(req, res) {
 	console.log("handling /echo");
 	res.send('echo ' + JSON.stringify(req.query));
@@ -101,6 +93,7 @@ function error404(req, res) {
 exports.googleoauth = googleoauth;
 exports.getroot = getroot;
 exports.getfeed = getfeed;
+exports.importsubs = importsubs;
 //exports.importsubs_opml = importsubs_opml;
 exports.getsubs = getsubs;
 exports.echo = echo;
