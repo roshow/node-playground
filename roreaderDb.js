@@ -59,11 +59,31 @@ function importsubs(user, callback){
 						L = subs.length,
 						parsedSubs = [],
 						parsedFeeds = [],
-						i;
+						parsedTags = [{
+							tag: 'Uncategorized',
+							id: user._id + '/Uncategorized'
+						}],
+						i, tagObj, tagId;
+					var checktags = function(e){ 
+						return (e.tag === this.label); 
+					};
 					for(i=0;i < L;i++){
+						if (subs[i].categories.length > 0) {
+							tagObj = subs[i].categories[0];
+							tagId = user._id + '/' + tagObj.label;
+							if (!parsedTags.some(checktags, tagObj)) {
+								parsedTags.push({
+									tag: tagObj.label,
+									id: tagId
+								});
+							}
+						}
+						else {
+							tagId = user._id + '/Uncategorized';
+						}
 						parsedSubs.push({
 							id: subs[i].id,
-							tags: []
+							tags: [tagId]
 						});
 						var feed = {
 							_id: subs[i].id,
@@ -71,12 +91,11 @@ function importsubs(user, callback){
 							htmlUrl: subs[i].htmlUrl,
 							title: subs[i].title							
 						};
-						parsedFeeds.push(feed);
 						db.feeds.insert(feed);
 					}
 					db.users.findAndModify({
 					    query: { _id: user._id },
-					    update: { $set: { subscriptions: parsedSubs } },
+					    update: { $set: { subscriptions: parsedSubs, tags: parsedTags } },
 					    new: true
 					}, function(err, doc) {
 					    callback(doc);
