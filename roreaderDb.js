@@ -14,17 +14,26 @@ function googleoauth(err, user, callback) {
 				name: user.name,
 				first_name: user.given_name,
 				last_name: user.family_name,
-				tokens: user.tokens
+				tokens: {
+					access_token: user.tokens.access_token,
+					refresh_token: user.tokens.refresh_token,
+					access_token_date: new Date()
+				}
 			};
 			db.users.save(newUser, function(err, save) {
-				importsubs(newUser, callback);
+				callback(newUser);
 			});
 		}
 		else {
 			console.log('user exists');
 			db.users.findAndModify({
-				query: { _id: entry[0]._id },
-				update: { $set: { tokens: user.tokens } }
+				query: { email: entry[0].email },
+				update: { 
+					$set: { 
+						'tokens.access_token': user.tokens.access_token,
+						'tokens.access_token_date': new Date()
+					} 
+				}
 			});
 			callback(entry[0]);
 		}

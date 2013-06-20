@@ -15,21 +15,23 @@ function getroot(req, res) {
 		res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
 	}
 	else {
-		res.redirect('/');
+		res.redirect('/getopml');
 	}
 
 }
 
 function googleoauth(req, res) {
 	console.log('handling /googleoauth');
+	//if no code parameter, then this is being visited for an initial login, so redirect to Google
 	if (!req.query.code) {
 		var url = oauth2Client.generateAuthUrl({
 			//approval_prompt: 'force',
-			//access_type: 'offline',
-			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/api https://www.google.com/reader/subscriptions/export'
+			access_type: 'offline',
+			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/subscriptions/export'
 		});
 		res.redirect(url);
 	}
+	//redirect with access code from Google; trade it in for a token and save to DB, then save in sessions and redirect to roreader.html
 	else {
 		oauth2Client.getToken(req.query.code, function(err, tokens) {
 			oauth2Client.credentials = tokens;
@@ -39,15 +41,10 @@ function googleoauth(req, res) {
 					.withAuthClient(oauth2Client)
 					.execute(function(err, user) {
 						user.tokens = oauth2Client.credentials;
-						res.redirect('/getopml');
-						/*
 						roreaderDb.googleoauth(err, user, function(resDB) {
 							req.session.user = resDB;
-							{
-								res.redirect('/');
-							}
+							res.redirect('/getopml');
 						});
-*/
 					});
 				});
 		});
@@ -96,16 +93,11 @@ function error404(req, res) {
 }
 
 function getopml(req, res) {
-	console.log('db getopml');
-	var user = {
-		tokens: {
-			access_token: 'ya29.AHES6ZR8lx2QrxlKiKh2CrFvMluhH7U6DaWWEjFFqw82UuVb	'
-		}
-	};
+	console.log('handling /getopml');
 	var reqOpt = {
 		url: 'https://www.google.com/reader/subscriptions/export',
 		qs: {
-			access_token: user.tokens.access_token
+			access_token: req.session.user.tokens.access_token
 		}
 	};
 	request(reqOpt)
