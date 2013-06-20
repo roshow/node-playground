@@ -107,7 +107,7 @@ function getopml(req, res) {
 		    res.send(error);
 		})
 		.on('complete',function (meta, feeds, outline){
-			res.send(outline);
+			res.send([feeds, outline]);
 		});
 }
 
