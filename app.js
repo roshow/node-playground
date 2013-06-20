@@ -23,6 +23,7 @@ app.get('/logout', function(req, res){
 	req.session.user = null;
 	res.send("logged out");
 });
+app.get('/getopml', handler.getopml)
 
 app.listen(3000);
 console.log("roreader Listening on port 3000");

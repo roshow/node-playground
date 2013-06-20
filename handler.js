@@ -5,7 +5,8 @@ var parser = require('xml2json'),
 	client_id = '90018158841.apps.googleusercontent.com',
 	client_secret = 'K9HzQVn1PATjX5LgQOsaXs40',
 	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth'),
-	roreaderDb = require('./roreaderDb.js');
+	roreaderDb = require('./roreaderDb.js'),
+	OpmlParser = require('opmlparser');
 
 function getroot(req, res) {
 	console.log('handling /');
@@ -14,8 +15,9 @@ function getroot(req, res) {
 		res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
 	}
 	else {
-		res.redirect('/getsubs');
+		res.redirect('/');
 	}
+
 }
 
 function googleoauth(req, res) {
@@ -24,7 +26,7 @@ function googleoauth(req, res) {
 		var url = oauth2Client.generateAuthUrl({
 			//approval_prompt: 'force',
 			//access_type: 'offline',
-			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/api'
+			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/api https://www.google.com/reader/subscriptions/export'
 		});
 		res.redirect(url);
 	}
@@ -37,12 +39,15 @@ function googleoauth(req, res) {
 					.withAuthClient(oauth2Client)
 					.execute(function(err, user) {
 						user.tokens = oauth2Client.credentials;
+						res.redirect('/getopml');
+						/*
 						roreaderDb.googleoauth(err, user, function(resDB) {
 							req.session.user = resDB;
 							{
 								res.redirect('/');
 							}
 						});
+*/
 					});
 				});
 		});
@@ -54,14 +59,14 @@ function getfeed(req, res) {
 	request(req.query.url)
 		.pipe(new FeedParser())
 		.on('error', function(error) {
-		console.log(error);
-	})
-		.on('complete', function(meta, articles) {
-		res.send([meta, articles]);
-	})
-		.on('end', function() {
-		console.log('parsing done');
-	});
+			console.log(error);
+		})
+			.on('complete', function(meta, articles) {
+			res.send([meta, articles]);
+		})
+			.on('end', function() {
+			console.log('parsing done');
+		});
 }
 
 function getsubs(req, res) {
@@ -90,6 +95,31 @@ function error404(req, res) {
 	res.send("404 Error. This path doesn't exist.", 404);
 }
 
+function getopml(req, res) {
+	console.log('db getopml');
+	var user = {
+		tokens: {
+			access_token: 'ya29.AHES6ZR8lx2QrxlKiKh2CrFvMluhH7U6DaWWEjFFqw82UuVb	'
+		}
+	};
+	var reqOpt = {
+		url: 'https://www.google.com/reader/subscriptions/export',
+		qs: {
+			access_token: user.tokens.access_token
+		}
+	};
+	request(reqOpt)
+		.pipe(new OpmlParser())
+		.on('error', function(error) {
+		    console.log(error);
+		    res.send(error);
+		})
+		.on('complete',function (meta, feeds, outline){
+			res.send(outline);
+		});
+}
+
+exports.getopml = getopml;
 exports.googleoauth = googleoauth;
 exports.getroot = getroot;
 exports.getfeed = getfeed;
