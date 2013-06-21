@@ -61,10 +61,10 @@ var feeds = {
 		delete feed.meta;
 		db.feeds.insert(feed, function(err, insert){
 			if(err && err.code === 11000){
-				//console.log(feed._id + ' is already in db');
+				console.log(feed._id + ' is already in db');
 			}
 			else if (err) {
-				//console.log(err);
+				console.log(err);
 			}
 			else{
 				//console.log('successfully inserted feed: ' + JSON.stringify(insert));
