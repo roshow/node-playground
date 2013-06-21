@@ -72,9 +72,9 @@ var feeds = {
 			}
 		});
 	},
-	get: function(id, callback){
+	get: function(query, callback){
 		console.log('db feeds.get');
-		db.feeds.find({_id: id}, function(e, f){
+		db.feeds.find(query, function(e, f){
 			if (!e) {
 				callback && callback(f);
 			}
@@ -109,9 +109,9 @@ var tags = {
 			}
 		});
 	},
-	get: function(user, callback){
+	get: function(query, callback){
 		console.log('db tags.get');
-		db.tags.find({user: user._id}, function(e, r){
+		db.tags.find(query, function(e, r){
 			if (!e) {
 				callback && callback(r);
 			}

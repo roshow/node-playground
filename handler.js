@@ -69,24 +69,26 @@ function getfeed(req, res) {
 function getsubs(req, res) {
 	console.log('handling /getsubs');
 	var user = req.session.user;
-	roreaderDb.tags.get(user, function(r) {
-		var subs = r;
-		var L = r.length,
-		i = 0,
-		j;
-		for(i=0;i < L;i++){
-			subs[i].feeds = [];
-			var l = subs[i].feed_ids.length;
-			console.log(l);
-			j = 0;
-			//while(j < l)
-			for(j = 0;j < l; j++)
-			{
-				//console.log(subs[i].feed_ids[j]);
-				roreaderDb.feeds.get(subs[i].feed_ids[j]);
-			}
+	roreaderDb.tags.get({ user: user._id }, function(r) {
+		var L = r.length;
+		function addfeeds(j){
+			roreaderDb.feeds.get({
+				_id: {
+					$in: r[j].feed_ids
+				}
+			}, 
+			function(f){
+				r[j].feeds = f;
+				if (j < L-1){
+					console.log('L = ' + L);
+					addfeeds(j+1);
+				}
+				else {
+					res.send(r);
+				}
+			});
 		}
-		res.send(subs);
+		addfeeds(0);
 	});
 }
 
