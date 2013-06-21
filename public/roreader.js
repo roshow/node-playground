@@ -11,38 +11,33 @@ var roreader = (function(){
 	var loading = false;
 	var currentURL = null;
 	function feedTemplate(sub) {
-		return "<div id='" + sub.xmlUrl + "' class='feedList_feed'>" + sub.title + "</div>";
+		return "<div id='" + sub.xmlurl + "' class='feedList_feed'>" + sub.title + "</div>";
 	}
 
 	var roread = {
 		getSubscriptions: function() {
 			var that = this;
 			$.ajax({
-				url: "getsubs",
+				url: "/getsubs",
 				dataType: "json",
 				success: function(result){
-					that.feeds_display(result);
+					that.subs_display(result);
+					console.log(result);
 				}
 			});
 		},
-		feeds_display: function(subs) {
+		subs_display: function(subs) {
 			var that = this,
-			L = subs.length,
-			html = '',
-			L2, innerHtml, innerSubs;
+				L = subs.length,
+				html = '',
+				L2, innerHtml;
 			for (i = 0; i < L; i++) {
 				innerHtml = '';
-				if (subs[i].outline) {
-					innerSubs = (subs[i].outline instanceof Array) ? subs[i].outline : [ subs[i].outline ];
-					L2 = innerSubs.length;
-					for (j = 0; j < L2; j++) {
-						innerHtml += "<span class='indent'>" + feedTemplate(innerSubs[j]) + "</span>";
-					}
-					html += "<div class='feedList_folder'><img src='feedList_icon_folder.png' class='feedList_icon' />" + subs[i].title + "</div><div style='display:none;'>" + innerHtml + "</div>";
+				L2 = subs[i].feeds.length;
+				for (j = 0; j < L2; j++) {
+					innerHtml += "<span class='indent'>" + feedTemplate(subs[i].feeds[j]) + "</span>";
 				}
-				else {
-					html += feedTemplate(subs[i]);
-				}
+				html += "<div class='feedList_folder'><img src='feedList_icon_folder.png' class='feedList_icon' />" + subs[i].tag + "</div><div style='display:none;'>" + innerHtml + "</div>";
 			}
 			$('#feedList').append(html);
 			$('.feedList_feed').click(function(){
