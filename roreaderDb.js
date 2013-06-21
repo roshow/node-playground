@@ -1,5 +1,19 @@
-var db = require('mongojs').connect('mydb', ['feeds', 'users', 'feedex']),
+var db = require('mongojs').connect('rodb', ['feeds', 'users', 'tags']),
 	request = require('request');
+
+function updateAccessToken(user, token, callback){
+	db.users.findAndModify({
+		query: { email: user.email },
+		update: { 
+			$set: { 
+				'tokens.access_token': token,
+				'tokens.access_token_date': new Date()
+			} 
+		}
+	}, function(e, r){
+		console.log(r);
+	});	
+}
 
 function googleoauth(err, user, callback) {
 	console.log('db googleoauth');
@@ -26,15 +40,7 @@ function googleoauth(err, user, callback) {
 		}
 		else {
 			console.log('user exists');
-			db.users.findAndModify({
-				query: { email: entry[0].email },
-				update: { 
-					$set: { 
-						'tokens.access_token': user.tokens.access_token,
-						'tokens.access_token_date': new Date()
-					} 
-				}
-			});
+			updateAccessToken(entry[0], user.tokens.access_token);
 			callback(entry[0]);
 		}
 	});
@@ -113,7 +119,49 @@ function importsubs(user, callback){
 	});
 }
 
+function feedsInsert(feed, callback){
+	feed._id = 'feed/' + feed.xmlurl;
+	delete feed.meta;
+	db.feeds.insert(feed, function(err, insert){
+		if(err && err.code === 11000){
+			//console.log(feed._id + ' is already in db');
+		}
+		else if (err) {
+			//console.log(err);
+		}
+		else{
+			//console.log('successfully inserted feed: ' + JSON.stringify(insert));
+			callback && callback(insert);
+		}
+	});
+}
 
+function tagsInsert(taginfo, callback){
+	db.tags.insert({
+		_id: taginfo.userId + '/' + taginfo.tag,
+		feeds: [ taginfo.feed ]
+	}, function(err, insert){
+		if(err && err.code === 11000) {
+			db.tags.findAndModify({
+				query: { 
+					_id: taginfo.userId + '/' + taginfo.tag,
+					feeds: { $ne: taginfo.feed }
+				},
+				update: { 
+					$push: { feeds: taginfo.feed } 
+				}
+			}, function(err, success){
+				if(err){
+					console.log(err);
+				}
+			});
+		}
+	});
+}
+
+exports.updateAccessToken = updateAccessToken;
 exports.googleoauth = googleoauth;
 exports.getsubs = getsubs;
 exports.importsubs = importsubs;
+exports.feedsInsert = feedsInsert;
+exports.tagsInsert = tagsInsert;

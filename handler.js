@@ -15,7 +15,7 @@ function getroot(req, res) {
 		res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
 	}
 	else {
-		res.redirect('/getopml');
+		res.redirect('/importopml');
 	}
 
 }
@@ -25,7 +25,7 @@ function googleoauth(req, res) {
 	//if no code parameter, then this is being visited for an initial login, so redirect to Google
 	if (!req.query.code) {
 		var url = oauth2Client.generateAuthUrl({
-			//approval_prompt: 'force',
+			approval_prompt: 'force',
 			access_type: 'offline',
 			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/reader/subscriptions/export'
 		});
@@ -43,7 +43,7 @@ function googleoauth(req, res) {
 						user.tokens = oauth2Client.credentials;
 						roreaderDb.googleoauth(err, user, function(resDB) {
 							req.session.user = resDB;
-							res.redirect('/getopml');
+							res.redirect('/importopml');
 						});
 					});
 				});
@@ -92,8 +92,8 @@ function error404(req, res) {
 	res.send("404 Error. This path doesn't exist.", 404);
 }
 
-function getopml(req, res) {
-	console.log('handling /getopml');
+function importopml(req, res) {
+	console.log('handling /importopml');
 	var reqOpt = {
 		url: 'https://www.google.com/reader/subscriptions/export',
 		qs: {
@@ -106,42 +106,49 @@ function getopml(req, res) {
 		    console.log(error);
 		    res.send(error);
 		})
-		.on('complete',function (meta, feeds, outline){
-			res.send([feeds, outline]);
+		.on('outline', function(outline){
+			console.log(outline);
+		})
+		.on('feed', function(feed){
+			console.log('adding to db.feeds');
+			roreaderDb.feedsInsert(feed);
+			console.log('adding to db.tags');
+			var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
+			roreaderDb.tagsInsert({
+				tag: tag,
+				userId: req.session.user._id,
+				feed: 'feed/' + feed.xmlurl
+			});
+		})
+		.on('end', function(){
+			res.send('opml done');
 		});
 }
 
-exports.getopml = getopml;
+function refreshToken(req, res){
+	request.post({
+		url:'https://accounts.google.com/o/oauth2/token',
+		form: { 
+			client_id: client_id,
+			client_secret: client_secret,
+			refresh_token: req.session.user.tokens.refresh_token,
+			grant_type: 'refresh_token' 
+		}
+	}, function(e,r,b){
+		var newToken = JSON.parse(r.body).access_token;
+		roreaderDb.updateAccessToken(req.session.user, newToken);
+		req.session.user.tokens.access_token = newToken;
+		req.session.user.tokens.access_token_date = new Date();
+		res.redirect('/' + req.query.url);
+	});
+}
+
+exports.refreshToken = refreshToken;
+exports.importopml = importopml;
 exports.googleoauth = googleoauth;
 exports.getroot = getroot;
 exports.getfeed = getfeed;
 exports.importsubs = importsubs;
-//exports.importsubs_opml = importsubs_opml;
 exports.getsubs = getsubs;
 exports.echo = echo;
 exports.error404 = error404;
-
-/*function importsubs_opml(req, res) {
-	console.log('handling /importsubs');
-	request('http://localhost:3000/subscriptions.xml', function(error, response, body) {
-		var feedsJson = JSON.parse(parser.toJson(body));
-		var subs = feedsJson.opml.body.outline;
-		var L = subs.length,
-			L2, innerSubs, j, i;
-		for (i = 0; i < L; i++) {
-			if (subs[i].outline) {
-				innerSubs = (subs[i].outline instanceof Array) ? subs[i].outline : [subs[i].outline];
-				L2 = innerSubs.length;
-				for (j = 0; j < L2; j++) {
-					roreaderDb.feeds.save(innerSubs[j]);
-				}
-			}
-			else {
-				db.feeds.save(subs[i]);
-			}
-		}
-		db.feeds.find({}, function(err, feed) {
-			res.send(feed);
-		});
-	});
-}*/

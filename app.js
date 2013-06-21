@@ -6,9 +6,9 @@ var express = require('express'),
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    db: 'mydb'
+    db: 'rodb'
   }),
-  secret: '1234567890QWERTY'
+  secret: 'roreader2389042304987'
 }));
 
 app.use(express.static(__dirname + '/public'));
@@ -23,7 +23,9 @@ app.get('/logout', function(req, res){
 	req.session.user = null;
 	res.send("logged out");
 });
-app.get('/getopml', handler.getopml)
+app.get('/importopml', handler.importopml);
+app.get('/refreshtoken', handler.refreshToken);
+app.get('/getopml', function(req, res){ res.redirect('/importopml');});
 
 app.listen(3000);
 console.log("roreader Listening on port 3000");
