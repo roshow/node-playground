@@ -54,51 +54,73 @@ function getsubs(user, callback) {
 	});
 }
 
-function feedsInsert(feed, callback){
-	console.log('db feedsInsert');
-	feed._id = 'feed/' + feed.xmlurl;
-	delete feed.meta;
-	db.feeds.insert(feed, function(err, insert){
-		if(err && err.code === 11000){
-			//console.log(feed._id + ' is already in db');
-		}
-		else if (err) {
-			//console.log(err);
-		}
-		else{
-			//console.log('successfully inserted feed: ' + JSON.stringify(insert));
-			callback && callback(insert);
-		}
-	});
+var feeds = {
+	insert: function(feed, callback){
+		console.log('db feeds.insert');
+		feed._id = 'feed/' + feed.xmlurl;
+		delete feed.meta;
+		db.feeds.insert(feed, function(err, insert){
+			if(err && err.code === 11000){
+				//console.log(feed._id + ' is already in db');
+			}
+			else if (err) {
+				//console.log(err);
+			}
+			else{
+				//console.log('successfully inserted feed: ' + JSON.stringify(insert));
+				callback && callback(insert);
+			}
+		});
+	},
+	get: function(id, callback){
+		console.log('db feeds.get');
+		db.feeds.find({_id: id}, function(e, f){
+			if (!e) {
+				callback && callback(f);
+			}
+		});
+
+	}
 }
 
-function tagsInsert(taginfo, callback){
-	console.log('db taginfo');
-	db.tags.insert({
-		_id: taginfo.userId + '/' + taginfo.tag,
-		user: taginfo.userId,
-		feeds: [ taginfo.feed ]
-	}, function(err, insert){
-		if(err && err.code === 11000) {
-			db.tags.findAndModify({
-				query: { 
-					_id: taginfo.userId + '/' + taginfo.tag,
-					feeds: { $ne: taginfo.feed }
-				},
-				update: { 
-					$push: { feeds: taginfo.feed } 
-				}
-			}, function(err, success){
-				if(err){
-					console.log(err);
-				}
-			});
-		}
-	});
-}
+var tags = {
+	insert: function(taginfo, callback){
+		console.log('db tags.insert');
+		db.tags.insert({
+			_id: taginfo.userId + '/' + taginfo.tag,
+			tag: taginfo.tag,
+			user: taginfo.userId,
+			feed_ids: [ taginfo.feed ]
+		}, function(err, insert){
+			if(err && err.code === 11000) {
+				db.tags.findAndModify({
+					query: { 
+						_id: taginfo.userId + '/' + taginfo.tag,
+						feed_ids: { $ne: taginfo.feed }
+					},
+					update: { 
+						$push: { feed_ids: taginfo.feed } 
+					}
+				}, function(err, success){
+					if(err){
+						console.log(err);
+					}
+				});
+			}
+		});
+	},
+	get: function(user, callback){
+		console.log('db tags.get');
+		db.tags.find({user: user._id}, function(e, r){
+			if (!e) {
+				callback && callback(r);
+			}
+		});
+	}
+};
 
 exports.updateAccessToken = updateAccessToken;
 exports.login = login;
 exports.getsubs = getsubs;
-exports.feedsInsert = feedsInsert;
-exports.tagsInsert = tagsInsert;
+exports.feeds = feeds;
+exports.tags = tags;

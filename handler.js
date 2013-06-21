@@ -69,7 +69,23 @@ function getfeed(req, res) {
 function getsubs(req, res) {
 	console.log('handling /getsubs');
 	var user = req.session.user;
-	roreaderDb.getsubs(user, function(subs) {
+	roreaderDb.tags.get(user, function(r) {
+		var subs = r;
+		var L = r.length,
+		i = 0,
+		j;
+		for(i=0;i < L;i++){
+			subs[i].feeds = [];
+			var l = subs[i].feed_ids.length;
+			console.log(l);
+			j = 0;
+			//while(j < l)
+			for(j = 0;j < l; j++)
+			{
+				//console.log(subs[i].feed_ids[j]);
+				roreaderDb.feeds.get(subs[i].feed_ids[j]);
+			}
+		}
 		res.send(subs);
 	});
 }
@@ -103,10 +119,10 @@ function importopml(req, res) {
 		})
 		.on('feed', function(feed){
 			console.log('adding to db.feeds');
-			roreaderDb.feedsInsert(feed);
+			roreaderDb.feeds.insert(feed);
 			console.log('adding to db.tags');
 			var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
-			roreaderDb.tagsInsert({
+			roreaderDb.tags.insert({
 				tag: tag,
 				userId: req.session.user._id,
 				feed: 'feed/' + feed.xmlurl
