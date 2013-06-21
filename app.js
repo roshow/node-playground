@@ -18,14 +18,12 @@ app.get('/getsubs', handler.getsubs);
 app.get('/getfeed', handler.getfeed);
 app.get('/echo', handler.echo);
 app.get('/googleoauth', handler.googleoauth);
-app.get('/importsubs', handler.importsubs);
 app.get('/logout', function(req, res){
 	req.session.user = null;
 	res.send("logged out");
 });
 app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
-app.get('/getopml', function(req, res){ res.redirect('/importopml');});
 
 app.listen(3000);
 console.log("roreader Listening on port 3000");

@@ -15,7 +15,7 @@ function getroot(req, res) {
 		res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
 	}
 	else {
-		res.redirect('/importopml');
+		res.redirect('/roreader.html');
 	}
 
 }
@@ -41,9 +41,9 @@ function googleoauth(req, res) {
 					.withAuthClient(oauth2Client)
 					.execute(function(err, user) {
 						user.tokens = oauth2Client.credentials;
-						roreaderDb.googleoauth(err, user, function(resDB) {
-							req.session.user = resDB;
-							res.redirect('/importopml');
+						roreaderDb.login(err, user, function(userDB, newUser) {
+							req.session.user = userDB;
+							res.redirect(newUser ? '/importopml' : '/');
 						});
 					});
 				});
@@ -71,14 +71,6 @@ function getsubs(req, res) {
 	var user = req.session.user;
 	roreaderDb.getsubs(user, function(subs) {
 		res.send(subs);
-	});
-}
-
-function importsubs(req, res) {
-	console.log('handling /importsubs');
-	var user = req.session.user;
-	roreaderDb.importsubs(user, function(doc) {
-		res.send(doc);
 	});
 }
 
@@ -121,7 +113,8 @@ function importopml(req, res) {
 			});
 		})
 		.on('end', function(){
-			res.send('opml done');
+			console.log('opml done');
+			res.redirect('/');
 		});
 }
 
@@ -148,7 +141,6 @@ exports.importopml = importopml;
 exports.googleoauth = googleoauth;
 exports.getroot = getroot;
 exports.getfeed = getfeed;
-exports.importsubs = importsubs;
 exports.getsubs = getsubs;
 exports.echo = echo;
 exports.error404 = error404;
