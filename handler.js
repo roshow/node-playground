@@ -12,12 +12,7 @@ var handler = (function(){
 
 	function addfeeds(j, subs, callback){
 		var L = subs.length;
-		roreaderDb.feeds.get({
-			_id: {
-				$in: subs[j].feed_ids
-			}
-		}, 
-		function(f){
+		roreaderDb.feeds.get({ _id: { $in: subs[j].feed_ids } }, false, function(f){
 			subs[j].feeds = f;
 			if (j < L-1){
 				addfeeds(j+1, subs, callback);
@@ -90,13 +85,20 @@ var handler = (function(){
 		getsubs: function(req, res) {
 			console.log('handling /getsubs');
 			var user = req.session.user;
-			roreaderDb.tags.get({ user: user._id }, function(r) {
-				if (r.length > 0){
-					addfeeds(0, r, function(f){
-						res.send(f);
-					});
-				}
-			});
+			if(req.query.allfeeds === 'true'){
+				roreaderDb.feeds.get({ users: user._id }, false, function(f){
+					res.send(f);
+				});
+			}
+			else {
+				roreaderDb.tags.get({ user: user._id }, false , function(r) {
+					if (r.length > 0){
+						addfeeds(0, r, function(f){
+							res.send(f);
+						});
+					}
+				});
+			}
 		},
 
 		echo: function(req, res) {
@@ -161,7 +163,9 @@ var handler = (function(){
 			});
 		}
 	};
+
 	return handler;
+
 }());
 
 exports.handler = handler;

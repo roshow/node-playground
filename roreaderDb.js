@@ -16,9 +16,7 @@ function updateAccessToken(user, token){
 
 function login(err, user, callback) {
 	console.log('db login');
-	db.users.find({
-		email: user.email
-	}, function(err, entry) {
+	db.users.find({ email: user.email }, function(err, entry) {
 		if (entry.length === 0) {
 			console.log('new user');
 			var newUser = {
@@ -47,9 +45,7 @@ function login(err, user, callback) {
 
 function getsubs(user, callback) {
 	console.log('db getsubs');
-	db.users.find({
-		email: user.email
-	}, function(err, doc) {
+	db.users.find({ email: user.email }, function(err, doc) {
 		callback(doc[0]);
 	});
 }
@@ -60,6 +56,7 @@ var feeds = {
 		feed._id = 'feed/' + feed.xmlurl;
 		delete feed.meta;
 		feed.users = [ user._id ];
+		feed.title_alpha = feed.title.toLowerCase();
 		db.feeds.insert(feed, function(err, insert){
 			if(err && err.code === 11000){
 				console.log(feed._id + ' is already in db');
@@ -85,14 +82,13 @@ var feeds = {
 			}
 		});
 	},
-	get: function(query, callback){
+	get: function(query, sort, callback){
 		console.log('db feeds.get');
-		db.feeds.find(query).sort({title:1}, function(e, f){
+		db.feeds.find(query).sort((sort || {title_alpha:1}), function(e, f){
 			if (!e) {
 				callback && callback(f);
 			}
 		});
-
 	}
 };
 
@@ -102,6 +98,7 @@ var tags = {
 		db.tags.insert({
 			_id: taginfo.userId + '/' + taginfo.tag,
 			tag: taginfo.tag,
+			tag_alpha: taginfo.tag.toLowerCase(),
 			user: taginfo.userId,
 			feed_ids: [ taginfo.feed ]
 		}, function(err, insert){
@@ -122,9 +119,9 @@ var tags = {
 			}
 		});
 	},
-	get: function(query, callback){
+	get: function(query, sort, callback){
 		console.log('db tags.get');
-		db.tags.find(query).sort({tag:1}, function(e, r){
+		db.tags.find(query).sort((sort || {tag_alpha:1}), function(e, r){
 			if (!e) {
 				console.log(r);
 				callback && callback(r);
