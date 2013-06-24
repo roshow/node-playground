@@ -10,6 +10,24 @@ var parser = require('xml2json'),
 
 var handler = (function(){
 
+	function addfeeds(j, subs, callback){
+		var L = subs.length;
+		roreaderDb.feeds.get({
+			_id: {
+				$in: subs[j].feed_ids
+			}
+		}, 
+		function(f){
+			subs[j].feeds = f;
+			if (j < L-1){
+				addfeeds(j+1, subs, callback);
+			}
+			else {
+				callback && callback(subs);
+			}
+		});
+	}
+
 	var handler = {
 
 		getroot: function(req, res) {
@@ -73,26 +91,10 @@ var handler = (function(){
 			console.log('handling /getsubs');
 			var user = req.session.user;
 			roreaderDb.tags.get({ user: user._id }, function(r) {
-				function addfeeds(j){
-					var L = r.length;
-					roreaderDb.feeds.get({
-						_id: {
-							$in: r[j].feed_ids
-						}
-					}, 
-					function(f){
-						r[j].feeds = f;
-						if (j < L-1){
-							console.log('L = ' + L);
-							addfeeds(j+1);
-						}
-						else {
-							res.send(r);
-						}
-					});
-				}
 				if (r.length > 0){
-					addfeeds(0);
+					addfeeds(0, r, function(f){
+						res.send(f);
+					});
 				}
 			});
 		},
