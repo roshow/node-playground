@@ -1,5 +1,5 @@
 var express = require('express'),
-  handler = require('./handler.js'),
+  handler = require('./handler.js').handler,
   app = express(),
   MongoStore = require('connect-mongo')(express);
 

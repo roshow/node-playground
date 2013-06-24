@@ -1,7 +1,7 @@
 var db = require('mongojs').connect('rodb', ['feeds', 'users', 'tags']),
 	request = require('request');
 
-function updateAccessToken(user, token, callback){
+function updateAccessToken(user, token){
 	console.log('db updateAccessToken');
 	db.users.findAndModify({
 		query: { email: user.email },
@@ -55,33 +55,46 @@ function getsubs(user, callback) {
 }
 
 var feeds = {
-	insert: function(feed, callback){
+	insert: function(feed, user, callback){
 		console.log('db feeds.insert');
 		feed._id = 'feed/' + feed.xmlurl;
 		delete feed.meta;
+		feed.users = [ user._id ];
 		db.feeds.insert(feed, function(err, insert){
 			if(err && err.code === 11000){
 				console.log(feed._id + ' is already in db');
+				db.feeds.findAndModify({
+					query: { 
+						_id: feed._id,
+						users: { $ne: user._id }
+					},
+					update: { 
+						$push: { users: user._id } 
+					}
+				}, function(err, success){
+					if(err){
+						console.log(err);
+					}
+				});
 			}
 			else if (err) {
 				console.log(err);
 			}
 			else{
-				//console.log('successfully inserted feed: ' + JSON.stringify(insert));
 				callback && callback(insert);
 			}
 		});
 	},
 	get: function(query, callback){
 		console.log('db feeds.get');
-		db.feeds.find(query, function(e, f){
+		db.feeds.find(query).sort({title:1}, function(e, f){
 			if (!e) {
 				callback && callback(f);
 			}
 		});
 
 	}
-}
+};
 
 var tags = {
 	insert: function(taginfo, callback){
@@ -111,8 +124,9 @@ var tags = {
 	},
 	get: function(query, callback){
 		console.log('db tags.get');
-		db.tags.find(query, function(e, r){
+		db.tags.find(query).sort({tag:1}, function(e, r){
 			if (!e) {
+				console.log(r);
 				callback && callback(r);
 			}
 		});
