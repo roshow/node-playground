@@ -8,7 +8,7 @@ var roreader = (function(){
 	var loading = false;
 	var currentURL = null;
 	function feedTemplate(sub) {
-		return "<div id='" + sub.xmlurl + "' class='feedList_feed'>" + sub.title + "</div>";
+		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + sub.title + "</a></div>";
 	}
 
 	var roread = {
@@ -32,7 +32,7 @@ var roreader = (function(){
 				innerHtml = '';
 				L2 = subs[i].feeds.length;
 				for (j = 0; j < L2; j++) {
-					innerHtml += "<div class='feedList_feed'>" + feedTemplate(subs[i].feeds[j]) + "</div>";
+					innerHtml += feedTemplate(subs[i].feeds[j]);
 				}
 				html += '<div class="accordion-group">'+
 				'<div class="accordion-heading feedList_folder">'+
@@ -54,6 +54,8 @@ var roreader = (function(){
 			$('#feedList').append(html);
 			$('.feedList_feed').click(function(){
 				that.getFeed_now($(this)[0].id);
+				$('.feedList_feed').css('font-weight', 'normal');
+				$(this).css('font-weight', 'bold');
 			});
 			this.getFeed_now('http://roshow.net/feed');
 		},

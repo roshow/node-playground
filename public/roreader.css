@@ -64,6 +64,7 @@ html,body {
 
 		#feedList a:hover {
 			text-decoration: none;
+			font-weight: bold;
 		}
 
 		.feedList_folder {
