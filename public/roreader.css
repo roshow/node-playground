@@ -49,44 +49,30 @@ html,body {
 
 	#feedList {
 		vertical-align: top;
-		padding: 0;
-		margin: 0;
 	}
-		#feedList > div {
+		#feedList div {
 			white-space: nowrap;
 			cursor: pointer;
 			text-align: left;
 			overflow: hidden;
-			padding: 4px 8px;
-			border-radius: 3px;
+			border-color: #eee;
 		}
 
-		.feedList_folder{
-			background-color: black;
-			color: white;
-			border: 1px solid #cccccc;
+		#feedList a {
+			color: black;
 		}
 
-		.feedList_folder > i {
-			margin-right: 4px;
+		#feedList a:hover {
+			text-decoration: none;
 		}
 
-		.feedList_folderList {
-			display: none;
-			background-color: white;
-			overflow: hidden;
-			border: 1px solid black;
-		}
-		
-		.hover_on{
-			cursor: default;
-			/*colors changed in theme*/
-			background-color: #B0A78F;
-			color: #FDF4DB;
+		.feedList_folder {
+			border-color: black;
 		}
 
-		.feedList_feed {
-		}
+			.feedList_folder i {
+				margin-right: 5px;
+			}
 
 	#spinner {
 		display: block;

@@ -2,9 +2,6 @@
 
 var i, j;
 
-//Google Feed API https://developers.google.com/feed/v1/
-google.load("feeds", "1");
-
 var roreader = (function(){
 
 	var offset = 0;
@@ -35,16 +32,28 @@ var roreader = (function(){
 				innerHtml = '';
 				L2 = subs[i].feeds.length;
 				for (j = 0; j < L2; j++) {
-					innerHtml += "<span class='feedList_feed'>" + feedTemplate(subs[i].feeds[j]) + "</span>";
+					innerHtml += "<div class='feedList_feed'>" + feedTemplate(subs[i].feeds[j]) + "</div>";
 				}
-				html += "<div class='feedList_folder'><i class='icon-list icon-white'></i>" + subs[i].tag + "</div><div class='feedList_folderList'>" + innerHtml + "</div>";
+				html += '<div class="accordion-group">'+
+				'<div class="accordion-heading feedList_folder">'+
+
+				//use this if you want opening a folder to not close other open ones:
+				'<a class="accordion-toggle" data-toggle="collapse" href="#tag'+ i +'">'+
+				//use this is you want only one folder to be open at a time:
+				//'<a class="accordion-toggle" data-toggle="collapse" data-parent="#feedList" href="#tag'+ i +'">'+
+
+
+				'<i class="icon-list"></i>' + subs[i].tag + '</div><div class="feedList_folderList">' + 
+				'</a></div>' +
+				'<div id="tag' + i + '" class="accordion-body collapse">' +
+      			'<div class="accordion-inner">' +
+      			innerHtml +
+      			'</div></div></div>'
 			}
+
 			$('#feedList').append(html);
 			$('.feedList_feed').click(function(){
 				that.getFeed_now($(this)[0].id);
-			});
-			$('.feedList_folder').click(function(){
-				$(this).next('div').slideToggle('fast');
 			});
 			this.getFeed_now('http://roshow.net/feed');
 		},
