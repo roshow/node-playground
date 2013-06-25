@@ -6,7 +6,7 @@ var express = require('express'),
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    db: 'rodb'
+    db: 'testdb'
   }),
   secret: 'roreader2389042304987'
 }));
@@ -20,7 +20,7 @@ app.get('/echo', handler.echo);
 app.get('/googleoauth', handler.googleoauth);
 app.get('/logout', function(req, res){
 	req.session.user = null;
-	res.send("logged out");
+	res.redirect('/');
 });
 app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
