@@ -11,6 +11,10 @@
     "express": "3.2.6",
     "xml2json": "0.3.2",
     "request": "2.21.0",
-    "feedparser": "0.15.4"
+    "feedparser": "0.15.4",
+    "mongojs": "0.7.5",
+    "googleapis": "0.2.11-alpha",
+    "connect-mongo" : "0.3.x",
+    "opmlparser": "0.5.0"
   }
 }

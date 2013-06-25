@@ -18,6 +18,16 @@ html,body {
 		border-width: 1px;
 		border-radius: 5px;
 	}
+		.item_top {
+			margin: 0px 0px 20px 0px;
+			padding: 0px 25px;
+			border-radius: 5px;
+			border: 1px solid #000000;
+			box-shadow: 2px 2px 5px;
+			background-color: white;
+			height: auto;
+		}
+
 		.item_box {
 			margin: 0px 0px 20px 0px;
 			padding: 25px;
