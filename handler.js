@@ -8,12 +8,16 @@ var parser = require('xml2json'),
 	roreaderDb = require('./roreaderDb.js').roreaderDb,
 	OpmlParser = require('opmlparser');
 
-function addfeeds(j, subs, callback){
+function addfeeds_loop(j, subs, callback) {
 	var L = subs.length;
-	roreaderDb.feeds.get({ _id: { $in: subs[j].feed_ids } }, false, function(f){
+	roreaderDb.feeds.get({
+		_id: {
+			$in: subs[j].feed_ids
+		}
+	}, false, function(f) {
 		subs[j].feeds = f;
-		if (j < L-1){
-			addfeeds(j+1, subs, callback);
+		if (j < L - 1) {
+			addfeeds_loop(j + 1, subs, callback);
 		}
 		else {
 			callback && callback(subs);
@@ -54,43 +58,57 @@ var handler = {
 					client.oauth2.userinfo.get()
 						.withAuthClient(oauth2Client)
 						.execute(function(err, user) {
-							roreaderDb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
-								req.session.user = userDB;
-								res.redirect(newUser ? '/importopml' : '/');
-							});
+						roreaderDb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
+							req.session.user = userDB;
+							res.redirect(newUser ? '/importopml' : '/');
 						});
 					});
+				});
 			});
 		}
 	},
 
 	getfeed: function(req, res) {
 		console.log('handling /getfeed');
-		request(req.query.url)
-			.pipe(new FeedParser())
-			.on('error', function(error) {
-				console.log(error);
-			})
-				.on('complete', function(meta, articles) {
-				res.send([meta, articles]);
-			})
-				.on('end', function() {
-				console.log('parsing done');
-			});
+		var all = [];
+		var meta;
+		var uri = req.query.url || 'http://roshow.net/feed/';
+		request(uri)
+		.pipe(new FeedParser({addmeta: false}))
+		.on('error', function(error) {
+		console.log(error);
+		})
+		.on('meta', function(m) {
+			meta = m;
+		})
+		.on('readable', function() {
+			var article;
+			while (article = this.read()){
+				roreaderDb.articles.insert(article, 'feed/' + uri);
+				all.push(article);
+			}
+		})
+		.on('end', function(){
+			res.send([meta, all]);
+		});
 	},
 
 	getsubs: function(req, res) {
 		console.log('handling /getsubs');
 		var user = req.session.user;
-		if(req.query.allfeeds === 'true'){
-			roreaderDb.feeds.get({ users: user._id }, false, function(f){
+		if (req.query.allfeeds === 'true') {
+			roreaderDb.feeds.get({
+				users: user._id
+			}, false, function(f) {
 				res.send(f);
 			});
 		}
 		else {
-			roreaderDb.tags.get({ user: user._id }, false , function(r) {
-				if (r.length > 0){
-					addfeeds(0, r, function(f){
+			roreaderDb.tags.get({
+				user: user._id
+			}, false, function(r) {
+				if (r.length > 0) {
+					addfeeds_loop(0, r, function(f) {
 						res.send(f);
 					});
 				}
@@ -119,39 +137,39 @@ var handler = {
 		request(reqOpt)
 			.pipe(new OpmlParser())
 			.on('error', function(error) {
-			    console.log(error);
-			    res.send(error);
-			})
-			.on('outline', function(outline){
-				console.log(outline);
-			})
-			.on('feed', function(feed){
-				console.log('adding to db.feeds');
-				roreaderDb.feeds.insert(feed, req.session.user);
-				console.log('adding to db.tags');
-				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
-				roreaderDb.tags.insert({
-					tag: tag,
-					user_id: req.session.user._id,
-					feed: 'feed/' + feed.xmlurl
-				});
-			})
-			.on('end', function(){
-				console.log('opml done');
-				res.redirect('/');
+			console.log(error);
+			res.send(error);
+		})
+			.on('outline', function(outline) {
+			//console.log(outline);
+		})
+			.on('feed', function(feed) {
+			console.log('adding to db.feeds');
+			roreaderDb.feeds.insert(feed, req.session.user);
+			console.log('adding to db.tags');
+			var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
+			roreaderDb.tags.insert({
+				tag: tag,
+				user_id: req.session.user._id,
+				feed: 'feed/' + feed.xmlurl
 			});
+		})
+			.on('end', function() {
+			console.log('opml done');
+			res.redirect('/');
+		});
 	},
 
-	refreshToken: function(req, res){
+	refreshToken: function(req, res) {
 		request.post({
-			url:'https://accounts.google.com/o/oauth2/token',
-			form: { 
+			url: 'https://accounts.google.com/o/oauth2/token',
+			form: {
 				client_id: client_id,
 				client_secret: client_secret,
 				refresh_token: req.session.user.tokens.refresh_token,
-				grant_type: 'refresh_token' 
+				grant_type: 'refresh_token'
 			}
-		}, function(e,r,b){
+		}, function(e, r, b) {
 			var newToken = JSON.parse(r.body).access_token;
 			roreaderDb.updateAccessToken(req.session.user, newToken);
 			req.session.user.tokens.access_token = newToken;
