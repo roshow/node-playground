@@ -49,14 +49,33 @@ html,body {
 
 	#feedList {
 		vertical-align: top;
-		border: 1px solid #000000;
-		border-radius: 5px;
-		background-color: white;
+		padding: 0;
+		margin: 0;
 	}
 		#feedList > div {
 			white-space: nowrap;
 			cursor: pointer;
+			text-align: left;
 			overflow: hidden;
+			padding: 4px 8px;
+			border-radius: 3px;
+		}
+
+		.feedList_folder{
+			background-color: black;
+			color: white;
+			border: 1px solid #cccccc;
+		}
+
+		.feedList_folder > i {
+			margin-right: 4px;
+		}
+
+		.feedList_folderList {
+			display: none;
+			background-color: white;
+			overflow: hidden;
+			border: 1px solid black;
 		}
 		
 		.hover_on{
@@ -66,15 +85,7 @@ html,body {
 			color: #FDF4DB;
 		}
 
-		.feedList_icon {
-			height: 20px;
-			width: 20px;
-			vertical-align: middle;
-			padding-right: 5px;
-		}
-
-		.indent {
-			text-indent: 20px;
+		.feedList_feed {
 		}
 
 	#spinner {

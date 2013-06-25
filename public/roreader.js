@@ -35,9 +35,9 @@ var roreader = (function(){
 				innerHtml = '';
 				L2 = subs[i].feeds.length;
 				for (j = 0; j < L2; j++) {
-					innerHtml += "<span class='indent'>" + feedTemplate(subs[i].feeds[j]) + "</span>";
+					innerHtml += "<span class='feedList_feed'>" + feedTemplate(subs[i].feeds[j]) + "</span>";
 				}
-				html += "<div class='feedList_folder'><img src='feedList_icon_folder.png' class='feedList_icon' />" + subs[i].tag + "</div><div style='display:none;'>" + innerHtml + "</div>";
+				html += "<div class='feedList_folder'><i class='icon-list icon-white'></i>" + subs[i].tag + "</div><div class='feedList_folderList'>" + innerHtml + "</div>";
 			}
 			$('#feedList').append(html);
 			$('.feedList_feed').click(function(){
