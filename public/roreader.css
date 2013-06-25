@@ -15,27 +15,22 @@ html,body {
 	}
 
 	#itemsList {
-		border-width: 1px;
-		border-radius: 5px;
 	}
-		.item_top {
-			margin: 0px 0px 20px 0px;
-			padding: 0px 25px;
-			border-radius: 5px;
+		.item_top, .item_box {
+			margin: 0px 0px 5px 0px;
+			border-radius: 3px;
 			border: 1px solid #000000;
-			box-shadow: 2px 2px 5px;
 			background-color: white;
 			height: auto;
+			/*box-shadow: 2px 2px 5px;*/
+		}
+
+		.item_top {
+			padding: 0px 25px;
 		}
 
 		.item_box {
-			margin: 0px 0px 20px 0px;
 			padding: 25px;
-			border-radius: 5px;
-			border: 1px solid #000000;
-			box-shadow: 2px 2px 5px;
-			background-color: white;
-			height: auto;
 		}
 			.item_box > h3 > a {
 				text-decoration: none;
