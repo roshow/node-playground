@@ -1,4 +1,4 @@
-var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles']),
+var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'a2']),
 	request = require('request');
 
 function User(u, t) {
@@ -31,7 +31,35 @@ function Tag(t) {
 	this.feed_ids = [t.feed];
 }
 
+function Article(a, f_id) {
+	this._id = a.guid;
+	this.feed_id = a.feed_id || f_id || 'feed/' + a.meta.xmlurl;
+	this.link = a.link;
+	this.title = a.title;
+	this.description = a.description;
+	this.summary = a.summary;
+	this.date = a.date;
+	this.pubdate = a.pubdate;
+	this.author = a.author;
+	this.comments = a.comments;
+}
+
 var roreaderDb = {
+
+	play: function(){
+		db.articles.find().limit(10).forEach(function(e,a){
+			var a2DB = new Article(a);
+			db.a2.insert(a2DB, function(e){
+				if(e){
+					console.log(e.code);
+				}
+				else {
+					console.log('a2 inserted');
+				}
+			});
+		});
+	},
+
 	updateAccessToken: function(user, token) {
 		console.log('db updateAccessToken');
 		db.users.findAndModify({
@@ -190,7 +218,7 @@ var roreaderDb = {
 					console.log(articleDB._id + 'is already in the articles collection');
 				}
 				else {
-					//console.log(a);
+					console.log(articleDB._id + ' added to the articles collection');
 				}
 			});
 		}

@@ -74,7 +74,7 @@ var handler = {
 		var meta;
 		var uri = req.query.url || 'http://roshow.net/feed/';
 		request(uri)
-		.pipe(new FeedParser({addmeta: false}))
+		.pipe(new FeedParser())
 		.on('error', function(error) {
 		console.log(error);
 		})

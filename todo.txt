@@ -12,3 +12,8 @@ TODO
 * Feeds:
 	* Constructor flexible to use OPML from Google Reader but also metadata from feedparser
 	* Adding/subscribing to a new feed
+
+BUGS
+
+* http://cdn.cad-comic.com/rss.xml - feed comes in with weird syntax. Google Reader can handle it, so perhaps so can I.
+* Dealing with feeds that have died/been removed since the user subscribed (ie, http://www.cheapassgames.com) - mostly an issue for imported subscriptions.
