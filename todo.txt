@@ -1,0 +1,14 @@
+TODO
+
+* Updated README with new config.js info
+* Create a default user to run app w/o Google OAuth
+* Articles:
+	* Constructor with only relevant data to save db space
+	* Call for articles: 
+		* What combination of pulling from the db and making a call to the XML?
+		* In groups of 10 articles.
+	* How to handle read & unread?
+	* Starred?
+* Feeds:
+	* Constructor flexible to use OPML from Google Reader but also metadata from feedparser
+	* Adding/subscribing to a new feed
