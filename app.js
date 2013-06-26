@@ -30,5 +30,5 @@ app.get('/logout', function(req, res){
 app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
 console.log("roreader Listening on port 3000");
