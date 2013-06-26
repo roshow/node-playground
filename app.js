@@ -1,14 +1,21 @@
 var express = require('express'),
   handler = require('./handler.js').handler,
   app = express(),
-  MongoStore = require('connect-mongo')(express);
+  MongoStore = require('connect-mongo')(express),
+  SETTINGS = require('./settings.js');
+
+app.cache = 'balls';
 
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    db: 'testdb'
+    db: SETTINGS.mongo.db,
+    host: SETTINGS.mongo.host,
+    port: SETTINGS.mongo.port,
+    username: SETTINGS.mongo.username,
+    password: SETTINGS.mongo.password
   }),
-  secret: 'roreader2389042304987'
+  secret: SETTINGS.session.secret
 }));
 
 app.use(express.static(__dirname + '/public'));

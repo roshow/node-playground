@@ -1,4 +1,5 @@
-var db = require('mongojs').connect('testdb', ['feeds', 'users', 'tags', 'articles']),
+var SETTINGS = require('./settings.js'),
+	db = require('mongojs').connect(SETTINGS.mongo.uri, ['feeds', 'users', 'tags', 'articles']),
 	request = require('request');
 
 function User(u, t) {

@@ -1,9 +1,10 @@
-var parser = require('xml2json'),
+var SETTINGS = require('./settings.js'),
+	parser = require('xml2json'),
 	FeedParser = require('feedparser'),
 	request = require('request'),
 	googleapis = require('googleapis'),
-	client_id = '90018158841.apps.googleusercontent.com',
-	client_secret = 'K9HzQVn1PATjX5LgQOsaXs40',
+	client_id = SETTINGS.google.client_id,
+	client_secret = SETTINGS.google.client_secret,
 	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth'),
 	roreaderDb = require('./roreaderDb.js').roreaderDb,
 	OpmlParser = require('opmlparser');
