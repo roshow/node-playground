@@ -1,19 +1,21 @@
+try { CONFIG = require('./config.js'); }
+catch(e){ CONFIG = require('./config_example.js'); }
+
 var express = require('express'),
   handler = require('./handler.js').handler,
   app = express(),
-  MongoStore = require('connect-mongo')(express),
-  secrets = require('./secrets.js').secrets;
+  MongoStore = require('connect-mongo')(express);
 
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    db: secrets.mongo.db || 'localrodb',
-    host: secrets.mongo.host || null,
-    port: secrets.mongo.port || null,
-    username: secrets.mongo.username || null,
-    password: secrets.mongo.password || null
+    db: CONFIG.mongo.db,
+    host: CONFIG.mongo.host,
+    port: CONFIG.mongo.port,
+    username: CONFIG.mongo.username,
+    password: CONFIG.mongo.password
   }),
-  secret: 'roreader2389042304987'
+  secret: CONFIG.session.secret
 }));
 
 app.use(express.static(__dirname + '/public'));

@@ -1,5 +1,5 @@
-var secrets = require('./secrets.js').secrets,
-	db = require('mongojs').connect(secrets.mongo.uri || 'localrodb', ['feeds', 'users', 'tags', 'articles']);
+var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles']),
+	request = require('request');
 
 function User(u, t) {
 	this._id = u.id || new db.ObjectId();
