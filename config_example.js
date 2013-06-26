@@ -13,4 +13,3 @@ exports.google = {
 	client_id: null,
 	client_secret: null
 };
-
