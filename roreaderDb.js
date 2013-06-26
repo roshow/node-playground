@@ -5,7 +5,7 @@ function User(u, t) {
 	this._id = u.id || new db.ObjectId();
 	this.email = u.email;
 	this.name = u.name;
-	this.first_name = u.give_name;
+	this.first_name = u.given_name;
 	this.last_name = u.family_name;
 	this.tokens = {};
 	this.tokens.access_token = t.access_token || null;
