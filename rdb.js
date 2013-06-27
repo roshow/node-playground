@@ -141,6 +141,15 @@ var rdb = {
 				}
 			});
 		},
+		update: function(q, up, cb){
+			console.log('db feeds.update');
+			db.feeds.findAndModify({
+				query: q,
+				update: up
+			}, function(e, f){
+				cb(f);
+			});
+		},
 		insert: function(feed, user, callback) {
 			console.log('db feeds.insert');
 			var that = this;

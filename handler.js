@@ -121,7 +121,9 @@ var handler = {
 				.on('meta', function(m) {
 					meta = m;
 					if(!f.date || f.date < m.date){
-						console.log('no or old date, should be: ' + m.date);
+						rdb.feeds.update({_id: feed_id}, { $set: {date: m.date} }, function(nf){
+							console.log('new date: ' + nf.date);
+						});
 					}
 					else{
 						console.log('updated at: ' + f.date);
