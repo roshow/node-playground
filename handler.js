@@ -5,12 +5,12 @@ var parser = require('xml2json'),
 	client_id = CONFIG.google.client_id,
 	client_secret = CONFIG.google.client_secret,
 	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth'),
-	roreaderDb = require('./roreaderDb.js').roreaderDb,
+	rdb = require('./rdb.js').rdb,
 	OpmlParser = require('opmlparser');
 
 function addfeeds_loop(j, subs, callback) {
 	var L = subs.length;
-	roreaderDb.feeds.get({
+	rdb.feeds.get({
 		_id: {
 			$in: subs[j].feed_ids
 		}
@@ -58,7 +58,7 @@ var handler = {
 					client.oauth2.userinfo.get()
 						.withAuthClient(oauth2Client)
 						.execute(function(err, user) {
-						roreaderDb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
+						rdb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
 							req.session.user = userDB;
 							res.redirect(newUser ? '/importopml' : '/');
 						});
@@ -84,7 +84,7 @@ var handler = {
 		.on('readable', function() {
 			var article;
 			while (article = this.read()){
-				roreaderDb.articles.insert(article, 'feed/' + uri);
+				rdb.a2.insert(article, 'feed/' + uri);
 				all.push(article);
 			}
 		})
@@ -97,14 +97,14 @@ var handler = {
 		console.log('handling /getsubs');
 		var user = req.session.user;
 		if (req.query.allfeeds === 'true') {
-			roreaderDb.feeds.get({
+			rdb.feeds.get({
 				users: user._id
 			}, false, function(f) {
 				res.send(f);
 			});
 		}
 		else {
-			roreaderDb.tags.get({
+			rdb.tags.get({
 				user: user._id
 			}, false, function(r) {
 				if (r.length > 0) {
@@ -145,10 +145,10 @@ var handler = {
 		})
 			.on('feed', function(feed) {
 			console.log('adding to db.feeds');
-			roreaderDb.feeds.insert(feed, req.session.user);
+			rdb.feeds.insert(feed, req.session.user);
 			console.log('adding to db.tags');
 			var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
-			roreaderDb.tags.insert({
+			rdb.tags.insert({
 				tag: tag,
 				user_id: req.session.user._id,
 				feed: 'feed/' + feed.xmlurl
@@ -171,7 +171,7 @@ var handler = {
 			}
 		}, function(e, r, b) {
 			var newToken = JSON.parse(r.body).access_token;
-			roreaderDb.updateAccessToken(req.session.user, newToken);
+			rdb.updateAccessToken(req.session.user, newToken);
 			req.session.user.tokens.access_token = newToken;
 			req.session.user.tokens.access_token_date = new Date();
 			res.redirect('/' + (req.query.url || ''));
