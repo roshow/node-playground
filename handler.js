@@ -104,6 +104,60 @@ var handler = {
 		});
 	},
 
+	play: function(req, res){
+		console.log('handling /play');
+		var uri = req.query.url || 'http://roshow.net/feed/',
+			feed_id = 'feed/' + uri,
+			all = [],
+			meta;
+
+		rdb.feeds.get({_id:feed_id}, false, function(f){
+			f = f[0];
+			request(uri)
+				.pipe(new FeedParser())
+				.on('error', function(e) {
+				console.log(e);
+				})
+				.on('meta', function(m) {
+					meta = m;
+					if(!f.date || f.date < m.date){
+						console.log('no or old date, should be: ' + m.date);
+					}
+					else{
+						console.log('updated at: ' + f.date);
+					}
+				});
+		});
+		/*rdb.articles.get({ feed_id: 'feed/' + uri}, function(a){
+			if (a[1].length > 0){
+				console.log('from rodb.a2');
+				res.send(a);
+			}
+			else {
+				request(uri)
+					.pipe(new FeedParser())
+					.on('error', function(e) {
+					console.log(e);
+					})
+					.on('meta', function(m) {
+						meta = m;
+						this.end
+					})
+					.on('readable', function() {
+						var article;
+						while (article = this.read()){
+							rdb.articles.insert(article, meta, feed_id);
+							all.push(article);
+						}
+					})
+					.on('end', function(){
+						console.log('from xml feed');
+						res.send([meta, all]);
+					});
+			}
+		});*/
+	},
+
 	getsubs: function(req, res) {
 		console.log('handling /getsubs');
 		var user = req.session.user;

@@ -166,6 +166,9 @@ var rdb = {
 				if (!e) {
 					callback && callback(f);
 				}
+				else {
+					console.log(e);
+				}
 			});
 		}
 	},
