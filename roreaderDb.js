@@ -47,8 +47,12 @@ function Article(a, f_id) {
 var roreaderDb = {
 
 	play: function(){
-		db.articles.find().limit(10).forEach(function(e,a){
-			var a2DB = new Article(a);
+		var as = [];
+		db.articles.find({}, function(e,a){
+			console.log(a.length);
+			/*var l = a.length;
+			for (i = 0 i < )
+				as.push(a);
 			db.a2.insert(a2DB, function(e){
 				if(e){
 					console.log(e.code);
@@ -56,7 +60,7 @@ var roreaderDb = {
 				else {
 					console.log('a2 inserted');
 				}
-			});
+			});*/
 		});
 	},
 
