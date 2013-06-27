@@ -34,9 +34,10 @@ function Tag(t) {
 	this.feed_ids = [t.feed];
 }
 
-function Article(a, f_id) {
+function Article(a) {
 	this._id = a.guid;
 	this.feed_id = a.feed_id || f_id || 'feed/' + a.meta.xmlurl;
+	this.feed_title = '';
 	this.link = a.link;
 	this.title = a.title;
 	this.description = a.description;
@@ -228,26 +229,19 @@ var rdb = {
 			articleDB.feed_id = feed_id;
 			db.a2.insert(articleDB, function(e, a){
 				if (e && e.code === 11000){
-					console.log(articleDB._id + 'is already in the articles collection');
+					//console.log(articleDB._id + 'is already in the articles collection');
 				}
 				else {
-					console.log(articleDB._id + ' added to the articles collection');
+					//console.log(articleDB._id + ' added to the articles collection');
 				}
 			});
 		},
 		get: function(q, cb){
-			var that = this;
 			console.log('db articles.get');
 			db.a2.find(q).limit(10, function(e, a){
-				//if(!e && cb) {
-					if(a.length > 0){
-						//console.log(a);
-						cb([{title:'blank'},a]);
-					}
-					else {
-						rdb.feeds.get(q, false, rdb.articles.get);
-					}
-				//};
+				if(!e && cb) {
+					cb([{title: 'blank' },a]);
+				}
 			});
 		}
 	}
