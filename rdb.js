@@ -226,13 +226,28 @@ var rdb = {
 			var articleDB = article;
 			article._id = article.guid;
 			articleDB.feed_id = feed_id;
-			db.articles.insert(articleDB, function(e, a){
+			db.a2.insert(articleDB, function(e, a){
 				if (e && e.code === 11000){
 					console.log(articleDB._id + 'is already in the articles collection');
 				}
 				else {
 					console.log(articleDB._id + ' added to the articles collection');
 				}
+			});
+		},
+		get: function(q, cb){
+			var that = this;
+			console.log('db articles.get');
+			db.a2.find(q).limit(10, function(e, a){
+				//if(!e && cb) {
+					if(a.length > 0){
+						//console.log(a);
+						cb([{title:'blank'},a]);
+					}
+					else {
+						rdb.feeds.get(q, false, rdb.articles.get);
+					}
+				//};
 			});
 		}
 	}

@@ -25,6 +25,30 @@ function addfeeds_loop(j, subs, callback) {
 	});
 }
 
+function newarticles(rq, cb){
+	var all = [];
+	var meta;
+	var uri = rq.url || 'http://roshow.net/feed/';
+	request(uri)
+		.pipe(new FeedParser())
+		.on('error', function(error) {
+		console.log(error);
+		})
+		.on('meta', function(m) {
+			meta = m;
+		})
+		.on('readable', function() {
+			var article;
+			while (article = this.read()){
+				rdb.a2.insert(article, 'feed/' + uri);
+				all.push(article);
+			}
+		})
+		.on('end', function(){
+			cb([meta, all]);
+		});
+}
+
 var handler = {
 
 	getroot: function(req, res) {
@@ -70,26 +94,21 @@ var handler = {
 
 	getfeed: function(req, res) {
 		console.log('handling /getfeed');
-		var all = [];
-		var meta;
-		var uri = req.query.url || 'http://roshow.net/feed/';
-		request(uri)
-		.pipe(new FeedParser())
-		.on('error', function(error) {
-		console.log(error);
-		})
-		.on('meta', function(m) {
-			meta = m;
-		})
-		.on('readable', function() {
-			var article;
-			while (article = this.read()){
-				rdb.articles.insert(article, 'feed/' + uri);
-				all.push(article);
+		newarticles(req.query, res.send);
+	},
+
+	getarticles: function(req, res) {
+		var that = this;
+		console.log('handling /getarticles');
+		rdb.articles.get({
+			feed_id: 'feed/' + req.query.url
+		}, function(a){
+			if (!a){
+				newarticles(req.url, res.send);
 			}
-		})
-		.on('end', function(){
-			res.send([meta, all]);
+			else {
+				res.send(a);
+			}
 		});
 	},
 
