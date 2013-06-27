@@ -1,3 +1,6 @@
+try { CONFIG = require('./config.js');console.log('config.js'); }
+catch(e){ CONFIG = require('./config_example.js');console.log('config_example.js'); }
+
 var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'a2']),
 	request = require('request');
 
@@ -44,23 +47,29 @@ function Article(a, f_id) {
 	this.comments = a.comments;
 }
 
-var roreaderDb = {
+var rdb = {
 
 	play: function(){
 		var as = [];
 		db.articles.find({}, function(e,a){
-			console.log(a.length);
-			/*var l = a.length;
-			for (i = 0 i < )
-				as.push(a);
-			db.a2.insert(a2DB, function(e){
-				if(e){
-					console.log(e.code);
-				}
-				else {
-					console.log('a2 inserted');
-				}
-			});*/
+			//console.log(a[0].title);
+			var l = a.length,
+				j = 0;
+			for (i = 0; i < l; i++) {
+				var a2DB = new Article(a[i]);
+				db.a2.insert(a2DB, function(e){
+					if(e){
+						console.log(e.code);
+						j=j+1;
+						console.log(j);
+					}
+					else {
+						console.log('a2 inserted');
+						j=j+1;
+						console.log(j);
+					}
+				})
+			}
 		});
 	},
 
@@ -229,4 +238,4 @@ var roreaderDb = {
 	}
 };
 
-exports.roreaderDb = roreaderDb;
+exports.rdb = rdb;
