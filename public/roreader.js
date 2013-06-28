@@ -67,7 +67,8 @@ var roreader = (function(){
 			var html = '<div class="item_top"><h4>' + meta.title +'</h4></div>';
 			var L = items.length;
 			for (i = 0; i < L; i++){
-				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + items[i].description + '</div>';
+				var content = items[i].description || items[i].content;
+				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + content + '</div>';
 			}
 			$('#itemsList').append(html);
 		},

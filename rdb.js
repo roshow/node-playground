@@ -1,7 +1,7 @@
 try { CONFIG = require('./config.js');console.log('config.js'); }
 catch(e){ CONFIG = require('./config_example.js');console.log('config_example.js'); }
 
-var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'a2']),
+var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'a2', 'a3']),
 	request = require('request');
 
 function User(u, t) {
@@ -175,9 +175,6 @@ var rdb = {
 				if (!e) {
 					callback && callback(f);
 				}
-				else {
-					console.log(e);
-				}
 			});
 		}
 	},
@@ -256,6 +253,38 @@ var rdb = {
 				}
 			});
 		}
+	},
+
+	quickinsert: function(c, e){
+		db[c].insert(e);
+	},
+
+	importAllArticles: function(){
+		function importall(url){
+			request({
+				url: 'http://ajax.googleapis.com/ajax/services/feed/load',
+				qs: {
+					q: url,
+					v: '1.0',
+					num: 1000,
+					scoring: 'h'
+				}
+			}, function(e, r, b){
+				var d = JSON.parse(b).responseData.feed;
+				var l = d.entries.length;
+				console.log(l);
+				for(i=0;i<l;i++){
+					d.entries[i]._id = 'article/' + d.entries[i].link;
+					d.entries[i].feed_id = 'feed/' + url;
+				}
+				rdb.quickinsert('a3', d.entries);
+			});
+		}
+		db.feeds.find({}, function(e,f){
+			for(j=0;j<f.length;j++){
+				importall(f[j].xmlurl);
+			}
+		});
 	}
 };
 

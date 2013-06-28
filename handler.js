@@ -25,6 +25,29 @@ function addfeeds_loop(j, subs, callback) {
 	});
 }
 
+function getfeedgoogle(url, cb){
+	url = url || 'http://roshow.net/feed/';
+	request({
+		url: 'http://ajax.googleapis.com/ajax/services/feed/load',
+		qs: {
+			q: url,
+			v: '1.0',
+			num: 1000,
+			scoring: 'h'
+		}
+	}, function(e, r, b){
+		var d = JSON.parse(b).responseData.feed;
+		cb && cb([{title: d.title}, d.entries.slice(0,10)]);
+		var l = d.entries.length;
+		console.log(l);
+		for(i=0;i<l;i++){
+			d.entries[i]._id = 'article/' + d.entries[i].link;
+			d.entries[i].feed_id = 'feed/' + url;
+		}
+		rdb.quickinsert('a3', d.entries);
+	});
+}
+
 var handler = {
 
 	getroot: function(req, res) {
@@ -69,6 +92,10 @@ var handler = {
 	},
 
 	getfeed: function(req, res) {
+		getfeedgoogle(req.query.url, function(a){
+			res.send(a);
+		});
+		/*
 		console.log('handling /getfeed');
 		var all = [];
 		var meta;
@@ -102,6 +129,7 @@ var handler = {
 				});
 			}
 		});
+*/
 	},
 
 	play: function(req, res){
@@ -211,15 +239,16 @@ var handler = {
 			//console.log(outline);
 		})
 			.on('feed', function(feed) {
-			console.log('adding to db.feeds');
-			rdb.feeds.insert(feed, req.session.user);
-			console.log('adding to db.tags');
-			var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
-			rdb.tags.insert({
-				tag: tag,
-				user_id: req.session.user._id,
-				feed: 'feed/' + feed.xmlurl
-			});
+				console.log('adding to db.feeds');
+				rdb.feeds.insert(feed, req.session.user);
+				getfeedgoogle(feed.xmlurl);
+				console.log('adding to db.tags');
+				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
+				rdb.tags.insert({
+					tag: tag,
+					user_id: req.session.user._id,
+					feed: 'feed/' + feed.xmlurl
+				});
 		})
 			.on('end', function() {
 			console.log('opml done');
