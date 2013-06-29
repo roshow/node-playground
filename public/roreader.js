@@ -87,7 +87,7 @@ var roreader = (function(){
 						console.log(JSON.stringify(r));
 					}
 				});
-				$(this).parent().find('a').css('color', 'gray');
+				$(this).parent().css('background-color', '#ddd');
 			});
 		},
 
