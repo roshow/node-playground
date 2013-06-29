@@ -1,7 +1,7 @@
 //try { CONFIG = require('./config.js');console.log('config.js'); }
 //catch(e){ CONFIG = require('./config_example.js');console.log('config_example.js'); }
 
-var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles']),
+var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'read']),
 	request = require('request');
 
 function User(u, t) {
@@ -260,6 +260,41 @@ var rdb = {
 						}
 					})
 				}
+			});
+		}
+	},
+
+	read: {
+		add: function(q, a_id, cb){
+			db.read.findAndModify({
+				query: {
+					user_id: u,
+					feed_id: f
+				},
+				update: {
+					$addToSet: {
+						read: a_id
+					}
+				},
+				new: true
+			}, function(r){
+				cb && cb(r);
+			});
+		},
+		remove: function(q, a_id, cb){
+			db.read.findAndModify({
+				query: {
+					user_id: u,
+					feed_id: f
+				},
+				update: {
+					$pull: {
+						read: a_id
+					}
+				},
+				new: true
+			}, function(r){
+				cb && cb(r);
 			});
 		}
 	},

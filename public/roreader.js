@@ -68,9 +68,19 @@ var roreader = (function(){
 			var L = items.length;
 			for (i = 0; i < L; i++){
 				var content = items[i].description || items[i].content;
-				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + content + '</div>';
+				html += '<div class="item_box">'+
+				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
+				'<br />' + 
+				content + 
+				'<br />' +
+				'<div class="btn" id="'+items[i].link+'">Mark As Read</div>'+
+				'</div>';
 			}
 			$('#itemsList').append(html);
+			$('.btn').click(function(){
+				console.log($(this)[0].id);
+				$(this).parent().find('a').css('color', 'gray');
+			});
 		},
 
 		getFeed_now: function (url) {
