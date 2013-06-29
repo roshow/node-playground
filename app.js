@@ -26,6 +26,7 @@ app.get('/getarticles', handler.getarticles);
 app.get('/googleoauth', handler.googleoauth);
 app.get('/logout', function(req, res){
 	req.session.user = null;
+  req.session.feed = null;
 	res.redirect('/');
 });
 app.get('/importopml', handler.importopml);

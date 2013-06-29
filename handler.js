@@ -25,27 +25,14 @@ function addfeeds_loop(j, subs, callback) {
 	});
 }
 
-function getarticlesgoogle(url, cb){
-	url = url || 'http://roshow.net/feed/';
-	request({
-		url: 'http://ajax.googleapis.com/ajax/services/feed/load',
-		qs: {
-			q: url,
-			v: '1.0',
-			num: 100,
-			scoring: 'h'
-		}
-	}, function(e, r, b){
-		var d = JSON.parse(b).responseData.feed;
-		cb && cb([{title: d.title, feed_id: 'feed/'+url}, d.entries.slice(0,10)]);
-		var l = d.entries.length;
-		console.log(l);
-		for(i=0;i<l;i++){
-			d.entries[i]._id = 'article/' + d.entries[i].link;
-			d.entries[i].feed_id = 'feed/' + url;
-		}
-		rdb.quickinsert('articles', d.entries);
-	});
+function savearticles(a, cb){
+	var l = a.length;
+	console.log(l);
+	for(i=0;i<l;i++){
+		a[i]._id = 'article/' + a[i].link;
+		a[i].feed_id = 'feed/' + url;
+	}
+	rdb.quickinsert('articles', a);
 }
 
 var handler = {
@@ -92,9 +79,38 @@ var handler = {
 	},
 
 	getarticles: function(req, res) {
-		getarticlesgoogle(req.query.xmlurl, function(a){
-			res.send(a);
-		});
+		var url = req.query.xmlurl || 'http://roshow.net/feed/';
+		var off = req.query.offset || 0;
+		var limit = req.query.limit || 10;
+
+		if(req.session.feed && req.session.feed.id === 'feed/' + url){
+			res.send([req.session.feed.m, req.session.feed.slice(off,off+limit)]);
+		}
+		else {
+			request({
+				url: 'http://ajax.googleapis.com/ajax/services/feed/load',
+				qs: {
+					q: url,
+					v: '1.0',
+					num: 100,
+					scoring: 'h'
+				}
+			}, function(e, r, b){
+				var d = JSON.parse(b).responseData.feed;
+				var m = {
+					title: d.title,
+					feed_id: 'feed/'+url
+				};
+				res.send([m, d.entries.slice(off,off+limit)]);
+				req.session.feed = {
+					id: 'feed/' + url,
+					meta: m,
+					articles: d.entries
+				};
+				//save articles to DB:
+				//savearticles(d.entries);
+			});
+		}
 	},
 
 	__getarticles_direct: function(req, res) {
@@ -135,7 +151,7 @@ var handler = {
 
 	__getarticles_db: function(req, res){
 		console.log('handling /__getarticles_db');
-		var uri = req.query.url || 'http://roshow.net/feed/',
+		var uri = req.query.xmlurl || 'http://roshow.net/feed/',
 			feed_id = 'feed/' + uri,
 			all = [],
 			meta;
@@ -212,7 +228,6 @@ var handler = {
 			.on('feed', function(feed) {
 				console.log('adding to db.feeds');
 				rdb.feeds.insert(feed, req.session.user);
-				getarticlesgoogle(feed.xmlurl);
 				console.log('adding to db.tags');
 				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
 				rdb.tags.insert({
