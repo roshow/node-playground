@@ -7,21 +7,23 @@ html,body {
 
 .container {
 	height: 100%;
+	border: 4px dashed red;
 }
 
 	#read > div{
-		padding: 0% 1% 0% 1%;
-
+		padding: 0% 1% 0% 1%;;
 	}
 
 	#itemsList {
+		border: 3px dotted blue;
+		max-height: 100%;
+		overflow: scroll;
 	}
 		.item_top, .item_box {
 			margin: 0px 0px 5px 0px;
 			border-radius: 3px;
 			border: 1px solid #000000;
 			background-color: white;
-			height: auto;
 			/*box-shadow: 2px 2px 5px;*/
 		}
 
