@@ -22,15 +22,16 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', handler.getroot);
 app.get('/getsubs', handler.getsubs);
-app.get('/getfeed', handler.getfeed);
-app.get('/echo', handler.echo);
+app.get('/getarticles', handler.getarticles);
 app.get('/googleoauth', handler.googleoauth);
 app.get('/logout', function(req, res){
 	req.session.user = null;
+  req.session.feed = null;
 	res.redirect('/');
 });
 app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
+app.get('/updatearticle', handler.updatearticle);
 
 app.listen(3000);
 console.log("roreader Listening on port 3000");

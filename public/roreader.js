@@ -48,7 +48,7 @@ var roreader = (function(){
 				'<div id="tag' + i + '" class="accordion-body collapse">' +
       			'<div class="accordion-inner">' +
       			innerHtml +
-      			'</div></div></div>'
+      			'</div></div></div>';
 			}
 
 			$('#feedList').append(html);
@@ -57,25 +57,45 @@ var roreader = (function(){
 				$('.feedList_feed').css('font-weight', 'normal');
 				$(this).css('font-weight', 'bold');
 			});
-			this.getFeed_now('http://roshow.net/feed');
+			//this.getFeed_now();
 		},
 
 		items_display: function(items) {
 			var meta = items[0];
 			items = items[1];
 			$("#itemsList").empty();
-			var html = '<div class="item_top"><h4>' + meta.title +'</h4></div>';
+			var html = '<div class="item_top" id="'+meta.feed_id+'"><h4>' + meta.title +'</h4></div>';
 			var L = items.length;
 			for (i = 0; i < L; i++){
-				html += '<div class="item_box"><h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3> <br />' + items[i].description + '</div>';
+				var content = items[i].description || items[i].content;
+				html += '<div class="item_box">'+
+				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
+				'<br />' + 
+				content + 
+				'<br />' +
+				'<div class="btn" id="'+items[i].link+'">Mark As Read</div>'+
+				'</div>';
 			}
 			$('#itemsList').append(html);
+			$('.btn').click(function(){
+				var a_id = $(this)[0].id;
+				var f_id = $(this).parent().parent().find('.item_top')[0].id;
+				$.ajax({
+					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					dataType: 'json',
+					success: function(r){
+						console.log(JSON.stringify(r));
+					}
+				});
+				$(this).parent().find('a').css('color', 'gray');
+			});
 		},
 
 		getFeed_now: function (url) {
+			url = url || null;
 			var that = this;
 			$.ajax({
-				url: 'getfeed?url=' + encodeURIComponent(url),
+				url: 'getarticles?xmlurl=' + encodeURIComponent(url),
 				dataType: 'json',
 				success: function(result){
 					console.log(result[0]);
