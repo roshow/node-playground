@@ -32,12 +32,12 @@ function getarticlesgoogle(url, cb){
 		qs: {
 			q: url,
 			v: '1.0',
-			num: 1000,
+			num: 100,
 			scoring: 'h'
 		}
 	}, function(e, r, b){
 		var d = JSON.parse(b).responseData.feed;
-		cb && cb([{title: d.title}, d.entries.slice(0,10)]);
+		cb && cb([{title: d.title, feed_id: 'feed/'+url}, d.entries.slice(0,10)]);
 		var l = d.entries.length;
 		console.log(l);
 		for(i=0;i<l;i++){

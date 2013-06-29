@@ -48,7 +48,7 @@ var roreader = (function(){
 				'<div id="tag' + i + '" class="accordion-body collapse">' +
       			'<div class="accordion-inner">' +
       			innerHtml +
-      			'</div></div></div>'
+      			'</div></div></div>';
 			}
 
 			$('#feedList').append(html);
@@ -64,7 +64,7 @@ var roreader = (function(){
 			var meta = items[0];
 			items = items[1];
 			$("#itemsList").empty();
-			var html = '<div class="item_top"><h4>' + meta.title +'</h4></div>';
+			var html = '<div class="item_top" id="'+meta.feed_id+'"><h4>' + meta.title +'</h4></div>';
 			var L = items.length;
 			for (i = 0; i < L; i++){
 				var content = items[i].description || items[i].content;
@@ -79,6 +79,7 @@ var roreader = (function(){
 			$('#itemsList').append(html);
 			$('.btn').click(function(){
 				console.log($(this)[0].id);
+				console.log($(this).parent().parent().find('.item_top')[0].id);
 				$(this).parent().find('a').css('color', 'gray');
 			});
 		},
