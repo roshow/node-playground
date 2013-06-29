@@ -1,7 +1,7 @@
-try { CONFIG = require('./config.js');console.log('config.js'); }
-catch(e){ CONFIG = require('./config_example.js');console.log('config_example.js'); }
+//try { CONFIG = require('./config.js');console.log('config.js'); }
+//catch(e){ CONFIG = require('./config_example.js');console.log('config_example.js'); }
 
-var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'a2', 'a3']),
+var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles']),
 	request = require('request');
 
 function User(u, t) {
@@ -14,6 +14,13 @@ function User(u, t) {
 	this.tokens.access_token = t.access_token || null;
 	this.tokens.refresh_token = t.refresh_token || null;
 	this.tokens.access_token_date = t.access_token ? new Date() : null;
+	this.starred = [];
+	this.feeds = [];
+	//this.feeds[x] = {
+	//	id: '12345',
+	//	date: ISODate,
+	//	read: [ 'article1_url', 'article2_url']
+	//}
 }
 
 function Feed(f, u) {
@@ -49,30 +56,6 @@ function Article(a) {
 }
 
 var rdb = {
-
-	play: function(){
-		var as = [];
-		db.articles.find({}, function(e,a){
-			//console.log(a[0].title);
-			var l = a.length,
-				j = 0;
-			for (i = 0; i < l; i++) {
-				var a2DB = new Article(a[i]);
-				db.a2.insert(a2DB, function(e){
-					if(e){
-						console.log(e.code);
-						j=j+1;
-						console.log(j);
-					}
-					else {
-						console.log('a2 inserted');
-						j=j+1;
-						console.log(j);
-					}
-				})
-			}
-		});
-	},
 
 	updateAccessToken: function(user, token) {
 		console.log('db updateAccessToken');
@@ -110,15 +93,6 @@ var rdb = {
 		});
 	},
 
-	getsubs: function(user, callback) {
-		console.log('db getsubs');
-		db.users.find({
-			email: user.email
-		}, function(err, doc) {
-			callback(doc[0]);
-		});
-	},
-
 	feeds: {
 		adduser: function(feed_id, user_id, callback) {
 			console.log('db feeds.adduser');
@@ -138,6 +112,20 @@ var rdb = {
 				}
 				else {
 					callback && callback(updatedFeed)
+				}
+			});
+			db.users.findAndModify({
+				query: {
+					_id: user_id
+				},
+				update: {
+					$addToSet: {
+						feeds: {
+							id: feed_id,
+							date: new Date(),
+							read: []
+						}
+					}
 				}
 			});
 		},
@@ -236,7 +224,7 @@ var rdb = {
 			var articleDB = article;
 			article._id = article.guid;
 			articleDB.feed_id = feed_id;
-			db.a2.insert(articleDB, function(e, a){
+			db.articles.insert(articleDB, function(e, a){
 				if (e && e.code === 11000){
 					//console.log(articleDB._id + 'is already in the articles collection');
 				}
@@ -247,9 +235,30 @@ var rdb = {
 		},
 		get: function(q, cb){
 			console.log('db articles.get');
-			db.a2.find(q).limit(10, function(e, a){
+			db.articles.find(q).limit(10, function(e, a){
 				if(!e && cb) {
 					cb([{title: 'blank' },a]);
+				}
+			});
+		},
+		__get_bydate: function(){
+			var as = [];
+			db.articles.find({}, function(e,a){
+				//console.log(a[0].title);
+				var l = a.length,
+					j = 0;
+				for (i = 0; i < l; i++) {
+					var articlesDB = new Article(a[i]);
+					db.articles.insert(articlesDB, function(e){
+						if(e){
+							console.log(e.code);
+							j=j+1;
+						}
+						else {
+							console.log('articles inserted');
+							j=j+1;
+						}
+					})
 				}
 			});
 		}
@@ -259,7 +268,7 @@ var rdb = {
 		db[c].insert(e);
 	},
 
-	importAllArticles: function(){
+	__importAllArticles: function(){
 		function importall(url){
 			request({
 				url: 'http://ajax.googleapis.com/ajax/services/feed/load',
@@ -275,9 +284,9 @@ var rdb = {
 				console.log(l);
 				for(i=0;i<l;i++){
 					d.entries[i]._id = 'article/' + d.entries[i].link;
-					d.entries[i].feed_id = 'feed/' + url;
+					d.entries[i].feed_id = 'fee3d/' + url;
 				}
-				rdb.quickinsert('a3', d.entries);
+				rdb.quickinsert('articles', d.entries);
 			});
 		}
 		db.feeds.find({}, function(e,f){

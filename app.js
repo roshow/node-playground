@@ -19,12 +19,10 @@ app.use(express.session({
 }));
 
 app.use(express.static(__dirname + '/public'));
-app.get('/play', handler.play);
 
 app.get('/', handler.getroot);
 app.get('/getsubs', handler.getsubs);
-app.get('/getfeed', handler.getfeed);
-app.get('/echo', handler.echo);
+app.get('/getarticles', handler.getarticles);
 app.get('/googleoauth', handler.googleoauth);
 app.get('/logout', function(req, res){
 	req.session.user = null;

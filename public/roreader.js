@@ -76,7 +76,7 @@ var roreader = (function(){
 		getFeed_now: function (url) {
 			var that = this;
 			$.ajax({
-				url: 'getfeed?url=' + encodeURIComponent(url),
+				url: 'getarticles?xmlurl=' + encodeURIComponent(url),
 				dataType: 'json',
 				success: function(result){
 					console.log(result[0]);

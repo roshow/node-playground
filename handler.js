@@ -25,7 +25,7 @@ function addfeeds_loop(j, subs, callback) {
 	});
 }
 
-function getfeedgoogle(url, cb){
+function getarticlesgoogle(url, cb){
 	url = url || 'http://roshow.net/feed/';
 	request({
 		url: 'http://ajax.googleapis.com/ajax/services/feed/load',
@@ -44,7 +44,7 @@ function getfeedgoogle(url, cb){
 			d.entries[i]._id = 'article/' + d.entries[i].link;
 			d.entries[i].feed_id = 'feed/' + url;
 		}
-		rdb.quickinsert('a3', d.entries);
+		rdb.quickinsert('articles', d.entries);
 	});
 }
 
@@ -91,20 +91,22 @@ var handler = {
 		}
 	},
 
-	getfeed: function(req, res) {
-		getfeedgoogle(req.query.url, function(a){
+	getarticles: function(req, res) {
+		getarticlesgoogle(req.query.xmlurl, function(a){
 			res.send(a);
 		});
-		/*
-		console.log('handling /getfeed');
+	},
+
+	__getarticles_direct: function(req, res) {
+		console.log('handling /__getarticles_direct');
 		var all = [];
 		var meta;
-		var uri = req.query.url || 'http://roshow.net/feed/';
+		var uri = req.query.xmlurl || 'http://roshow.net/feed/';
 		rdb.articles.get({
 			feed_id: 'feed/' + uri
 		}, function(a){
 			if (a[1].length > 0){
-				console.log('from rodb.a2');
+				console.log('from rodb.articles');
 				res.send(a);
 			}
 			else {
@@ -129,38 +131,17 @@ var handler = {
 				});
 			}
 		});
-*/
 	},
 
-	play: function(req, res){
-		console.log('handling /play');
+	__getarticles_db: function(req, res){
+		console.log('handling /__getarticles_db');
 		var uri = req.query.url || 'http://roshow.net/feed/',
 			feed_id = 'feed/' + uri,
 			all = [],
 			meta;
-
-		rdb.feeds.get({_id:feed_id}, false, function(f){
-			f = f[0];
-			request(uri)
-				.pipe(new FeedParser())
-				.on('error', function(e) {
-				console.log(e);
-				})
-				.on('meta', function(m) {
-					meta = m;
-					if(!f.date || f.date < m.date){
-						rdb.feeds.update({_id: feed_id}, { $set: {date: m.date} }, function(nf){
-							console.log('new date: ' + nf.date);
-						});
-					}
-					else{
-						console.log('updated at: ' + f.date);
-					}
-				});
-		});
-		/*rdb.articles.get({ feed_id: 'feed/' + uri}, function(a){
+		rdb.articles.get({ feed_id: 'feed/' + uri}, function(a){
 			if (a[1].length > 0){
-				console.log('from rodb.a2');
+				console.log('from rodb.articles');
 				res.send(a);
 			}
 			else {
@@ -171,7 +152,6 @@ var handler = {
 					})
 					.on('meta', function(m) {
 						meta = m;
-						this.end
 					})
 					.on('readable', function() {
 						var article;
@@ -185,7 +165,7 @@ var handler = {
 						res.send([meta, all]);
 					});
 			}
-		});*/
+		});
 	},
 
 	getsubs: function(req, res) {
@@ -211,18 +191,9 @@ var handler = {
 		}
 	},
 
-	echo: function(req, res) {
-		console.log("handling /echo");
-		res.send('echo ' + JSON.stringify(req.query));
-	},
-
-	error404: function(req, res) {
-		console.log("handling *");
-		res.send("404 Error. This path doesn't exist.", 404);
-	},
-
 	importopml: function(req, res) {
 		console.log('handling /importopml');
+		var userFeeds = [];
 		var reqOpt = {
 			url: 'https://www.google.com/reader/subscriptions/export',
 			qs: {
@@ -241,7 +212,7 @@ var handler = {
 			.on('feed', function(feed) {
 				console.log('adding to db.feeds');
 				rdb.feeds.insert(feed, req.session.user);
-				getfeedgoogle(feed.xmlurl);
+				getarticlesgoogle(feed.xmlurl);
 				console.log('adding to db.tags');
 				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
 				rdb.tags.insert({
