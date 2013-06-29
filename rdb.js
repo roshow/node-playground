@@ -242,6 +242,7 @@ var rdb = {
 			});
 		},
 		markread: function(q, a_id, cb){
+			rdb.articles.get_unread(q, console.log)
 			console.log(q);
 			db.read.findAndModify({
 				query: q,
@@ -253,6 +254,12 @@ var rdb = {
 				new: true
 			}, function(e,r){
 				cb && cb(r);
+			});
+		},
+		get_unread: function(q, cb){
+			var rd;
+			db.read.find(q, function(e, r){
+				cb && cb(r[0].read);
 			});
 		},
 		__get_bydate: function(){

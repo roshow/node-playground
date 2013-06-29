@@ -101,12 +101,30 @@ var handler = {
 					title: d.title,
 					feed_id: 'feed/'+url
 				};
-				res.send([m, d.entries.slice(off,off+limit)]);
-				req.session.feed = {
-					id: 'feed/' + url,
-					meta: m,
-					articles: d.entries
-				};
+				var a = d.entries;
+				var l = a.length;
+				var apub = [];
+				var tally = 0;
+				rdb.articles.get_unread({
+					_id: req.session.user._id + '/' + m.feed_id
+				}, function(rd){
+					if(rd && rd.constructor === Array){
+						for(i = 0; i <l; i++){
+							if(rd.indexOf(a[i].link) === -1){
+								apub.push(a[i]);
+							}
+						}
+						res.send([m, apub.slice(off, off+limit)]);
+					}
+					else {	
+						res.send([m, a.slice(off,off+limit)]);
+						req.session.feed = {
+							id: 'feed/' + url,
+							meta: m,
+							articles: d.entries
+						};
+					}
+				});
 				//save articles to DB:
 				//savearticles(d.entries);
 			});

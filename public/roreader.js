@@ -57,7 +57,7 @@ var roreader = (function(){
 				$('.feedList_feed').css('font-weight', 'normal');
 				$(this).css('font-weight', 'bold');
 			});
-			this.getFeed_now();
+			//this.getFeed_now();
 		},
 
 		items_display: function(items) {
@@ -92,7 +92,7 @@ var roreader = (function(){
 		},
 
 		getFeed_now: function (url) {
-			url = url || 'http://roshow.net/feed/'
+			url = url || null;
 			var that = this;
 			$.ajax({
 				url: 'getarticles?xmlurl=' + encodeURIComponent(url),
