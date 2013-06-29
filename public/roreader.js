@@ -57,7 +57,7 @@ var roreader = (function(){
 				$('.feedList_feed').css('font-weight', 'normal');
 				$(this).css('font-weight', 'bold');
 			});
-			this.getFeed_now('http://roshow.net/feed');
+			this.getFeed_now();
 		},
 
 		items_display: function(items) {
@@ -78,13 +78,21 @@ var roreader = (function(){
 			}
 			$('#itemsList').append(html);
 			$('.btn').click(function(){
-				console.log($(this)[0].id);
-				console.log($(this).parent().parent().find('.item_top')[0].id);
+				var a_id = $(this)[0].id;
+				var f_id = $(this).parent().parent().find('.item_top')[0].id;
+				$.ajax({
+					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					dataType: 'json',
+					success: function(r){
+						console.log(JSON.stringify(r));
+					}
+				});
 				$(this).parent().find('a').css('color', 'gray');
 			});
 		},
 
 		getFeed_now: function (url) {
+			url = url || 'http://roshow.net/feed/'
 			var that = this;
 			$.ajax({
 				url: 'getarticles?xmlurl=' + encodeURIComponent(url),

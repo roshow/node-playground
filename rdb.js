@@ -241,6 +241,20 @@ var rdb = {
 				}
 			});
 		},
+		markread: function(q, a_id, cb){
+			console.log(q);
+			db.read.findAndModify({
+				query: q,
+				update: {
+					$addToSet: {
+						read: a_id
+					}
+				},
+				new: true
+			}, function(e,r){
+				cb && cb(r);
+			});
+		},
 		__get_bydate: function(){
 			var as = [];
 			db.articles.find({}, function(e,a){
@@ -265,22 +279,6 @@ var rdb = {
 	},
 
 	read: {
-		add: function(q, a_id, cb){
-			db.read.findAndModify({
-				query: {
-					user_id: u,
-					feed_id: f
-				},
-				update: {
-					$addToSet: {
-						read: a_id
-					}
-				},
-				new: true
-			}, function(r){
-				cb && cb(r);
-			});
-		},
 		remove: function(q, a_id, cb){
 			db.read.findAndModify({
 				query: {

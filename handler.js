@@ -113,6 +113,16 @@ var handler = {
 		}
 	},
 
+	updatearticle: function(req, res){
+		var a_id = req.query.aId || 'no article ID',
+			f_id = req.query.fId || 'no feed ID';
+		rdb.articles.markread({
+			_id: req.session.user._id + '/' + f_id
+		}, a_id, function(r){
+			res.send(r);
+		});
+	},
+
 	__getarticles_direct: function(req, res) {
 		console.log('handling /__getarticles_direct');
 		var all = [];
