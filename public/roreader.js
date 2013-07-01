@@ -58,7 +58,7 @@ var roreader = (function(){
 				$('.feedList_feed').css('font-weight', 'normal');
 				$(this).css('font-weight', 'bold');
 			});
-			//this.getFeed_now();
+			this.getFeed_now(subs[0].feeds[0].xmlurl);
 		},
 		viewAll: function(){
 			viewAll = true;
