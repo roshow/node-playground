@@ -15,8 +15,8 @@ html,body {
 	}
 
 	#itemsList {
-		border: 1px dotted blue;
-		max-height:400px;
+		/*border: 1px dotted blue;*/
+		max-height:550px;
 		overflow: scroll;
 	}
 		.item_top, .item_box {
