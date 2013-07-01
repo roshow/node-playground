@@ -19,8 +19,6 @@
 		        <ul class="nav">
 		        	<li><h4 style='color: white; font-weight:900; margin-right:50px'>ro<span style='font-weight:200;'>reader v0.0.2</span></h4></li>
 		          <li class="btn"><a href="/logout">logout</a></li>
-		          <li class="btn" id="readunread"><a>view unread</a></li>
-		          <li class="btn" id="readall"><a >view all</a></li>
 		        </ul>
 		      </div>
 		    </div>
@@ -28,7 +26,21 @@
 		    <div id='read' class='row-fluid fill'>
 				<div id="feedList" class='accordion span3'></div>
 				<div id="itemsList" class='span9'>
-					<div class="item_top"><h4 id="feed_title">Articles</h4></div>
+					<div class="navbar" id="item_feed_info">
+					  <div class="navbar-inner">
+					    <a class="brand" id="feed_title">Articles</a>
+					    <ul class="nav">
+	         				 <li class="dropdown">
+							    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="items_view_menu">Unread Items <b class="caret"></b>
+							     </a>
+							    <ul class="dropdown-menu">
+							      <li><a id="readunread">Unread Items</a></li>
+							      <li><a id="readall">All Items</a></li>
+							    </ul>
+							  </li>
+					    </ul>
+					  </div>
+					</div>
 					<div id="items_list"></div>
 				</div>
 			</div>
