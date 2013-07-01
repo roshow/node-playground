@@ -3,11 +3,9 @@
 html,body {
 	background-color: #cccccc;
 	height: 100%;
-	overflow: auto;
 }
 
 .container {
-	/*border: 2px dotted red;*/
 }
 
 	#read > div{
@@ -15,8 +13,6 @@ html,body {
 	}
 
 	#items_list {
-		max-height:500px;
-		overflow: scroll;
 	}
 
 	#itemsList {
@@ -55,9 +51,7 @@ html,body {
 
 
 	#feedList {
-		vertical-align: top;
-		max-height:400px;
-		overflow: scroll;
+		position: fixed;
 	}
 		#feedList div {
 			white-space: nowrap;
@@ -94,4 +88,8 @@ html,body {
 		padding:0px;
 		margin:0px;
 		border-radius:0;
+	}
+
+	.navbar-inner {
+		border-radius: 0;
 	}

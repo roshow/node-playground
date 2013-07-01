@@ -12,10 +12,9 @@
 	</head>
 
 	<body>
-		<div class="container">
 
-			<div class='navbar navbar-inverse'>
-		      <div class='navbar-inner nav-collapse' style="height: auto;">
+			<div class='navbar navbar-inverse' id='top_nav'>
+		      <div class='navbar-inner nav-collapse'>
 		        <ul class="nav">
 		        	<li><h4 style='color: white; font-weight:900; margin-right:50px'>ro<span style='font-weight:200;'>reader v0.0.2</span></h4></li>
 		          <li class="btn"><a href="/logout">logout</a></li>
@@ -23,9 +22,10 @@
 		      </div>
 		    </div>
 
-		    <div id='read' class='row-fluid fill'>
-				<div id="feedList" class='accordion span3'></div>
-				<div id="itemsList" class='span9'>
+		    <div class="container">
+		    <div id='read' class='row-fluid'>
+				<div id="feedList" class='accordion' style='width:21.97%'></div>
+				<div id="itemsList" class='span9 offset3'>
 					<div class="navbar" id="item_feed_info">
 					  <div class="navbar-inner">
 					    <a class="brand" id="feed_title">Articles</a>
