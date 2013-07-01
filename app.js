@@ -1,5 +1,5 @@
-try { CONFIG = require('./config.js'); }
-catch(e){ CONFIG = require('./config_example.js'); }
+try { _config = require('./config.js'); }
+catch(e){ _config = require('./config_example.js'); }
 
 var express = require('express'),
   handler = require('./handler.js').handler,
@@ -9,28 +9,29 @@ var express = require('express'),
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    db: CONFIG.mongo.db,
-    host: CONFIG.mongo.host,
-    port: CONFIG.mongo.port,
-    username: CONFIG.mongo.username,
-    password: CONFIG.mongo.password
+    db: _config.mongo.db,
+    host: _config.mongo.host,
+    port: _config.mongo.port,
+    username: _config.mongo.username,
+    password: _config.mongo.password
   }),
-  secret: CONFIG.session.secret
+  secret: _config.session.secret
 }));
 
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', handler.getroot);
 app.get('/getsubs', handler.getsubs);
-app.get('/getfeed', handler.getfeed);
-app.get('/echo', handler.echo);
+app.get('/getarticles', handler.getarticles);
 app.get('/googleoauth', handler.googleoauth);
 app.get('/logout', function(req, res){
 	req.session.user = null;
+  req.session.feed = null;
 	res.redirect('/');
 });
 app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
+app.get('/updatearticle', handler.updatearticle);
 
 app.listen(process.env.PORT || 3000);
 console.log("roreader Listening on port 3000");

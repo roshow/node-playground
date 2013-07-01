@@ -2,15 +2,15 @@ var parser = require('xml2json'),
 	FeedParser = require('feedparser'),
 	request = require('request'),
 	googleapis = require('googleapis'),
-	client_id = CONFIG.google.client_id,
-	client_secret = CONFIG.google.client_secret,
-	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://murmuring-shelf-6183.herokuapp.com/googleoauth'),
-	roreaderDb = require('./roreaderDb.js').roreaderDb,
+	client_id = _config.google.client_id,
+	client_secret = _config.google.client_secret,
+	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth'),
+	rdb = require('./rdb.js').rdb,
 	OpmlParser = require('opmlparser');
 
 function addfeeds_loop(j, subs, callback) {
 	var L = subs.length;
-	roreaderDb.feeds.get({
+	rdb.feeds.get({
 		_id: {
 			$in: subs[j].feed_ids
 		}
@@ -23,6 +23,16 @@ function addfeeds_loop(j, subs, callback) {
 			callback && callback(subs);
 		}
 	});
+}
+
+function savearticles(a, cb){
+	var l = a.length;
+	console.log(l);
+	for(i=0;i<l;i++){
+		a[i]._id = 'article/' + a[i].link;
+		a[i].feed_id = 'feed/' + url;
+	}
+	rdb.quickinsert('articles', a);
 }
 
 var handler = {
@@ -58,7 +68,7 @@ var handler = {
 					client.oauth2.userinfo.get()
 						.withAuthClient(oauth2Client)
 						.execute(function(err, user) {
-						roreaderDb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
+						rdb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
 							req.session.user = userDB;
 							res.redirect(newUser ? '/importopml' : '/');
 						});
@@ -68,28 +78,143 @@ var handler = {
 		}
 	},
 
-	getfeed: function(req, res) {
-		console.log('handling /getfeed');
+	getarticles: function(req, res) {
+		var url = req.query.xmlurl || 'http://roshow.net/feed/';
+		var off = req.query.offset || 0;
+		var limit = req.query.limit || 10;
+
+		if(req.session.feed && req.session.feed.id === 'feed/' + url){
+			res.send([req.session.feed.m, req.session.feed.slice(off,off+limit)]);
+		}
+		else {
+			request({
+				url: 'http://ajax.googleapis.com/ajax/services/feed/load',
+				qs: {
+					q: url,
+					v: '1.0',
+					num: 100,
+					scoring: 'h'
+				}
+			}, function(e, r, b){
+				var d = JSON.parse(b).responseData.feed;
+				var m = {
+					title: d.title,
+					feed_id: 'feed/'+url
+				};
+				var a = d.entries;
+				var l = a.length;
+				var apub = [];
+				var tally = 0;
+				rdb.articles.get_read({
+					_id: req.session.user._id + '/' + m.feed_id
+				}, function(rd){
+					if(rd && rd.constructor === Array){
+						for(i = 0; i <l; i++){
+							if(rd.indexOf(a[i].link) === -1){
+								a[i].read = false;
+								apub.push(a[i]);
+							}
+							//add items that are read to the array.
+							else if (req.query.status === 'all'){
+								a[i].read = true;
+								apub.push(a[i]);
+							}
+						}
+						res.send([m, apub.slice(off, off+limit)]);
+					}
+					else {	
+						res.send([m, a.slice(off,off+limit)]);
+						req.session.feed = {
+							id: 'feed/' + url,
+							meta: m,
+							articles: d.entries
+						};
+					}
+				});
+				//save articles to DB:
+				//savearticles(d.entries);
+			});
+		}
+	},
+
+	updatearticle: function(req, res){
+		var a_id = req.query.aId || 'no article ID',
+			f_id = req.query.fId || 'no feed ID';
+		rdb.articles.markread({
+			_id: req.session.user._id + '/' + f_id
+		}, a_id, function(r){
+			res.send(r);
+		});
+	},
+
+	__getarticles_direct: function(req, res) {
+		console.log('handling /__getarticles_direct');
 		var all = [];
 		var meta;
-		var uri = req.query.url || 'http://roshow.net/feed/';
-		request(uri)
-		.pipe(new FeedParser({addmeta: false}))
-		.on('error', function(error) {
-		console.log(error);
-		})
-		.on('meta', function(m) {
-			meta = m;
-		})
-		.on('readable', function() {
-			var article;
-			while (article = this.read()){
-				roreaderDb.articles.insert(article, 'feed/' + uri);
-				all.push(article);
+		var uri = req.query.xmlurl || 'http://roshow.net/feed/';
+		rdb.articles.get({
+			feed_id: 'feed/' + uri
+		}, function(a){
+			if (a[1].length > 0){
+				console.log('from rodb.articles');
+				res.send(a);
 			}
-		})
-		.on('end', function(){
-			res.send([meta, all]);
+			else {
+				request(uri)
+				.pipe(new FeedParser())
+				.on('error', function(error) {
+				console.log(error);
+				})
+				.on('meta', function(m) {
+					meta = m;
+				})
+				.on('readable', function() {
+					var article;
+					while (article = this.read()){
+						rdb.articles.insert(article, 'feed/' + uri);
+						all.push(article);
+					}
+				})
+				.on('end', function(){
+					console.log('from xml feed');
+					res.send([meta, all]);
+				});
+			}
+		});
+	},
+
+	__getarticles_db: function(req, res){
+		console.log('handling /__getarticles_db');
+		var uri = req.query.xmlurl || 'http://roshow.net/feed/',
+			feed_id = 'feed/' + uri,
+			all = [],
+			meta;
+		rdb.articles.get({ feed_id: 'feed/' + uri}, function(a){
+			if (a[1].length > 0){
+				console.log('from rodb.articles');
+				res.send(a);
+			}
+			else {
+				request(uri)
+					.pipe(new FeedParser())
+					.on('error', function(e) {
+					console.log(e);
+					})
+					.on('meta', function(m) {
+						meta = m;
+					})
+					.on('readable', function() {
+						var article;
+						while (article = this.read()){
+							rdb.articles.insert(article, meta, feed_id);
+							all.push(article);
+						}
+					})
+					.on('end', function(){
+						console.log('from xml feed');
+						res.send([meta, all]);
+					});
+			}
 		});
 	},
 
@@ -97,14 +222,14 @@ var handler = {
 		console.log('handling /getsubs');
 		var user = req.session.user;
 		if (req.query.allfeeds === 'true') {
-			roreaderDb.feeds.get({
+			rdb.feeds.get({
 				users: user._id
 			}, false, function(f) {
 				res.send(f);
 			});
 		}
 		else {
-			roreaderDb.tags.get({
+			rdb.tags.get({
 				user: user._id
 			}, false, function(r) {
 				if (r.length > 0) {
@@ -116,18 +241,9 @@ var handler = {
 		}
 	},
 
-	echo: function(req, res) {
-		console.log("handling /echo");
-		res.send('echo ' + JSON.stringify(req.query));
-	},
-
-	error404: function(req, res) {
-		console.log("handling *");
-		res.send("404 Error. This path doesn't exist.", 404);
-	},
-
 	importopml: function(req, res) {
 		console.log('handling /importopml');
+		var userFeeds = [];
 		var reqOpt = {
 			url: 'https://www.google.com/reader/subscriptions/export',
 			qs: {
@@ -144,15 +260,15 @@ var handler = {
 			//console.log(outline);
 		})
 			.on('feed', function(feed) {
-			console.log('adding to db.feeds');
-			roreaderDb.feeds.insert(feed, req.session.user);
-			console.log('adding to db.tags');
-			var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
-			roreaderDb.tags.insert({
-				tag: tag,
-				user_id: req.session.user._id,
-				feed: 'feed/' + feed.xmlurl
-			});
+				console.log('adding to db.feeds');
+				rdb.feeds.insert(feed, req.session.user);
+				console.log('adding to db.tags');
+				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
+				rdb.tags.insert({
+					tag: tag,
+					user_id: req.session.user._id,
+					feed: 'feed/' + feed.xmlurl
+				});
 		})
 			.on('end', function() {
 			console.log('opml done');
@@ -171,7 +287,7 @@ var handler = {
 			}
 		}, function(e, r, b) {
 			var newToken = JSON.parse(r.body).access_token;
-			roreaderDb.updateAccessToken(req.session.user, newToken);
+			rdb.updateAccessToken(req.session.user, newToken);
 			req.session.user.tokens.access_token = newToken;
 			req.session.user.tokens.access_token_date = new Date();
 			res.redirect('/' + (req.query.url || ''));
