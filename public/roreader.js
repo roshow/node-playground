@@ -123,11 +123,11 @@ var roreader = (function(){
 		roread.getSubscriptions();
 		$('#readall').click(function(){
 			roread.viewAll();
-			document.getElementById('items_view_menu').innerHTML = 'All Items <b class="caret"></b>'
+			document.getElementById('items_view_menu').innerHTML = 'All Items <b class="caret"></b>';
 		});
 		$('#readunread').click(function(){
 			roread.viewUnread();
-			document.getElementById('items_view_menu').innerHTML = 'Unread Items <b class="caret"></b>'
+			document.getElementById('items_view_menu').innerHTML = 'Unread Items <b class="caret"></b>';
 		});
 		/*$(window).scroll(function() {
 			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
