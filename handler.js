@@ -105,12 +105,18 @@ var handler = {
 				var l = a.length;
 				var apub = [];
 				var tally = 0;
-				rdb.articles.get_unread({
+				rdb.articles.get_read({
 					_id: req.session.user._id + '/' + m.feed_id
 				}, function(rd){
 					if(rd && rd.constructor === Array){
 						for(i = 0; i <l; i++){
 							if(rd.indexOf(a[i].link) === -1){
+								a[i].read = false;
+								apub.push(a[i]);
+							}
+							//add items that are read to the array.
+							else if (req.query.status === 'all'){
+								a[i].read = true;
 								apub.push(a[i]);
 							}
 						}

@@ -242,7 +242,7 @@ var rdb = {
 			});
 		},
 		markread: function(q, a_id, cb){
-			rdb.articles.get_unread(q, console.log)
+			rdb.articles.get_read(q, console.log)
 			console.log(q);
 			db.read.findAndModify({
 				query: q,
@@ -256,7 +256,7 @@ var rdb = {
 				cb && cb(r);
 			});
 		},
-		get_unread: function(q, cb){
+		get_read: function(q, cb){
 			var rd;
 			db.read.find(q, function(e, r){
 				cb && cb(r[0].read);

@@ -7,6 +7,7 @@ var roreader = (function(){
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
+	var viewAll = false;
 	function feedTemplate(sub) {
 		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + sub.title + "</a></div>";
 	}
@@ -59,6 +60,15 @@ var roreader = (function(){
 			});
 			//this.getFeed_now();
 		},
+		viewAll: function(){
+			viewAll = true;
+			this.getFeed_now(currentURL, 'all');
+		},
+
+		viewUnread: function(){
+			viewAll = false;
+			this.getFeed_now(currentURL);
+		},
 
 		items_display: function(items) {
 			var meta = items[0];
@@ -67,8 +77,9 @@ var roreader = (function(){
 			var html = '<div class="item_top" id="'+meta.feed_id+'"><h4>' + meta.title +'</h4></div>';
 			var L = items.length;
 			for (i = 0; i < L; i++){
-				var content = items[i].description || items[i].content;
-				html += '<div class="item_box">'+
+				var content = items[i].description || items[i].content,
+					item_readStatus = items[i].read ? 'item_read' : 'item_unread';
+				html += '<div class="item_box '+item_readStatus+'">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
 				'<br />' + 
 				content + 
@@ -91,16 +102,19 @@ var roreader = (function(){
 			});
 		},
 
-		getFeed_now: function (url) {
-			url = url || null;
+		getFeed_now: function (url, status) {
 			var that = this;
+			url = url || null;
+			currentURL = url;
+			status = viewAll ? 'all' : status || false;
 			$.ajax({
-				url: 'getarticles?xmlurl=' + encodeURIComponent(url),
+				url: 'getarticles?xmlurl=' + encodeURIComponent(url) +'&status=' + encodeURIComponent(status),
 				dataType: 'json',
 				success: function(result){
-					console.log(result[0]);
-					console.log(result[1]);
+					//console.log(result[0]);
+					//console.log(result[1]);
 					that.items_display(result);
+					document.getElementById('itemsList').scrollTop = 0;
 				}
 			});
 		}
@@ -108,6 +122,12 @@ var roreader = (function(){
 
 	$(function() {
 		roread.getSubscriptions();
+		$('#readall').click(function(){
+			roread.viewAll();
+		});
+		$('#readunread').click(function(){
+			roread.viewUnread();
+		});
 		/*$(window).scroll(function() {
 			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
 				offset += 10;
