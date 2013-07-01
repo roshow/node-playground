@@ -84,13 +84,13 @@ var roreader = (function(){
 				'<br />' + 
 				content + 
 				'<br />' +
-				'<button class="btn" id="'+items[i].link+'" data-toggle:"button">Mark As Read</button>'+
+				'<div class="btn" id="'+items[i].link+'">Mark As Read</div>'+
 				'</div>';
 			}
 			$('#itemsList').append(html+'</div>');
 			$('.btn').click(function(){
 				var a_id = $(this)[0].id;
-				var f_id = $(this).parent().parent().find('.item_top')[0].id;
+				var f_id = $("#itemsList").find(".item_top")[0].id;
 				$.ajax({
 					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
 					dataType: 'json',
