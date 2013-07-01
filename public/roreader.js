@@ -73,8 +73,8 @@ var roreader = (function(){
 		items_display: function(items) {
 			var meta = items[0];
 			items = items[1];
-			$("#itemsList").empty();
-			var html = '<div class="item_top"><h4>' + meta.title +'</h4></div><div id="list">';
+			$("#items_list").empty();
+			var html = '';
 			var L = items.length;
 			for (i = 0; i < L; i++){
 				var content = items[i].description || items[i].content,
@@ -84,18 +84,19 @@ var roreader = (function(){
 				'<br />' + 
 				content + 
 				'<br />' +
-				'<div class="btn" id="'+items[i].link+'">Mark As Read</div>'+
+				'<div class="btn markreadbtn" id="'+items[i].link+'">Mark As Read</div>'+
 				'</div>';
 			}
-			$('#itemsList').append(html+'</div>');
-			$('.btn').click(function(){
+			document.getElementById('feed_title').innerHTML = meta.title;
+			$('#items_list').append(html);
+			$('.markreadbtn').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
 				$.ajax({
 					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
 					dataType: 'json',
 					success: function(r){
-						console.log(f_id);
+						console.log('marked read');
 					}
 				});
 				$(this).parent().css('background-color', '#ddd');
@@ -111,10 +112,8 @@ var roreader = (function(){
 				url: 'getarticles?xmlurl=' + encodeURIComponent(url) +'&status=' + encodeURIComponent(status),
 				dataType: 'json',
 				success: function(result){
-					//console.log(result[0]);
-					//console.log(result[1]);
 					that.items_display(result);
-					document.getElementById('itemsList').scrollTop = 0;
+					document.getElementById('items_list').scrollTop = 0;
 				}
 			});
 		}

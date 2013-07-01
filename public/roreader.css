@@ -14,31 +14,13 @@ html,body {
 		padding: 0% 1% 0% 1%;
 	}
 
-	#list {
+	#items_list {
 		max-height:500px;
 		overflow: scroll;
 	}
-
-	#itemsList {
-		/*border: 1px dotted blue;*/
-	}
-		.item_top, .item_box {
-			margin: 0px 0px 5px 0px;
-			border-radius: 0px;
-			border: 1px solid #888;
-			background-color: white;
-			/*box-shadow: 2px 2px 5px;*/
-		}
-
-		.item_top {
-			padding: 0px 25px;
-			margin-bottom: 0px;
-			border-bottom: 4px solid #888;
-		}
-
-		.item_box {
-			padding: 25px;
-		}
+			.item_box {
+				padding: 25px;
+			}
 
 			.item_unread {
 				background-color:white;
@@ -55,6 +37,23 @@ html,body {
 			.item_box > h3 > a:hover {
 				color: #0073C3;
 			}
+
+	#itemsList {
+		/*border: 1px dotted blue;*/
+	}
+		.item_top, .item_box {
+			margin: 0px 0px 5px 0px;
+			border-radius: 0px;
+			border: 1px solid #888;
+			background-color: white;
+			/*box-shadow: 2px 2px 5px;*/
+		}
+
+		.item_top {
+			padding: 0px 25px;
+			margin-bottom: 0px;
+			border-bottom: 3px solid #888;
+		}
 
 
 	#feedList {
