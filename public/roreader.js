@@ -74,7 +74,7 @@ var roreader = (function(){
 			var meta = items[0];
 			items = items[1];
 			$("#itemsList").empty();
-			var html = '<div class="item_top" id="'+meta.feed_id+'"><h4>' + meta.title +'</h4></div><div id="list">';
+			var html = '<div class="item_top"><h4>' + meta.title +'</h4></div><div id="list">';
 			var L = items.length;
 			for (i = 0; i < L; i++){
 				var content = items[i].description || items[i].content,
@@ -90,12 +90,12 @@ var roreader = (function(){
 			$('#itemsList').append(html+'</div>');
 			$('.btn').click(function(){
 				var a_id = $(this)[0].id;
-				var f_id = $("#itemsList").find(".item_top")[0].id;
+				var f_id = meta.feed_id;
 				$.ajax({
 					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
 					dataType: 'json',
 					success: function(r){
-						console.log(JSON.stringify(r));
+						console.log(f_id);
 					}
 				});
 				$(this).parent().css('background-color', '#ddd');
