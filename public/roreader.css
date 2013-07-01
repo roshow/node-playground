@@ -14,10 +14,13 @@ html,body {
 		padding: 0% 1% 0% 1%;
 	}
 
+	#list {
+		max-height:500px;
+		overflow: scroll;
+	}
+
 	#itemsList {
 		/*border: 1px dotted blue;*/
-		max-height:550px;
-		overflow: scroll;
 	}
 		.item_top, .item_box {
 			margin: 0px 0px 5px 0px;
@@ -29,6 +32,8 @@ html,body {
 
 		.item_top {
 			padding: 0px 25px;
+			margin-bottom: 0px;
+			border-bottom: 4px solid #888;
 		}
 
 		.item_box {
