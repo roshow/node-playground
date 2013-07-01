@@ -3,10 +3,10 @@
 html,body {
 	background-color: #cccccc;
 	height: 100%;
+	overflow: auto;
 }
 
 .container {
-	height: 100%;
 	/*border: 2px dotted red;*/
 }
 
@@ -16,6 +16,8 @@ html,body {
 
 	#itemsList {
 		border: 1px dotted blue;
+		max-height:400px;
+		overflow: scroll;
 	}
 		.item_top, .item_box {
 			margin: 0px 0px 5px 0px;
@@ -32,6 +34,14 @@ html,body {
 		.item_box {
 			padding: 25px;
 		}
+
+			.item_unread {
+				background-color:white;
+			}
+			.item_read {
+				background-color: #cccccc;
+			}
+
 			.item_box > h3 > a {
 				text-decoration: none;
 				color: black;
@@ -44,6 +54,8 @@ html,body {
 
 	#feedList {
 		vertical-align: top;
+		max-height:400px;
+		overflow: scroll;
 	}
 		#feedList div {
 			white-space: nowrap;
