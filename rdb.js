@@ -114,20 +114,6 @@ var rdb = {
 					callback && callback(updatedFeed)
 				}
 			});
-			db.users.findAndModify({
-				query: {
-					_id: user_id
-				},
-				update: {
-					$addToSet: {
-						feeds: {
-							id: feed_id,
-							date: new Date(),
-							read: []
-						}
-					}
-				}
-			});
 		},
 		update: function(q, up, cb){
 			console.log('db feeds.update');
@@ -286,6 +272,18 @@ var rdb = {
 	},
 
 	read: {
+		insert: function(u_id, f_id){
+			db.read.insert({
+				_id: u_id + '/' + f_id,
+				user: u_id,
+				read: [],
+				date: new Date()
+			}, function(e,r){
+				if(!e){
+					cb && cb(r);
+				}
+			});
+		},
 		remove: function(q, a_id, cb){
 			db.read.findAndModify({
 				query: q,

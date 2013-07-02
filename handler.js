@@ -257,6 +257,8 @@ var handler = {
 			.on('feed', function(feed) {
 				console.log('adding to db.feeds');
 				rdb.feeds.insert(feed, req.session.user);
+				console.log('adding to db.read');
+				rdb.read.insert(req.session.user._id, feed_id);
 				console.log('adding to db.tags');
 				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
 				rdb.tags.insert({
