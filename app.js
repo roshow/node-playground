@@ -1,6 +1,6 @@
 try { _config = require('./config.js'); }
 catch(e){ _config = require('./config_example.js'); }
-_config.google.redirect = process.env.PORT ? 'http://murmuring-shelf-6183.herokuapp.com/googleoauth' : 'http://localhost:3000/googleoauth';
+_config.google.redirect = process.env.PORT ? _config.google.redirect : _config.google.redirect_local;
 
 
 var express = require('express'),

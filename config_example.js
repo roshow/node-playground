@@ -11,5 +11,7 @@ exports.session = {
 };
 exports.google = {
 	client_id: null,
-	client_secret: null
+	client_secret: null,
+	redirect: null,
+	redirect_local: 'http://localhost:3000/googleoauth'
 };
