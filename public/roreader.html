@@ -4,6 +4,12 @@
 	<head>
 		<title>roreader</title>
 		<link rel='stylesheet' type='text/css' href='bootstrap/css/bootstrap.min.css'>
+		<style type="text/css">
+		      body {
+		        padding-top: 60px;
+		        padding-bottom: 40px;
+		      }
+     	</style>
 		<link rel='stylesheet' type='text/css' href='bootstrap/css/bootstrap-responsive.min.css'>
 		<link rel='stylesheet' type='text/css' href='roreader.css'>
 		<script type='text/javascript' src='jquery-1.9.1.js'></script>
@@ -13,35 +19,48 @@
 
 	<body>
 
-			<div class='navbar navbar-inverse' id='top_nav'>
-		      <div class='navbar-inner nav-collapse'>
-		        <ul class="nav">
-		        	<li><h4 style='color: white; font-weight:900; margin-right:50px'>ro<span style='font-weight:200;'>reader v0.0.2</span></h4></li>
-		          <li class="btn"><a href="/logout">logout</a></li>
-		        </ul>
+			<div class='navbar navbar-inverse navbar-fixed-top' id='top_nav'>
+		      <div class='navbar-inner'>
+		      	<div class='container'>
+		      		<button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+					            <span class="icon-bar"></span>
+					            <span class="icon-bar"></span>
+					            <span class="icon-bar"></span>
+					</button>
+			      	<a class='brand' style='color: white; font-weight:900;'>ro<span style='font-weight:200;'>reader v0.0.2</span></a>
+			      	<div class="nav-collapse collapse" style="height: 0px;">
+				        <ul class="nav pull-right">
+				          	<li><a href="/logout">logout</a></li>
+				        </ul>
+				    </div>
+			    </div>
 		      </div>
 		    </div>
 
 		    <div class="container">
 		    <div id='read' class='row-fluid'>
-				<div id="feedList" class='accordion' style='width:21.97%'></div>
-				<div id="itemsList" class='span9 offset3'>
-					<div class="navbar" id="item_feed_info">
-					  <div class="navbar-inner">
-					    <a class="brand" id="feed_title">Articles</a>
-					    <ul class="nav">
-	         				 <li class="dropdown">
-							    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="items_view_menu">Unread Items <b class="caret"></b>
-							     </a>
-							    <ul class="dropdown-menu">
-							      <li><a id="readunread">Unread Items</a></li>
-							      <li><a id="readall">All Items</a></li>
-							    </ul>
-							  </li>
-					    </ul>
-					  </div>
+				<div class='span3'>
+					<div id="feedList" class='accordion'></div>
+				</div>
+				<div class='span9'>
+					<div id="itemsList">
+						<div class="navbar" id="item_feed_info">
+						  <div class="navbar-inner">
+						    <a class="brand" id="feed_title">Articles</a>
+						    <ul class="nav">
+		         				 <li class="dropdown">
+								    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="items_view_menu">Unread Items <b class="caret"></b>
+								     </a>
+								    <ul class="dropdown-menu">
+								      <li><a id="readunread">Unread Items</a></li>
+								      <li><a id="readall">All Items</a></li>
+								    </ul>
+								  </li>
+						    </ul>
+						  </div>
+						</div>
+						<div id="items_list"></div>
 					</div>
-					<div id="items_list"></div>
 				</div>
 			</div>
 

@@ -1,8 +1,7 @@
 @charset 'UTF-8';
 
-html,body {
+html, body {
 	background-color: #cccccc;
-	height: 100%;
 }
 
 .container {
@@ -51,7 +50,6 @@ html,body {
 
 
 	#feedList {
-		position: fixed;
 	}
 		#feedList div {
 			white-space: nowrap;
@@ -82,14 +80,4 @@ html,body {
 		display: block;
 		margin: auto;
 		padding: 10px 0px 30px 0px;
-	}
-
-	.nav > li.btn {
-		padding:0px;
-		margin:0px;
-		border-radius:0;
-	}
-
-	.navbar-inner {
-		border-radius: 0;
 	}

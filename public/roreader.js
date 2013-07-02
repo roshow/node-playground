@@ -7,6 +7,7 @@ var roreader = (function(){
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
+	var currentItems = null;
 	var viewAll = false;
 	function feedTemplate(sub) {
 		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + sub.title + "</a></div>";
@@ -62,20 +63,23 @@ var roreader = (function(){
 		},
 		viewAll: function(){
 			viewAll = true;
-			this.getFeed_now(currentURL, 'all');
+			this.getFeed_now(currentURL);
 		},
-
 		viewUnread: function(){
 			viewAll = false;
 			this.getFeed_now(currentURL);
 		},
 
-		items_display: function(items) {
+		items_display: function(items, add) {
 			var meta = items[0];
 			items = items[1];
-			$("#items_list").empty();
+			if (!add) {
+				$("#items_list").empty();
+				document.getElementById('feed_title').innerHTML = meta.title;
+			}
 			var html = '';
 			var L = items.length;
+			console.log(L);	
 			for (i = 0; i < L; i++){
 				var content = items[i].description || items[i].content,
 					item_readStatus = items[i].read ? 'item_read' : 'item_unread';
@@ -87,7 +91,6 @@ var roreader = (function(){
 				'<div class="btn markreadbtn" id="'+items[i].link+'">Mark As Read</div>'+
 				'</div>';
 			}
-			document.getElementById('feed_title').innerHTML = meta.title;
 			$('#items_list').append(html);
 			$('.markreadbtn').click(function(){
 				var a_id = $(this)[0].id;
@@ -103,17 +106,19 @@ var roreader = (function(){
 			});
 		},
 
-		getFeed_now: function (url, status) {
+		getFeed_now: function (url, off) {
+			loading = true;
 			var that = this;
-			url = url || null;
-			currentURL = url;
-			status = viewAll ? 'all' : status || false;
+			currentURL = url || null;
+			var status = viewAll ? 'all' : false;
+			offset = off || 0;
 			$.ajax({
-				url: 'getarticles?xmlurl=' + encodeURIComponent(url) +'&status=' + encodeURIComponent(status),
+				url: 'getarticles?xmlurl=' + encodeURIComponent(url) +'&status=' + encodeURIComponent(status)  + "&offset=" + offset,
 				dataType: 'json',
 				success: function(result){
-					that.items_display(result);
-					document.getElementById('items_list').scrollTop = 0;
+					var add = off ? true : false;
+					that.items_display(result, add);
+					loading = false;
 				}
 			});
 		}
@@ -129,13 +134,13 @@ var roreader = (function(){
 			roread.viewUnread();
 			document.getElementById('items_view_menu').innerHTML = 'Unread Items <b class="caret"></b>';
 		});
-		/*$(window).scroll(function() {
+		$(window).scroll(function() {
 			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
 				offset += 10;
-				$("#itemsList").append("<img id='spinner' src='../roReader/spinner.gif' />");
-				roread.getFeed_now();
+				console.log(offset);
+				roread.getFeed_now(currentURL, offset);
 			}
-		});*/
+		});
 	});
 	return roread;
 }());

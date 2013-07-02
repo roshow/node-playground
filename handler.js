@@ -81,60 +81,55 @@ var handler = {
 	getarticles: function(req, res) {
 		var url = req.query.xmlurl || 'http://roshow.net/feed/';
 		var off = req.query.offset || 0;
-		var limit = req.query.limit || 10;
 
-		if(req.session.feed && req.session.feed.id === 'feed/' + url){
-			res.send([req.session.feed.m, req.session.feed.slice(off,off+limit)]);
-		}
-		else {
-			request({
-				url: 'http://ajax.googleapis.com/ajax/services/feed/load',
-				qs: {
-					q: url,
-					v: '1.0',
-					num: 100,
-					scoring: 'h'
-				}
-			}, function(e, r, b){
-				var d = JSON.parse(b).responseData.feed;
-				var m = {
-					title: d.title,
-					feed_id: 'feed/'+url
-				};
-				var a = d.entries;
-				var l = a.length;
-				var apub = [];
-				var tally = 0;
-				rdb.articles.get_read({
-					_id: req.session.user._id + '/' + m.feed_id
-				}, function(rd){
-					if(rd && rd.constructor === Array){
-						for(i = 0; i <l; i++){
-							if(rd.indexOf(a[i].link) === -1){
-								a[i].read = false;
-								apub.push(a[i]);
-							}
-							//add items that are read to the array.
-							else if (req.query.status === 'all'){
-								a[i].read = true;
-								apub.push(a[i]);
-							}
+		request({
+			url: 'http://ajax.googleapis.com/ajax/services/feed/load',
+			qs: {
+				q: url,
+				v: '1.0',
+				num: 100,
+				scoring: 'h'
+			}
+		}, function(e, r, b){
+			var d = JSON.parse(b).responseData.feed;
+			var m = {
+				title: d.title,
+				feed_id: 'feed/'+url
+			};
+			var a = d.entries;
+			var l = a.length;
+			var apub = [];
+			rdb.articles.get_read({
+				_id: req.session.user._id + '/' + m.feed_id
+			}, function(rd){
+				if(rd && rd.constructor === Array){
+					for(i = 0; i <l; i++){
+						if(rd.indexOf(a[i].link) === -1){
+							a[i].read = false;
+							apub.push(a[i]);
 						}
-						res.send([m, apub.slice(off, off+limit)]);
+						//add items that are read to the array.
+						else if (req.query.status === 'all'){
+							a[i].read = true;
+							apub.push(a[i]);
+						}
 					}
-					else {	
-						res.send([m, a.slice(off,off+limit)]);
-						req.session.feed = {
-							id: 'feed/' + url,
-							meta: m,
-							articles: d.entries
-						};
-					}
-				});
-				//save articles to DB:
-				//savearticles(d.entries);
+
+					console.log(apub.slice(off, off+10).length);
+					res.send([m, apub.slice(off, off+10)]);
+				}
+				else {	
+					res.send([m, a.slice(off,off+10)]);
+					req.session.feed = {
+						id: 'feed/' + url,
+						meta: m,
+						articles: d.entries
+					};
+				}
 			});
-		}
+			//save articles to DB:
+			//savearticles(d.entries);
+		});
 	},
 
 	updatearticle: function(req, res){
