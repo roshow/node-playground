@@ -242,7 +242,7 @@ var rdb = {
 			});
 		},
 		markread: function(q, a_id, cb){
-			rdb.articles.get_read(q, console.log)
+			rdb.articles.get_read(q, console.log);
 			console.log(q);
 			db.read.findAndModify({
 				query: q,
@@ -259,7 +259,7 @@ var rdb = {
 		get_read: function(q, cb){
 			var rd;
 			db.read.find(q, function(e, r){
-				cb && cb(r[0].read);
+				cb && cb(r[0]);
 			});
 		},
 		__get_bydate: function(){
@@ -279,7 +279,7 @@ var rdb = {
 							console.log('articles inserted');
 							j=j+1;
 						}
-					})
+					});
 				}
 			});
 		}
@@ -288,10 +288,7 @@ var rdb = {
 	read: {
 		remove: function(q, a_id, cb){
 			db.read.findAndModify({
-				query: {
-					user_id: u,
-					feed_id: f
-				},
+				query: q,
 				update: {
 					$pull: {
 						read: a_id

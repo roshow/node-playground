@@ -73,6 +73,7 @@ var roreader = (function(){
 		items_display: function(items, add) {
 			var meta = items[0];
 			items = items[1];
+			console.log(items[1]);
 			if (!add) {
 				$("#items_list").empty();
 				document.getElementById('feed_title').innerHTML = meta.title;
@@ -85,6 +86,7 @@ var roreader = (function(){
 					item_readStatus = items[i].read ? 'item_read' : 'item_unread';
 				html += '<div class="item_box '+item_readStatus+'">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
+				'<div>Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</div>' +
 				'<br />' + 
 				content + 
 				'<br />' +

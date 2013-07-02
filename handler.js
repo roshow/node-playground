@@ -25,7 +25,7 @@ function addfeeds_loop(j, subs, callback) {
 	});
 }
 
-function savearticles(a, cb){
+function savearticles(a, url, cb){
 	var l = a.length;
 	console.log(l);
 	for(i=0;i<l;i++){
@@ -102,9 +102,9 @@ var handler = {
 			rdb.articles.get_read({
 				_id: req.session.user._id + '/' + m.feed_id
 			}, function(rd){
-				if(rd && rd.constructor === Array){
+				if(rd.read && rd.read.constructor === Array){
 					for(i = 0; i <l; i++){
-						if(rd.indexOf(a[i].link) === -1){
+						if(rd.read.indexOf(a[i].link) === -1 && new Date(a[i].publishedDate) >= new Date(rd.date)){
 							a[i].read = false;
 							apub.push(a[i]);
 						}
@@ -128,7 +128,7 @@ var handler = {
 				}
 			});
 			//save articles to DB:
-			//savearticles(d.entries);
+			//savearticles(d.entries, url);
 		});
 	},
 
