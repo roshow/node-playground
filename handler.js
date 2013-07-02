@@ -80,7 +80,7 @@ var handler = {
 
 	getarticles: function(req, res) {
 		var url = req.query.xmlurl || 'http://roshow.net/feed/';
-		var off = req.query.offset || 0;
+		var off = parseInt(req.query.offset) || 0;
 
 		request({
 			url: 'http://ajax.googleapis.com/ajax/services/feed/load',
