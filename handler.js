@@ -4,7 +4,7 @@ var parser = require('xml2json'),
 	googleapis = require('googleapis'),
 	client_id = _config.google.client_id,
 	client_secret = _config.google.client_secret,
-	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://localhost:3000/googleoauth'),
+	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, 'http://murmuring-shelf-6183.herokuapp.com/googleoauth'),
 	rdb = require('./rdb.js').rdb,
 	OpmlParser = require('opmlparser');
 
