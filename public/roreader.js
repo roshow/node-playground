@@ -94,10 +94,10 @@ var roreader = (function(){
 				}
 				html += '<div class="item_box '+item_readStatus+'">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
-				'<div>Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</div>' +
+				'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 				'<br />' + 
 				content + 
-				'<br />'
+				'<br />' +
 				'<br />' +
 				item_statusBtn + 
 				'</div>';

@@ -134,12 +134,18 @@ var handler = {
 
 	updatearticle: function(req, res){
 		var a_id = req.query.aId || 'no article ID',
-			f_id = req.query.fId || 'no feed ID';
-		rdb.articles.markread({
-			_id: req.session.user._id + '/' + f_id
-		}, a_id, function(r){
-			res.send(r);
-		});
+			f_id = req.query.fId || 'no feed ID',
+			q = { _id: req.session.user._id + '/' + f_id };
+		if(req.query.unread && req.query.unread === 'true'){
+			rdb.articles.markunread(q, a_id, function(r){
+				res.send(r);
+			});
+		}
+		else {
+			rdb.articles.markread(q, a_id, function(r){
+				res.send(r);
+			});
+		}
 	},
 
 	__getarticles_direct: function(req, res) {
@@ -258,7 +264,7 @@ var handler = {
 				console.log('adding to db.feeds');
 				rdb.feeds.insert(feed, req.session.user);
 				console.log('adding to db.read');
-				rdb.read.insert(req.session.user._id, feed_id);
+				rdb.read.insert(req.session.user._id, 'feed/' + feed.xmlurl);
 				console.log('adding to db.tags');
 				var tag = (feed.folder !== '') ? feed.folder : 'Uncategorized';
 				rdb.tags.insert({

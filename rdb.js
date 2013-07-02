@@ -242,6 +242,21 @@ var rdb = {
 				cb && cb(r);
 			});
 		},
+		markunread: function(q, a_id, cb){
+			rdb.articles.get_read(q, console.log);
+			console.log(q);
+			db.read.findAndModify({
+				query: q,
+				update: {
+					$pull: {
+						read: a_id
+					}
+				},
+				new: true
+			}, function(e,r){
+				cb && cb(r);
+			});
+		},
 		get_read: function(q, cb){
 			var rd;
 			db.read.find(q, function(e, r){

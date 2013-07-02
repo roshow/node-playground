@@ -32,6 +32,11 @@ html, body {
 			padding: 25px;
 		}
 
+			.item_byline{
+				font-style: italic;
+				font-size: 0.85em;
+			}
+
 			.item_unread {
 				background-color:white;
 			}
@@ -39,6 +44,9 @@ html, body {
 				background-color: #ddd;
 			}
 
+			.item_box > h3 {
+				margin-bottom: 0;
+			}
 			.item_box > h3 > a {
 				text-decoration: none;
 				color: black;
