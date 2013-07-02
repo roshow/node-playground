@@ -33,5 +33,7 @@ app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
 app.get('/updatearticle', handler.updatearticle);
 
-app.listen(process.env.PORT || 3000);
-console.log("roreader Listening on port 3000");
+var port = process.env.PORT || 3000;
+app.listen(port);
+console.log("roreader Listening on port " + port);
+console.log(process.env.PORT);
