@@ -83,18 +83,27 @@ var roreader = (function(){
 			console.log(L);	
 			for (i = 0; i < L; i++){
 				var content = items[i].description || items[i].content,
-					item_readStatus = items[i].read ? 'item_read' : 'item_unread';
+					item_readStatus, item_statusBtn;
+				if(items[i].read){
+					item_readStatus = 'item_read';
+					item_statusBtn = '<div class="btn markunread" id="'+items[i].link+'">Mark Unread</div>';
+				}
+				else {
+					item_readStatus = 'item_unread';
+					item_statusBtn = '<div class="btn markread" id="'+items[i].link+'">Mark As Read</div>';
+				}
 				html += '<div class="item_box '+item_readStatus+'">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
 				'<div>Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</div>' +
 				'<br />' + 
 				content + 
+				'<br />'
 				'<br />' +
-				'<div class="btn markreadbtn" id="'+items[i].link+'">Mark As Read</div>'+
+				item_statusBtn + 
 				'</div>';
 			}
 			$('#items_list').append(html);
-			$('.markreadbtn').click(function(){
+			$('.btn.markread').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
 				$.ajax({
@@ -105,6 +114,24 @@ var roreader = (function(){
 					}
 				});
 				$(this).parent().css('background-color', '#ddd');
+				$(this).text('Mark Unread');
+				$(this).removeClass('markread');
+				$(this).addClass('markunread');
+			});
+			$('.btn.markunread').click(function(){
+				var a_id = $(this)[0].id;
+				var f_id = meta.feed_id;
+				$.ajax({
+					url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					dataType: 'json',
+					success: function(r){
+						console.log('marked unread');
+					}
+				});
+				$(this).parent().css('background-color', '#fff');
+				$(this).text('Mark As Read');
+				$(this).removeClass('markunread');
+				$(this).addClass('markread');
 			});
 		},
 
