@@ -1,10 +1,13 @@
 try { _config = require('./config.js'); }
 catch(e){ _config = require('./config_example.js'); }
+_config.google.redirect = process.env.PORT ? 'http://murmuring-shelf-6183.herokuapp.com/googleoauth' : 'http://localhost:3000/googleoauth';
+
 
 var express = require('express'),
   handler = require('./handler.js').handler,
   app = express(),
-  MongoStore = require('connect-mongo')(express);
+  MongoStore = require('connect-mongo')(express),
+  port = process.env.PORT || '3000';
 
 app.use(express.cookieParser());
 app.use(express.session({
@@ -33,7 +36,5 @@ app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
 app.get('/updatearticle', handler.updatearticle);
 
-var port = process.env.PORT || 3000;
 app.listen(port);
 console.log("roreader Listening on port " + port);
-console.log(process.env.PORT);
