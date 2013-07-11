@@ -93,3 +93,7 @@ html, body {
 .btn_markunread {
 	background-color: blue;
 }
+
+.navbar-inner {
+	border-radius: 0px;
+}
