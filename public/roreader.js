@@ -163,12 +163,18 @@ var roreader = (function(){
 			roread.viewUnread();
 			document.getElementById('items_view_menu').innerHTML = 'Unread Items <b class="caret"></b>';
 		});
-		$(window).scroll(function() {
-			if($(window).scrollTop() === $(document).height() - $(window).height() && !loading) {
+		$('#main_content').scroll(function() {
+			if($('#main_content').scrollTop() + $('#main_content').height() === $('#main_content')[0].scrollHeight && !loading) {
 				offset += 10;
 				console.log(offset);
 				roread.getFeed_now(currentURL, offset);
 			}
+		});
+		$(document).bind('keydown', 'j', function(){
+			$('#main_content').scrollTop($('#main_content')[0].scrollHeight);
+		});
+		$(document).bind('keydown', 'k', function(){
+			$('#main_content').scrollTop(0);
 		});
 	});
 	return roread;

@@ -2,6 +2,7 @@
 
 html,body {
     height: 100%;
+    overflow: hidden;
 }
 
 .container-fluid, .row-fluid {
@@ -20,7 +21,6 @@ html,body {
 
 #row_body{
 	height: 100%;
-	padding-top: 42px;
 }
 
 #row_nav {
