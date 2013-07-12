@@ -1,14 +1,26 @@
 @charset 'UTF-8';
 
-html, body {
-	background-color: #cccccc;
+html,body {
+    height: 100%;
 }
 
-.container {
+.container-fluid, .row-fluid {
+	height: inherit;
+	margin: 0px;
+	padding: 0px;
 }
 
-	#read > div{
-		padding: 0% 1% 0% 1%;
+	#sidebar {
+		height: 100%;
+		overflow: auto;
+		background-color: #cccccc;
+	}
+
+	#main_content {
+		height: 100%;		
+		overflow: auto;
+		margin: 0px;
+		padding: 0px;	
 	}
 
 	#items_list {

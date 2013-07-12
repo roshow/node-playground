@@ -13,9 +13,10 @@
 
 	<body>
 
-		    <div class="container-fluid" style='margin:0px; padding:0px;'>
-		    <div id='read' class='row-fluid'>
-				<div class='span3' style='margin:0px; padding: 0px;'>
+		<div class="container-fluid" id="top_container">
+		    <div class='row-fluid'>
+
+				<div class='span3' id='sidebar'>
 					<div class="navbar navbar-inverse" id="top_nav">
 					  <div class="navbar-inner">
 					    <a class='brand' style='color: white; font-weight:900;'>ro<span style='font-weight:200;'>reader</span></a>
@@ -30,9 +31,12 @@
 					    </ul>
 					  </div>
 					</div>
+
 					<div id="feedList" class='accordion'></div>
+				
 				</div>
-				<div class='span9' style='margin:0px; padding: 0px;background-color:white;'>
+
+				<div class='span9' id='main_content'>
 					<div id="itemsList">
 						<div class="navbar" id="item_feed_info">
 						  <div class="navbar-inner">
@@ -49,7 +53,9 @@
 						    </ul>
 						  </div>
 						</div>
+
 						<div id="items_list"></div>
+					
 					</div>
 				</div>
 			</div>
