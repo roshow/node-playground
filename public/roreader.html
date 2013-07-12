@@ -14,9 +14,10 @@
 	<body>
 
 		<div class="container-fluid" id="top_container">
-		    <div class='row-fluid'>
 
-				<div class='span3' id='sidebar'>
+			<div class='row-fluid' id='row_nav'>
+
+				<div class='span3' id='sidebar_nav'>
 					<div class="navbar navbar-inverse" id="top_nav">
 					  <div class="navbar-inner">
 					    <a class='brand' style='color: white; font-weight:900;'>ro<span style='font-weight:200;'>reader</span></a>
@@ -31,6 +32,29 @@
 					    </ul>
 					  </div>
 					</div>
+				</div>
+				<div class='span9' id='content_nav'>
+					<div class="navbar" id="item_feed_info">
+					  <div class="navbar-inner">
+					    <a class="brand" id="feed_title">Articles</a>
+					    <ul class="nav">
+	         				 <li class="dropdown">
+							    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="items_view_menu">Unread Items <b class="caret"></b>
+							     </a>
+							    <ul class="dropdown-menu">
+							      <li><a id="readunread">Unread Items</a></li>
+							      <li><a id="readall">All Items</a></li>
+							    </ul>
+							  </li>
+					    </ul>
+					  </div>
+					</div>
+				</div>
+			</div>
+
+		    <div class='row-fluid' id='row_body'>
+
+				<div class='span3' id='sidebar'>
 
 					<div id="feedList" class='accordion'></div>
 				
@@ -38,22 +62,6 @@
 
 				<div class='span9' id='main_content'>
 					<div id="itemsList">
-						<div class="navbar" id="item_feed_info">
-						  <div class="navbar-inner">
-						    <a class="brand" id="feed_title">Articles</a>
-						    <ul class="nav">
-		         				 <li class="dropdown">
-								    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="items_view_menu">Unread Items <b class="caret"></b>
-								     </a>
-								    <ul class="dropdown-menu">
-								      <li><a id="readunread">Unread Items</a></li>
-								      <li><a id="readall">All Items</a></li>
-								    </ul>
-								  </li>
-						    </ul>
-						  </div>
-						</div>
-
 						<div id="items_list"></div>
 					
 					</div>

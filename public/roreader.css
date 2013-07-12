@@ -5,9 +5,27 @@ html,body {
 }
 
 .container-fluid, .row-fluid {
-	height: inherit;
 	margin: 0px;
 	padding: 0px;
+}
+
+#top_container {
+	height: 100%;
+}
+
+#content_nav {
+	margin: 0px;
+	padding: 0px;
+}
+
+#row_body{
+	height: 100%;
+	padding-top: 42px;
+}
+
+#row_nav {
+	position: fixed;
+	z-index: 1;
 }
 
 	#sidebar {
