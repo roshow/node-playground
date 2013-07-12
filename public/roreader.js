@@ -9,6 +9,8 @@ var roreader = (function(){
 	var currentURL = null;
 	var currentItems = null;
 	var viewAll = false;
+	var itemIds = [];
+	var scrollTo = 0;
 	function feedTemplate(sub) {
 		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + sub.title + "</a></div>";
 	}
@@ -71,6 +73,8 @@ var roreader = (function(){
 		},
 
 		items_display: function(items, add) {
+			itemIds = [];
+			scrollTo = 0;
 			var meta = items[0];
 			items = items[1];
 			console.log(items[1]);
@@ -80,8 +84,8 @@ var roreader = (function(){
 			}
 			var html = '';
 			var L = items.length;
-			console.log(L);	
 			for (i = 0; i < L; i++){
+				itemIds.push('#item'+i);
 				var content = items[i].description || items[i].content,
 					item_readStatus, item_statusBtn;
 				if(items[i].read){
@@ -92,7 +96,7 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_statusBtn = '<div class="btn markread" id="'+items[i].link+'">Mark As Read</div>';
 				}
-				html += '<div class="item_box '+item_readStatus+'">'+
+				html += '<div class="item_box ' + item_readStatus + '" id="item' + i + '">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
 				'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 				'<br />' + 
@@ -102,6 +106,7 @@ var roreader = (function(){
 				item_statusBtn + 
 				'</div>';
 			}
+			console.log(itemIds);
 			$('#items_list').append(html);
 			$('.btn.markread').click(function(){
 				var a_id = $(this)[0].id;
@@ -171,10 +176,18 @@ var roreader = (function(){
 			}
 		});
 		$(document).bind('keydown', 'j', function(){
-			$('#main_content').scrollTop($('#main_content')[0].scrollHeight);
+			if(scrollTo < itemIds.length - 1) {
+				scrollTo++;
+				console.log(itemIds[scrollTo]);
+				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
+			}
 		});
 		$(document).bind('keydown', 'k', function(){
-			$('#main_content').scrollTop(0);
+			if(scrollTo > 0) {
+				scrollTo--;
+				console.log(itemIds[scrollTo]);
+				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
+			}
 		});
 	});
 	return roread;
