@@ -72,9 +72,12 @@ var roreader = (function(){
 			this.getFeed_now(currentURL);
 		},
 
-		items_display: function(items, add) {
-			itemIds = [];
-			scrollTo = 0;
+		items_display: function(items, add, addL) {
+			if (!add){
+				itemIds = [];
+				scrollTo = 0;
+				addL = 0;
+			}
 			var meta = items[0];
 			items = items[1];
 			console.log(items[1]);
@@ -85,7 +88,7 @@ var roreader = (function(){
 			var html = '';
 			var L = items.length;
 			for (i = 0; i < L; i++){
-				itemIds.push('#item'+i);
+				itemIds.push('#item'+(addL+i));
 				var content = items[i].description || items[i].content,
 					item_readStatus, item_statusBtn;
 				if(items[i].read){
@@ -96,7 +99,7 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_statusBtn = '<div class="btn markread" id="'+items[i].link+'">Mark As Read</div>';
 				}
-				html += '<div class="item_box ' + item_readStatus + '" id="item' + i + '">'+
+				html += '<div class="item_box ' + item_readStatus + '" id="item' + (addL+i) + '">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
 				'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 				'<br />' + 
@@ -151,7 +154,7 @@ var roreader = (function(){
 				dataType: 'json',
 				success: function(result){
 					var add = off ? true : false;
-					that.items_display(result, add);
+					that.items_display(result, add, itemIds.length);
 					loading = false;
 				}
 			});
