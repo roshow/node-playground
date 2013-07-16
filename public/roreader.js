@@ -77,7 +77,7 @@ var roreader = (function(){
 				itemIds = [];
 				scrollTo = 0;
 				addL = 0;
-				$('#main_content').scrollTop(0);
+				$('#main_content').scrollTo(0);
 			}
 			var meta = items[0];
 			items = items[1];
