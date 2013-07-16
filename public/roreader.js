@@ -90,8 +90,10 @@ var roreader = (function(){
 			var scroll_html = '';
 			var L = items.length;
 			for (i = 0; i < L; i++){
+				
 				var thisItem = 'item'+(addL+i);
 				itemIds.push('#'+thisItem);
+
 				var content = items[i].description || items[i].content,
 					item_readStatus, item_statusBtn;
 				if(items[i].read){
@@ -158,7 +160,8 @@ var roreader = (function(){
 			$("ul.nav li").on("activate", function()
 			{
 			    console.log("ACTIVATED");
-			    console.log('#'+$(this)[0].id.slice(1));
+			    console.log($(this)[0].id.slice(5));
+			    scrollTo = $(this)[0].id.slice(5);
 			});
 		},
 
