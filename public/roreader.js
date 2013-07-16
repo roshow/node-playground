@@ -162,6 +162,7 @@ var roreader = (function(){
 			    console.log("ACTIVATED");
 			    console.log($(this)[0].id.slice(5));
 			    scrollTo = $(this)[0].id.slice(5);
+			    $('#'+$(this)[0].id.slice(1)).css('background-color', '#ddd');
 			});
 		},
 
