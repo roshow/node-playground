@@ -115,7 +115,7 @@ var roreader = (function(){
 				'</div>';
 
 				var scroll_class = "";
-				scroll_html += '<li class="'+scroll_class+'" id="_'+thisItem+'"><a href="#' + thisItem + '">' + thisItem + '</a></li>';
+				scroll_html += '<li class="'+scroll_class+'" id="_'+thisItem+'"><a href="#' + thisItem + '">' + items[i].link + '</a></li>';
 
 			}
 			console.log(itemIds);
@@ -162,6 +162,15 @@ var roreader = (function(){
 			    console.log("ACTIVATED");
 			    console.log($(this)[0].id.slice(5));
 			    scrollTo = $(this)[0].id.slice(5);
+			    var a_id = $(this)[0].childNodes[0].text;
+				var f_id = meta.feed_id;
+				$.ajax({
+					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					dataType: 'json',
+					success: function(r){
+						console.log('marked read');
+					}
+				});
 			    $('#'+$(this)[0].id.slice(1)).css('background-color', '#ddd');
 			});
 		},
