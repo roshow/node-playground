@@ -51,7 +51,7 @@ html,body {
 			margin: 0px 0px 5px 0px;
 			border-radius: 0px;
 			border: 1px solid #888;
-			background-color: white;
+			background-color: #ddd;
 		}
 
 		#item_feed_info {
@@ -68,10 +68,10 @@ html,body {
 			}
 
 			.item_unread {
-				background-color:white;
+				background-color: #ddd;
 			}
 			.item_read {
-				background-color: #ddd;
+				background-color: #fff;
 			}
 
 			.item_box > h3 {

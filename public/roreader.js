@@ -130,7 +130,7 @@ var roreader = (function(){
 						console.log('marked read');
 					}
 				});
-				$(this).parent().css('background-color', '#ddd');
+				$(this).parent().css('background-color', '#fff');
 				$(this).text('Mark Unread');
 				$(this).removeClass('markread');
 				$(this).addClass('markunread');
@@ -145,7 +145,7 @@ var roreader = (function(){
 						console.log('marked unread');
 					}
 				});
-				$(this).parent().css('background-color', '#fff');
+				$(this).parent().css('background-color', '#ddd');
 				$(this).text('Mark As Read');
 				$(this).removeClass('markunread');
 				$(this).addClass('markread');
@@ -171,7 +171,7 @@ var roreader = (function(){
 						console.log('marked read');
 					}
 				});
-			    $('#'+$(this)[0].id.slice(1)).css('background-color', '#ddd');
+			    $('#'+$(this)[0].id.slice(1)).css('background-color', '#fff');
 			});
 		},
 
