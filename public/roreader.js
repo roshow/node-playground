@@ -77,6 +77,7 @@ var roreader = (function(){
 				itemIds = [];
 				scrollTo = 0;
 				addL = 0;
+				$('#main_content').scrollTop(0);
 			}
 			var meta = items[0];
 			items = items[1];
@@ -114,8 +115,7 @@ var roreader = (function(){
 				item_statusBtn + 
 				'</div>';
 
-				var scroll_class = "";
-				scroll_html += '<li class="'+scroll_class+'" id="_'+thisItem+'"><a href="#' + thisItem + '">' + items[i].link + '</a></li>';
+				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + items[i].link + '</a></li>';
 
 			}
 			console.log(itemIds);
