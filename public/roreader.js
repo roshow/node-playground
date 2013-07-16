@@ -90,7 +90,8 @@ var roreader = (function(){
 			var scroll_html = '';
 			var L = items.length;
 			for (i = 0; i < L; i++){
-				itemIds.push('#item'+(addL+i));
+				var thisItem = 'item'+(addL+i);
+				itemIds.push('#'+thisItem);
 				var content = items[i].description || items[i].content,
 					item_readStatus, item_statusBtn;
 				if(items[i].read){
@@ -101,7 +102,7 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_statusBtn = '<div class="btn markread" id="'+items[i].link+'">Mark As Read</div>';
 				}
-				html += '<div class="item_box ' + item_readStatus + '" id="item' + (addL+i) + '">'+
+				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
 				'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 				'<br />' + 
@@ -112,7 +113,7 @@ var roreader = (function(){
 				'</div>';
 
 				var scroll_class = (i === 0) ? "active" : "";
-				scroll_html += '<li class="'+scroll_class+'" id="_item'+(addL+i)+'"><a href="#item' + (addL+i) + '">' + (addL+i) + '</a></li>';
+				scroll_html += '<li class="'+scroll_class+'" id="_'+thisItem+'"><a href="#' + thisItem + '">' + thisItem + '</a></li>';
 
 			}
 			console.log(itemIds);
