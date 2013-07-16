@@ -114,7 +114,7 @@ var roreader = (function(){
 				item_statusBtn + 
 				'</div>';
 
-				var scroll_class = (i === 0) ? "active" : "";
+				var scroll_class = "";
 				scroll_html += '<li class="'+scroll_class+'" id="_'+thisItem+'"><a href="#' + thisItem + '">' + thisItem + '</a></li>';
 
 			}
@@ -208,8 +208,10 @@ var roreader = (function(){
 			}
 		});
 		$(document).bind('keydown', 'k', function(){
-			if(scrollTo > 0) {
-				scrollTo--;
+			if(scrollTo >= 0) {
+				if (scrollTo>0) {
+					scrollTo--;
+				}
 				console.log(itemIds[scrollTo]);
 				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 			}
