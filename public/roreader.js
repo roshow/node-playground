@@ -83,9 +83,11 @@ var roreader = (function(){
 			console.log(items[1]);
 			if (!add) {
 				$("#items_list").empty();
-				document.getElementById('feed_title').innerHTML = meta.title;
+				$("#scroll_nav").empty();
+				document.getElementById('feed_title').innerHTML = meta.title.slice(0,30);
 			}
 			var html = '';
+			var scroll_html = '';
 			var L = items.length;
 			for (i = 0; i < L; i++){
 				itemIds.push('#item'+(addL+i));
@@ -108,6 +110,10 @@ var roreader = (function(){
 				'<br />' +
 				item_statusBtn + 
 				'</div>';
+
+				var scroll_class = (i === 0) ? "active" : "";
+				scroll_html += '<li class="'+scroll_class+'" id="_item'+(addL+i)+'"><a href="#item' + (addL+i) + '">' + (addL+i) + '</a></li>';
+
 			}
 			console.log(itemIds);
 			$('#items_list').append(html);
@@ -140,6 +146,18 @@ var roreader = (function(){
 				$(this).text('Mark As Read');
 				$(this).removeClass('markunread');
 				$(this).addClass('markread');
+			});
+
+			$('#scroll_nav').append(scroll_html);
+			$(".navbar").scrollspy();
+			$('[data-spy="scroll"]').each(function()
+			{
+			    $(this).scrollspy('refresh');
+			});
+			$("ul.nav li").on("activate", function()
+			{
+			    console.log("ACTIVATED");
+			    console.log('#'+$(this)[0].id.slice(1));
 			});
 		},
 

@@ -15,6 +15,16 @@
 
 	<body>
 
+		<div id="navbarExample" class="navbar navbar-static" style="display:none;">
+            <div class="navbar-inner">
+              <div class="container" style="width: auto;z-index:2">
+                <a class="brand" href="#">w3resource</a>
+                	<ul class="nav" id='scroll_nav'>
+                	</ul>
+                </div>
+            </div>
+        </div>
+
 		<div class="container-fluid" id="top_container">
 
 			<div class='row-fluid' id='row_nav'>
@@ -61,7 +71,7 @@
 					<div id="feedList" class='accordion'></div>
 				</div>
 
-				<div class='span9' id='main_content'>
+				<div class='span9' id='main_content' data-spy="scroll" data-target="#navbarExample">
 					<div id="itemsList" style='margin-top:42px;padding:0px 20px;'>
 						<div id="items_list"></div>
 					</div>
