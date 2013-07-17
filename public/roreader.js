@@ -88,13 +88,17 @@ var roreader = (function(){
 				document.getElementById('feed_title').innerHTML = meta.title.slice(0,30);
 			}
 			var html = '';
-			var scroll_html = '';
 			var L = items.length;
+
+			//html string for the scrollspy hidden navbar
+			var scroll_html = '';
+			
 			for (i = 0; i < L; i++){
 				
 				var thisItem = 'item'+(addL+i);
 				itemIds.push('#'+thisItem);
 
+			//make item_box with article
 				var content = items[i].description || items[i].content,
 					item_readStatus, item_statusBtn;
 				if(items[i].read){
@@ -115,6 +119,7 @@ var roreader = (function(){
 				item_statusBtn + 
 				'</div>';
 
+			//add to hidden navbar for scrollspy
 				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + items[i].link + '</a></li>';
 
 			}
@@ -151,8 +156,9 @@ var roreader = (function(){
 				$(this).addClass('markread');
 			});
 
+			//set scrollspy
 			$('#scroll_nav').append(scroll_html);
-			$(".navbar").scrollspy();
+			$("#navbarExample").scrollspy();
 			$('[data-spy="scroll"]').each(function()
 			{
 			    $(this).scrollspy('refresh');
@@ -162,7 +168,7 @@ var roreader = (function(){
 			    console.log("ACTIVATED");
 			    console.log($(this)[0].id.slice(5));
 			    scrollTo = $(this)[0].id.slice(5);
-			    var a_id = $(this)[0].childNodes[0].text;
+			    /*var a_id = $(this)[0].childNodes[0].text;
 				var f_id = meta.feed_id;
 				$.ajax({
 					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
@@ -170,7 +176,7 @@ var roreader = (function(){
 					success: function(r){
 						console.log('marked read');
 					}
-				});
+				});*/
 			    $('#'+$(this)[0].id.slice(1)).css('background-color', '#fff');
 			});
 		},
@@ -213,7 +219,7 @@ var roreader = (function(){
 		$(document).bind('keydown', 'j', function(){
 			if(scrollTo < itemIds.length - 1) {
 				scrollTo++;
-				console.log(itemIds[scrollTo]);
+				console.log('keydown j: '+itemIds[scrollTo]);
 				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 			}
 		});
@@ -222,7 +228,7 @@ var roreader = (function(){
 				if (scrollTo>0) {
 					scrollTo--;
 				}
-				console.log(itemIds[scrollTo]);
+				console.log('keydown k: '+itemIds[scrollTo]);
 				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 			}
 		});
