@@ -100,14 +100,14 @@ var roreader = (function(){
 			//make item_box with article
 				var content = items[i].description || items[i].content;
 				var item_readStatus;
-				var item_button_html;
+				var item_btn_text;
 				if(items[i].read){
 					item_readStatus = 'item_read';
-					item_button_html = '<div class="item_status_btn btn" id="' + items[i].link + '">Mark Unread</div>' 
+					item_btn_text = 'Mark Unread';
 				}
 				else {
 					item_readStatus = 'item_unread';
-					item_button_html = '<div class="item_status_btn btn" id="' + items[i].link + '">Mark As Read</div>' 
+					item_btn_text = 'Mark Read';
 				}
 				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
@@ -116,7 +116,7 @@ var roreader = (function(){
 				content + 
 				'<br />' +
 				'<br />' +
-				item_button_html + 
+				'<button class="item_status_btn btn" id="' + items[i].link + '">'  + item_btn_text + '</button>' +
 				'</div>';
 
 			//add to hidden navbar for scrollspy
@@ -150,39 +150,9 @@ var roreader = (function(){
 					});
 					$(this).parent().removeClass('item_read');
 					$(this).parent().addClass('item_unread');
-					$(this).text('Mark As Read');
+					$(this).text('Mark Read');
 				}
 			});
-			/*$('.item_status_btn.btn.markread').click(function(){
-				var a_id = $(this)[0].id;
-				var f_id = meta.feed_id;
-				$.ajax({
-					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
-					dataType: 'json',
-					success: function(r){
-						console.log('marked read');
-					}
-				});
-				$(this).parent().css('background-color', '#fff');
-				$(this).text('Mark Unread');
-				$(this).removeClass('markread');
-				$(this).addClass('markunread');
-			});
-			$('.item_status_btn.btn.markunread').click(function(){
-				var a_id = $(this)[0].id;
-				var f_id = meta.feed_id;
-				$.ajax({
-					url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
-					dataType: 'json',
-					success: function(r){
-						console.log('marked unread');
-					}
-				});
-				$(this).parent().css('background-color', '#ddd');
-				$(this).text('Mark As Read');
-				$(this).removeClass('markunread');
-				$(this).addClass('markread');
-			});*/
 
 			//set scrollspy
 			$('#scroll_nav').append(scroll_html);
