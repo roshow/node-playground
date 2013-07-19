@@ -98,15 +98,16 @@ var roreader = (function(){
 				itemIds.push('#'+thisItem);
 
 			//make item_box with article
-				var content = items[i].description || items[i].content,
-					item_readStatus, item_statusBtn;
+				var content = items[i].description || items[i].content;
+				var item_readStatus;
+				var item_button_html;
 				if(items[i].read){
 					item_readStatus = 'item_read';
-					item_statusBtn = '<div class="btn markunread" id="'+items[i].link+'">Mark Unread</div>';
+					item_button_html = '<div class="item_status_btn btn" id="' + items[i].link + '">Mark Unread</div>' 
 				}
 				else {
 					item_readStatus = 'item_unread';
-					item_statusBtn = '<div class="btn markread" id="'+items[i].link+'">Mark As Read</div>';
+					item_button_html = '<div class="item_status_btn btn" id="' + items[i].link + '">Mark As Read</div>' 
 				}
 				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
 				'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
@@ -115,7 +116,7 @@ var roreader = (function(){
 				content + 
 				'<br />' +
 				'<br />' +
-				item_statusBtn + 
+				item_button_html + 
 				'</div>';
 
 			//add to hidden navbar for scrollspy
@@ -124,7 +125,35 @@ var roreader = (function(){
 			}
 			console.log(itemIds);
 			$('#items_list').append(html);
-			$('.btn.markread').click(function(){
+			$('.item_status_btn').click(function(){
+				var a_id = $(this)[0].id;
+				var f_id = meta.feed_id;
+				if ($(this).parent().hasClass('item_unread')){
+					$.ajax({
+						url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+						dataType: 'json',
+						success: function(r){
+							console.log('marked read');
+						}
+					});
+					$(this).parent().removeClass('item_unread');
+					$(this).parent().addClass('item_read');
+					$(this).text('Mark Unread');
+				}
+				else {
+					$.ajax({
+						url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+						dataType: 'json',
+						success: function(r){
+							console.log('marked unread');
+						}
+					});
+					$(this).parent().removeClass('item_read');
+					$(this).parent().addClass('item_unread');
+					$(this).text('Mark As Read');
+				}
+			});
+			/*$('.item_status_btn.btn.markread').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
 				$.ajax({
@@ -139,7 +168,7 @@ var roreader = (function(){
 				$(this).removeClass('markread');
 				$(this).addClass('markunread');
 			});
-			$('.btn.markunread').click(function(){
+			$('.item_status_btn.btn.markunread').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
 				$.ajax({
@@ -153,7 +182,7 @@ var roreader = (function(){
 				$(this).text('Mark As Read');
 				$(this).removeClass('markunread');
 				$(this).addClass('markread');
-			});
+			});*/
 
 			//set scrollspy
 			$('#scroll_nav').append(scroll_html);
@@ -176,7 +205,7 @@ var roreader = (function(){
 						console.log('marked read');
 					}
 				});*/
-			    $('#'+$(this)[0].id.slice(1)).css('background-color', '#fff');
+			    //$('#'+$(this)[0].id.slice(1)).css('background-color', '#fff');
 			});
 			if (!add){
 				$('#main_content').scrollTop(0);
