@@ -1,3 +1,9 @@
+Here's the bug (I think)
+Infinite scrolling and such don't play nice with bootcamp's scrollspy stuff.
+So.
+Not sure what to do right now other than fix the 'mark read' and 'mark unread' buttons. That may lead to so inadevertant fixes of this stupid, stupid code!
+There's a solution, I'm not remmbering right now...
+
 TODO
 
 * Updated README with new config.js info
