@@ -166,16 +166,15 @@ var roreader = (function(){
 			    console.log("ACTIVATED");
 			    console.log($(this)[0].id.slice(5));
 			    scrollTo = $(this)[0].id.slice(5);
-			    /*var a_id = $(this)[0].childNodes[0].text;
-				var f_id = meta.feed_id;
-				$.ajax({
-					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
-					dataType: 'json',
-					success: function(r){
-						console.log('marked read');
-					}
-				});*/
-			    //$('#'+$(this)[0].id.slice(1)).css('background-color', '#fff');
+			    //this shit right here will just trigger the item_status_btn when it comes into focus.
+			    //gotta make sure it ONLY marks it as "read" ever.
+			    //Till then, it's commented out.
+
+			    var id = $(this)[0].id.slice(5);
+			    if ($('#item' + id).hasClass('item_unread')){
+			    	$('#item' + id + ' > button.item_status_btn').trigger('click');
+			    }
+
 			});
 			if (!add){
 				$('#main_content').scrollTop(0);
