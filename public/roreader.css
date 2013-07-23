@@ -123,3 +123,16 @@ html,body {
 .navbar-inner {
 	border-radius: 0px;
 }
+
+#share-buttons {
+	background-color: #ccc;
+	border-radius: 5px;
+	padding:2px;
+	display: inline-block;
+}
+#share-buttons img {
+	width: 26px;
+	padding: 5px;
+	border: 0;
+	box-shadow: 0;
+}
