@@ -110,7 +110,7 @@ var roreader = (function(){
 					item_btn_text = 'Mark Read';
 				}
 				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
-					'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
+					'<h3><a href="' + items[i].link + '" target="_blank">' + (addL+i) + '. ' + items[i].title + '</a></h3>' +
 					'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 					'<br />' + 
 					content + 
@@ -132,11 +132,10 @@ var roreader = (function(){
 					'<br />' +
 					'<br />' +
 					'<button class="item_status_btn btn-small" id="' + items[i].link + '">'  + item_btn_text + '</button>' +
-
 				'</div>';
 
 			//add to hidden navbar for scrollspy
-				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + items[i].link + '</a></li>';
+				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + (addL+i) + '</a></li>';
 
 			}
 			console.log(itemIds);
@@ -170,14 +169,18 @@ var roreader = (function(){
 				}
 			});
 
-			//set scrollspy
+			window.onload=function(){
+				console.log('loaded');
+			};
+			//set scrollspy html
 			$('#scroll_nav').append(scroll_html);
-			$("#navbarExample").scrollspy();
-			$('[data-spy="scroll"]').each(function()
+			//$("#navbarExample").scrollspy();
+			/*$('[data-spy="scroll"]').each(function()
 			{
 			    $(this).scrollspy('refresh');
-			});
-			$("ul.nav li").on("activate", function()
+			});*/
+			$("#main_content").scrollspy('refresh');
+			$("#scroll_nav li").on("activate", function()
 			{
 			    console.log("ACTIVATED");
 			    console.log($(this)[0].id.slice(5));
@@ -190,7 +193,6 @@ var roreader = (function(){
 			    if ($('#item' + id).hasClass('item_unread')){
 			    	$('#item' + id + ' > button.item_status_btn').trigger('click');
 			    }
-
 			});
 			if (!add){
 				$('#main_content').scrollTop(0);
@@ -248,6 +250,7 @@ var roreader = (function(){
 				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 			}
 		});
+		//$("#navbarExample").scrollspy();
 	});
 	return roread;
 }());

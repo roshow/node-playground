@@ -136,3 +136,7 @@ html,body {
 	border: 0;
 	box-shadow: 0;
 }
+
+#navbarExample {
+	/*display: none;*/
+}
