@@ -12,7 +12,9 @@ var roreader = (function(){
 	var itemIds = [];
 	var scrollTo = 0;
 	function feedTemplate(sub) {
-		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + sub.title + "</a></div>";
+		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + 
+			sub.title + 
+			"</a></div>";
 	}
 
 	var roread = {
@@ -40,19 +42,18 @@ var roreader = (function(){
 				}
 				html += '<div class="accordion-group">'+
 				'<div class="accordion-heading feedList_folder">'+
-
-				//use this if you want opening a folder to not close other open ones:
-				'<a class="accordion-toggle" data-toggle="collapse" href="#tag'+ i +'">'+
-				//use this is you want only one folder to be open at a time:
-				//'<a class="accordion-toggle" data-toggle="collapse" data-parent="#feedList" href="#tag'+ i +'">'+
-
-
-				'<i class="icon-list"></i>' + subs[i].tag + '</div><div class="feedList_folderList">' + 
-				'</a></div>' +
-				'<div id="tag' + i + '" class="accordion-body collapse">' +
-      			'<div class="accordion-inner">' +
-      			innerHtml +
-      			'</div></div></div>';
+					'<a class="accordion-toggle" data-toggle="collapse" href="#tag'+ i +'">'+
+					//'<a class="accordion-toggle" data-toggle="collapse" data-parent="#feedList" href="#tag'+ i +'">'+
+					'<i class="icon-list"></i>' +
+					subs[i].tag +
+					'</div><div class="feedList_folderList">' +
+					'</a></div>' +
+					'<div id="tag' + i + '" class="accordion-body collapse">' +
+	      			'<div class="accordion-inner">' +
+	      				innerHtml +
+      			'	</div>' + 
+      			'</div>' +
+      		'</div>';
 			}
 
 			$('#feedList').append(html);
@@ -184,12 +185,9 @@ var roreader = (function(){
 			{
 			    console.log("ACTIVATED");
 			    console.log($(this)[0].id.slice(5));
-			    scrollTo = $(this)[0].id.slice(5);
-			    //this shit right here will just trigger the item_status_btn when it comes into focus.
-			    //gotta make sure it ONLY marks it as "read" ever.
-			    //Till then, it's commented out.
 
 			    var id = $(this)[0].id.slice(5);
+			    scrollTo = id;
 			    if ($('#item' + id).hasClass('item_unread')){
 			    	$('#item' + id + ' > button.item_status_btn').trigger('click');
 			    }

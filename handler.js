@@ -105,15 +105,17 @@ var handler = {
 			}, function(rd){
 				if(rd.read && rd.read.constructor === Array){
 					for(i = 0; i <l; i++){
-						if(rd.read.indexOf(a[i].link) === -1 /*&& new Date(a[i].publishedDate) >= new Date(rd.date)*/){
-							a[i].read = false;
-							apub.push(a[i]);
-						}
+						a[i].read = false;
+						apub.push(a[i]);
+						//if(rd.read.indexOf(a[i].link) === -1 /*&& new Date(a[i].publishedDate) >= new Date(rd.date)*/){
+						//	a[i].read = false;
+						//	apub.push(a[i]);
+						//}
 						//add items that are read to the array.
-						else if (req.query.status === 'all'){
-							a[i].read = true;
-							apub.push(a[i]);
-						}
+						//else if (req.query.status === 'all'){
+						//	a[i].read = true;
+						//	apub.push(a[i]);
+						//}
 					}
 
 					console.log(apub.slice(off, off+10).length);
