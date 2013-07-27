@@ -249,11 +249,26 @@ var roreader = (function(){
 				roread.getFeed_now(currentURL, offset);
 			}
 
+			var ist = '#item' + scrollTo;
+			console.log(ist);
 			var mt = $('#main_content').scrollTop();
-			var it = $('#item0').position().top;
-			console.log('main_content top: ');
-			console.log(mt);
-			console.log('#item0 top: ' + it);
+			var it = $(ist).position().top;
+
+			if (it > 42 - $(ist).outerHeight(true) && it < 42) {
+				console.log('#item' + scrollTo);
+			}
+			else if (it > 42 - $(ist).outerHeight(true)) {
+				if (scrollTo != 0) {
+					scrollTo--;
+				}
+			}
+			else if ( it < 42){
+				scrollTo++;
+			}
+
+			//console.log('main_content top: ');
+			//console.log(mt);
+			//console.log('#item1 top: ' + it);
 		});
 		$(document).bind('keydown', 'j', function(){
 			if(scrollTo < itemIds.length - 1) {
