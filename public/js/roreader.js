@@ -87,14 +87,15 @@ var roreader = (function(){
 				$("#scroll_nav").empty();
 				document.getElementById('feed_title').innerHTML = meta.title.slice(0,30);
 			}
-			var html = '';
+			//var html = '';
+			var html;
 			var L = items.length;
 
 			//html string for the scrollspy hidden navbar
 			var scroll_html = '';
 			
 			for (i = 0; i < L; i++){
-				
+				html = '';
 				var thisItem = 'item'+(addL+i);
 				itemIds.push('#'+thisItem);
 
@@ -110,7 +111,7 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_btn_text = 'Mark Read';
 				}
-				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
+				html += '<div class="item_box' + item_readStatus + '" id="' + thisItem + '">'+
 					'<h3><a href="' + items[i].link + '" target="_blank">' + (addL+i) + '. ' + items[i].title + '</a></h3>' +
 					'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 					'<br />' + 
@@ -135,12 +136,15 @@ var roreader = (function(){
 					'<button class="item_status_btn btn-small" id="' + items[i].link + '">'  + item_btn_text + '</button>' +
 				'</div>';
 
+				$('#items_list').append(html);
+				console.log(thisItem + ': ' + $('#'+thisItem).outerHeight());
+
 			//add to hidden navbar for scrollspy
 				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + (addL+i) + '</a></li>';
 
 			}
 			console.log(itemIds);
-			$('#items_list').append(html);
+			//$('#items_list').append(html);
 			$('.item_status_btn').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
