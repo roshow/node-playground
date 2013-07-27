@@ -11,6 +11,8 @@ var roreader = (function(){
 	var viewAll = false;
 	var itemIds = [];
 	var scrollTo = 0;
+	var itemHeights = [];
+
 	function feedTemplate(sub) {
 		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + 
 			sub.title + 
@@ -78,6 +80,7 @@ var roreader = (function(){
 				itemIds = [];
 				scrollTo = 0;
 				addL = 0;
+				itemHeights = [];
 			}
 			var meta = items[0];
 			items = items[1];
@@ -137,12 +140,22 @@ var roreader = (function(){
 				'</div>';
 
 				$('#items_list').append(html);
-				console.log(thisItem + ': ' + $('#'+thisItem).outerHeight());
+				itemHeights.push($('#'+thisItem).outerHeight());
 
 			//add to hidden navbar for scrollspy
 				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + (addL+i) + '</a></li>';
 
 			}
+
+			var total = 0;
+			$.each(itemHeights,function() {
+			    total += this;
+			});
+
+			console.log('total item heights: ' + total);
+			console.log('main_content height: ' + $('#main_content')[0].scrollHeight);
+
+
 			console.log(itemIds);
 			//$('#items_list').append(html);
 			$('.item_status_btn').click(function(){
