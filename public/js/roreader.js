@@ -114,7 +114,7 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_btn_text = 'Mark Read';
 				}
-				html += '<div class="item_box' + item_readStatus + '" id="' + thisItem + '">'+
+				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
 					'<h3><a href="' + items[i].link + '" target="_blank">' + (addL+i) + '. ' + items[i].title + '</a></h3>' +
 					'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 					'<br />' + 
