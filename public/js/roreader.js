@@ -114,7 +114,7 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_btn_text = 'Mark Read';
 				}
-				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
+				html += '<div class="item_box 	' + item_readStatus + '" id="' + thisItem + '">'+
 					'<h3><a href="' + items[i].link + '" target="_blank">' + (addL+i) + '. ' + items[i].title + '</a></h3>' +
 					'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 					'<br />' + 
@@ -140,14 +140,14 @@ var roreader = (function(){
 				'</div>';
 
 				$('#items_list').append(html);
-				itemHeights.push($('#'+thisItem).outerHeight());
+				itemHeights.push($('#'+thisItem).outerHeight(true));
 
 			//add to hidden navbar for scrollspy
 				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + (addL+i) + '</a></li>';
 
 			}
 
-			var total = 0;
+			var iH = 0;
 			$.each(itemHeights,function() {
 			    total += this;
 			});
@@ -248,6 +248,12 @@ var roreader = (function(){
 				console.log(offset);
 				roread.getFeed_now(currentURL, offset);
 			}
+
+			var mt = $('#main_content').scrollTop();
+			var it = $('#item0').position().top;
+			console.log('main_content top: ');
+			console.log(mt);
+			console.log('#item0 top: ' + it);
 		});
 		$(document).bind('keydown', 'j', function(){
 			if(scrollTo < itemIds.length - 1) {
