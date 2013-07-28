@@ -153,7 +153,7 @@ var roreader = (function(){
 						url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
 						dataType: 'json',
 						success: function(r){
-							console.log('marked read');
+							//console.log('marked read');
 						}
 					});
 					$(this).parent().removeClass('item_unread');
@@ -165,7 +165,7 @@ var roreader = (function(){
 						url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
 						dataType: 'json',
 						success: function(r){
-							console.log('marked unread');
+							//console.log('marked unread');
 						}
 					});
 					$(this).parent().removeClass('item_read');
@@ -175,7 +175,7 @@ var roreader = (function(){
 			});
 
 			window.onload=function(){
-				console.log('loaded');
+				//console.log('loaded');
 			};
 		},
 
@@ -210,7 +210,7 @@ var roreader = (function(){
 		$('#main_content').scroll(function() {
 			if($('#main_content').scrollTop() + $('#main_content').height() === $('#main_content')[0].scrollHeight && !loading) {
 				offset += 10;
-				console.log(offset);
+				//console.log(offset);
 				roread.getFeed_now(currentURL, offset);
 			}
 
@@ -222,19 +222,19 @@ var roreader = (function(){
 				var ist = ia[scrollTo];
 				var it = $(ist).position().top;
 				if (it > off - $(ist).outerHeight(true) && it < off) {
-					console.log(ist + '...');
+					//console.log(ist + '...');
 				}
 				else if (it > off - $(ist).outerHeight(true)) {
 					if (scrollTo !== 0) {
 						scrollTo--;
 					}
-					console.log('--');
+					//console.log('--');
 				}
 				else if (it < off){
 					scrollTo++;	
 					if ($(ia[scrollTo]).hasClass('item_unread')){
 		    			$(ia[scrollTo] + ' > button.item_status_btn').trigger('click');
-		    			console.log('trigger read');
+		    			//console.log('trigger read');
 		    		}
 				}
 			}(itemIds, 42));
@@ -244,23 +244,23 @@ var roreader = (function(){
 			if(!loading){
 				if(scrollTo < itemIds.length-1) {
 					
-					scrollTo += 1;
+					scrollTo++;
 					var ist = itemIds[scrollTo];
 					$('#main_content').scrollTo(ist, {offset: -41});	
 
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > button.item_status_btn').trigger('click');
-		    			console.log('trigger read');
+		    			//console.log('trigger read');
 		    		}
 
 		    		if (scrollTo === itemIds.length-1) {
 		    			offset += 10;
-						console.log(offset);
+						//console.log(offset);
 						roread.getFeed_now(currentURL, offset);	
 		    		}
 				}
 			}
-			console.log('scrollTo: ' + scrollTo);
+			//console.log('scrollTo: ' + scrollTo);
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
@@ -272,7 +272,9 @@ var roreader = (function(){
 				}
 			}
 		});
-		//$("#navbarExample").scrollspy();
+		$(document).bind('keydown', 'm', function(){
+			$(itemIds[scrollTo] + ' > button.item_status_btn').trigger('click');
+		});
 	});
 	return roread;
 }());
