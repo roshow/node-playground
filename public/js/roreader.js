@@ -20,6 +20,11 @@ var roreader = (function(){
 			"</a></div>";
 	}
 
+	function saveToPocket(url){
+		fullurl = 'https://getpocket.com/edit?url=' + encodeURIComponent(url);
+		window.open(fullurl, '_blank');
+	}
+
 	var roread = {
 		getSubscriptions: function() {
 			var that = this;
