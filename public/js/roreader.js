@@ -2,6 +2,8 @@
 
 var i, j;
 
+var scrollTo = 0;
+
 var roreader = (function(){
 
 	var offset = 0;
@@ -10,9 +12,12 @@ var roreader = (function(){
 	var currentItems = null;
 	var viewAll = false;
 	var itemIds = [];
-	var scrollTo = 0;
+	var itemHeights = [];
+
 	function feedTemplate(sub) {
-		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + sub.title + "</a></div>";
+		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + 
+			sub.title + 
+			"</a></div>";
 	}
 
 	var roread = {
@@ -23,7 +28,7 @@ var roreader = (function(){
 				dataType: "json",
 				success: function(result){
 					that.subs_display(result);
-					console.log(result);
+					//console.log(result);
 				}
 			});
 		},
@@ -40,19 +45,18 @@ var roreader = (function(){
 				}
 				html += '<div class="accordion-group">'+
 				'<div class="accordion-heading feedList_folder">'+
-
-				//use this if you want opening a folder to not close other open ones:
-				'<a class="accordion-toggle" data-toggle="collapse" href="#tag'+ i +'">'+
-				//use this is you want only one folder to be open at a time:
-				//'<a class="accordion-toggle" data-toggle="collapse" data-parent="#feedList" href="#tag'+ i +'">'+
-
-
-				'<i class="icon-list"></i>' + subs[i].tag + '</div><div class="feedList_folderList">' + 
-				'</a></div>' +
-				'<div id="tag' + i + '" class="accordion-body collapse">' +
-      			'<div class="accordion-inner">' +
-      			innerHtml +
-      			'</div></div></div>';
+					'<a class="accordion-toggle" data-toggle="collapse" href="#tag'+ i +'">'+
+					//'<a class="accordion-toggle" data-toggle="collapse" data-parent="#feedList" href="#tag'+ i +'">'+
+					'<i class="icon-list"></i>' +
+					subs[i].tag +
+					'</div><div class="feedList_folderList">' +
+					'</a></div>' +
+					'<div id="tag' + i + '" class="accordion-body collapse">' +
+	      			'<div class="accordion-inner">' +
+	      				innerHtml +
+      			'	</div>' + 
+      			'</div>' +
+      		'</div>';
 			}
 
 			$('#feedList').append(html);
@@ -77,23 +81,25 @@ var roreader = (function(){
 				itemIds = [];
 				scrollTo = 0;
 				addL = 0;
+				itemHeights = [];
 			}
 			var meta = items[0];
 			items = items[1];
-			console.log(items[1]);
+			//console.log(items[1]);
 			if (!add) {
 				$("#items_list").empty();
 				$("#scroll_nav").empty();
 				document.getElementById('feed_title').innerHTML = meta.title.slice(0,30);
 			}
-			var html = '';
+			//var html = '';
+			var html;
 			var L = items.length;
 
 			//html string for the scrollspy hidden navbar
 			var scroll_html = '';
 			
 			for (i = 0; i < L; i++){
-				
+				html = '';
 				var thisItem = 'item'+(addL+i);
 				itemIds.push('#'+thisItem);
 
@@ -109,37 +115,36 @@ var roreader = (function(){
 					item_readStatus = 'item_unread';
 					item_btn_text = 'Mark Read';
 				}
-				html += '<div class="item_box ' + item_readStatus + '" id="' + thisItem + '">'+
+				html += 
+				'<div class="item_box 	' + item_readStatus + '" id="' + thisItem + '">'+
 					'<h3><a href="' + items[i].link + '" target="_blank">' + (addL+i) + '. ' + items[i].title + '</a></h3>' +
 					'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 					'<br />' + 
-					content + 
+						content + 
 					'<br />' +
 					'<br />' +
-								
-					//Article sharing
-					//got the basic html for this from http://www.simplesharebuttons.com/html-share-buttons/ 
-					
+					//Article sharing: basic html for this from http://www.simplesharebuttons.com/html-share-buttons/ 
 					'<div id="share-buttons">' + 
 						'<a href="http://twitter.com/share?url=' + items[i].link + '&text=' + items[i].title + '" target="_blank"><img src="img/sharing/twitter.png" alt="Twitter" /></a>' +
 						'<a href="http://www.facebook.com/sharer.php?u=' + items[i].link + '"target="_blank"><img src="img/sharing/facebook.png" /></a>' +
 						'<a href="https://plus.google.com/share?url=' + items[i].link + '" target="_blank"><img src="img/sharing/google+.png" alt="Google" /></a>' +
 						'<a href="http://www.linkedin.com/shareArticle?mini=true&url=' + items[i].title + '" target="_blank"><img src="img/sharing/linkedin.png" alt="LinkedIn" /></a>' +		
-						//Pinterest ain't straight-forward <a href="javascript:void((function()%7Bvar%20e=document.createElement(\'script\');e.setAttribute(\'type\',\'text/javascript\');e.setAttribute(\'charset\',\'UTF-8\');e.setAttribute(\'src\',\'http://assets.pinterest.com/js/pinmarklet.js?r=\'+Math.random()*99999999);document.body.appendChild(e)%7D)());"><img src="http://www.simplesharebuttons.com/images/somacro/pinterest.png" alt="Pinterest" /></a>' +
 						'<a href="mailto:?Subject=' + items[i].title + '&Body=' + items[i].link + ' Sent%20from%20roreader"><img src="img/sharing/email.png" alt="Email" /></a>' +
 					'</div>' +
-
 					'<br />' +
 					'<br />' +
 					'<button class="item_status_btn btn-small" id="' + items[i].link + '">'  + item_btn_text + '</button>' +
 				'</div>';
 
+				$('#items_list').append(html);
+				itemHeights.push($('#'+thisItem).outerHeight(true));
+
 			//add to hidden navbar for scrollspy
 				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + (addL+i) + '</a></li>';
 
 			}
-			console.log(itemIds);
-			$('#items_list').append(html);
+
+			//console.log(itemIds);
 			$('.item_status_btn').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
@@ -172,31 +177,6 @@ var roreader = (function(){
 			window.onload=function(){
 				console.log('loaded');
 			};
-			//set scrollspy html
-			$('#scroll_nav').append(scroll_html);
-			//$("#navbarExample").scrollspy();
-			/*$('[data-spy="scroll"]').each(function()
-			{
-			    $(this).scrollspy('refresh');
-			});*/
-			$("#main_content").scrollspy('refresh');
-			$("#scroll_nav li").on("activate", function()
-			{
-			    console.log("ACTIVATED");
-			    console.log($(this)[0].id.slice(5));
-			    scrollTo = $(this)[0].id.slice(5);
-			    //this shit right here will just trigger the item_status_btn when it comes into focus.
-			    //gotta make sure it ONLY marks it as "read" ever.
-			    //Till then, it's commented out.
-
-			    var id = $(this)[0].id.slice(5);
-			    if ($('#item' + id).hasClass('item_unread')){
-			    	$('#item' + id + ' > button.item_status_btn').trigger('click');
-			    }
-			});
-			if (!add){
-				$('#main_content').scrollTop(0);
-			}
 		},
 
 		getFeed_now: function (url, off) {
@@ -233,21 +213,63 @@ var roreader = (function(){
 				console.log(offset);
 				roread.getFeed_now(currentURL, offset);
 			}
+
+		//this section should be rewritten as a scrollplugin that works something like this:
+		//scrollTo.returnitem(itemArray, offset) 
+		//writing it as self-execution function for now so it's ready to resue later
+			(function(ia, off)	{
+				off = off || 0;
+				var ist = ia[scrollTo];
+				var it = $(ist).position().top;
+				if (it > off - $(ist).outerHeight(true) && it < off) {
+					console.log(ist + '...');
+				}
+				else if (it > off - $(ist).outerHeight(true)) {
+					if (scrollTo !== 0) {
+						scrollTo--;
+					}
+					console.log('--');
+				}
+				else if (it < off){
+					scrollTo++;	
+					if ($(ia[scrollTo]).hasClass('item_unread')){
+		    			$(ia[scrollTo] + ' > button.item_status_btn').trigger('click');
+		    			console.log('trigger read');
+		    		}
+				}
+			}(itemIds, 42));
 		});
 		$(document).bind('keydown', 'j', function(){
-			if(scrollTo < itemIds.length - 1) {
-				scrollTo++;
-				console.log('keydown j: '+itemIds[scrollTo]);
-				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
+			
+			if(!loading){
+				if(scrollTo < itemIds.length-1) {
+					
+					scrollTo += 1;
+					var ist = itemIds[scrollTo];
+					$('#main_content').scrollTo(ist, {offset: -41});	
+
+					if ($(ist).hasClass('item_unread')){
+		    			$(ist + ' > button.item_status_btn').trigger('click');
+		    			console.log('trigger read');
+		    		}
+
+		    		if (scrollTo === itemIds.length-1) {
+		    			offset += 10;
+						console.log(offset);
+						roread.getFeed_now(currentURL, offset);	
+		    		}
+				}
 			}
+			console.log('scrollTo: ' + scrollTo);
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
+				
+				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -43});
+				
 				if (scrollTo>0) {
 					scrollTo--;
 				}
-				console.log('keydown k: '+itemIds[scrollTo]);
-				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 			}
 		});
 		//$("#navbarExample").scrollspy();

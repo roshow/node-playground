@@ -125,18 +125,18 @@ html,body {
 }
 
 #share-buttons {
-	background-color: #ccc;
-	border-radius: 5px;
+	background-color: #888;
+	border-radius: 35px;
 	padding:2px;
 	display: inline-block;
 }
 #share-buttons img {
-	width: 26px;
+	width: 32px;
 	padding: 5px;
 	border: 0;
 	box-shadow: 0;
 }
 
 #navbarExample {
-	/*display: none;*/
+	display: none
 }
