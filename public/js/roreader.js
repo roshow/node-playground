@@ -27,7 +27,7 @@ var roreader = (function(){
 				dataType: "json",
 				success: function(result){
 					that.subs_display(result);
-					console.log(result);
+					//console.log(result);
 				}
 			});
 		},
@@ -84,7 +84,7 @@ var roreader = (function(){
 			}
 			var meta = items[0];
 			items = items[1];
-			console.log(items[1]);
+			//console.log(items[1]);
 			if (!add) {
 				$("#items_list").empty();
 				$("#scroll_nav").empty();
@@ -147,15 +147,6 @@ var roreader = (function(){
 
 			}
 
-			var iH = 0;
-			$.each(itemHeights,function() {
-			    total += this;
-			});
-
-			console.log('total item heights: ' + total);
-			console.log('main_content height: ' + $('#main_content')[0].scrollHeight);
-
-
 			console.log(itemIds);
 			//$('#items_list').append(html);
 			$('.item_status_btn').click(function(){
@@ -192,23 +183,6 @@ var roreader = (function(){
 			};
 			//set scrollspy html
 			$('#scroll_nav').append(scroll_html);
-			//$("#navbarExample").scrollspy();
-			/*$('[data-spy="scroll"]').each(function()
-			{
-			    $(this).scrollspy('refresh');
-			});*/
-			$("#main_content").scrollspy('refresh');
-			$("#scroll_nav li").on("activate", function()
-			{
-			    console.log("ACTIVATED");
-			    console.log($(this)[0].id.slice(5));
-
-			    var id = $(this)[0].id.slice(5);
-			    scrollTo = id;
-			    if ($('#item' + id).hasClass('item_unread')){
-			    	$('#item' + id + ' > button.item_status_btn').trigger('click');
-			    }
-			});
 			if (!add){
 				$('#main_content').scrollTop(0);
 			}
@@ -249,26 +223,29 @@ var roreader = (function(){
 				roread.getFeed_now(currentURL, offset);
 			}
 
-			var ist = '#item' + scrollTo;
-			console.log(ist);
-			var mt = $('#main_content').scrollTop();
-			var it = $(ist).position().top;
-
-			if (it > 42 - $(ist).outerHeight(true) && it < 42) {
-				console.log('#item' + scrollTo);
-			}
-			else if (it > 42 - $(ist).outerHeight(true)) {
-				if (scrollTo != 0) {
-					scrollTo--;
+		//this section should be rewritten as a scrollplugin that works something like this:
+		//scrollTo.returnitem(itemArray, offset) 
+		//writing it as self-execution function for now so it's ready to resue later
+			(function(ia, off)	{
+				off = off || 0;
+				var ist = ia[scrollTo];
+				var it = $(ist).position().top;
+				if (it > off - $(ist).outerHeight(true) && it < off) {
+					console.log(ist + '...');
 				}
-			}
-			else if ( it < 42){
-				scrollTo++;
-			}
-
-			//console.log('main_content top: ');
-			//console.log(mt);
-			//console.log('#item1 top: ' + it);
+				else if (it > off - $(ist).outerHeight(true)) {
+					if (scrollTo !== 0) {
+						scrollTo--;
+					}
+				}
+				else if (it <= off){
+					scrollTo++;	
+					if ($(ia[scrollTo]).hasClass('item_unread')){
+		    			$(ia[scrollTo] + ' > button.item_status_btn').trigger('click');
+		    			console.log('trigger read');
+		    		}
+				}
+			}(itemIds, 42));
 		});
 		$(document).bind('keydown', 'j', function(){
 			if(scrollTo < itemIds.length - 1) {
@@ -279,11 +256,11 @@ var roreader = (function(){
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
+				console.log('keydown k: '+itemIds[scrollTo]);
 				if (scrollTo>0) {
+					$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 					scrollTo--;
 				}
-				console.log('keydown k: '+itemIds[scrollTo]);
-				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 			}
 		});
 		//$("#navbarExample").scrollspy();
