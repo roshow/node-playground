@@ -260,7 +260,7 @@ var roreader = (function(){
 					scrollTo--;
 				}
 				
-				$('#main_content').scrollTo(itemIds[scrollTo+1], {offset: -42});
+				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
 				
 				if (scrollTo>0) {
 					scrollTo--;
