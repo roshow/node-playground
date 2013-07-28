@@ -143,8 +143,7 @@ var roreader = (function(){
 
 			}
 
-			console.log(itemIds);
-			//$('#items_list').append(html);
+			//console.log(itemIds);
 			$('.item_status_btn').click(function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
@@ -177,11 +176,6 @@ var roreader = (function(){
 			window.onload=function(){
 				console.log('loaded');
 			};
-			//set scrollspy html
-			$('#scroll_nav').append(scroll_html);
-			if (!add){
-				$('#main_content').scrollTop(0);
-			}
 		},
 
 		getFeed_now: function (url, off) {
