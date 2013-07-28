@@ -244,7 +244,7 @@ var roreader = (function(){
 			if(!loading){
 				if(scrollTo < itemIds.length-1) {
 					
-					scrollTo += 1;
+					scrollTo++;
 					var ist = itemIds[scrollTo];
 					$('#main_content').scrollTo(ist, {offset: -41});	
 
@@ -271,6 +271,9 @@ var roreader = (function(){
 					scrollTo--;
 				}
 			}
+		});
+		$(document).bind('keydown', 'm', function(){
+			$(itemIds[scrollTo] + ' > button.item_status_btn').trigger('click');
 		});
 		//$("#navbarExample").scrollspy();
 	});

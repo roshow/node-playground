@@ -76,6 +76,7 @@ html,body {
 
 			.item_box > h3 {
 				margin-bottom: 0;
+				line-height: 1.15;
 			}
 			.item_box > h3 > a {
 				text-decoration: none;
@@ -135,8 +136,4 @@ html,body {
 	padding: 5px;
 	border: 0;
 	box-shadow: 0;
-}
-
-#navbarExample {
-	display: none
 }
