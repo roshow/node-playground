@@ -2,6 +2,8 @@
 
 var i, j;
 
+var scrollTo = 0;
+
 var roreader = (function(){
 
 	var offset = 0;
@@ -10,7 +12,6 @@ var roreader = (function(){
 	var currentItems = null;
 	var viewAll = false;
 	var itemIds = [];
-	var scrollTo = 0;
 	var itemHeights = [];
 
 	function feedTemplate(sub) {
@@ -226,7 +227,11 @@ var roreader = (function(){
 				else if (it > off - $(ist).outerHeight(true)) {
 					if (scrollTo !== 0) {
 						scrollTo--;
-					}
+					}	
+					if ($(ia[scrollTo]).hasClass('item_unread')){
+		    			$(ia[scrollTo] + ' > button.item_status_btn').trigger('click');
+		    			console.log('trigger read');
+		    		}
 				}
 				else if (it <= off){
 					scrollTo++;	
@@ -235,7 +240,7 @@ var roreader = (function(){
 		    			console.log('trigger read');
 		    		}
 				}
-			}(itemIds, 42));
+			}(itemIds, 40));
 		});
 		$(document).bind('keydown', 'j', function(){
 			if(scrollTo < itemIds.length - 1) {
