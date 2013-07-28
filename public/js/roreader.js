@@ -228,8 +228,9 @@ var roreader = (function(){
 					if (scrollTo !== 0) {
 						scrollTo--;
 					}
+					console.log('--');
 				}
-				else if (it <= off){
+				else if (it < off){
 					scrollTo++;	
 					if ($(ia[scrollTo]).hasClass('item_unread')){
 		    			$(ia[scrollTo] + ' > button.item_status_btn').trigger('click');
@@ -239,28 +240,32 @@ var roreader = (function(){
 			}(itemIds, 42));
 		});
 		$(document).bind('keydown', 'j', function(){
-			if(scrollTo < itemIds.length) {
-				scrollTo += 1;
-				
-				var ist = itemIds[scrollTo];
-				$('#main_content').scrollTo(ist, {offset: -42});	
-	    		
-				if ($(ist).hasClass('item_unread')){
-	    			$(ist + ' > button.item_status_btn').trigger('click');
-	    			console.log('trigger read');
-	    		}
-	    		scrollTo += 1;
-	    		//console.log('scrollTo = '+scrollTo);
+			
+			if(!loading){
+				if(scrollTo < itemIds.length-1) {
+					
+					scrollTo += 1;
+					var ist = itemIds[scrollTo];
+					$('#main_content').scrollTo(ist, {offset: -41});	
+
+					if ($(ist).hasClass('item_unread')){
+		    			$(ist + ' > button.item_status_btn').trigger('click');
+		    			console.log('trigger read');
+		    		}
+
+		    		if (scrollTo === itemIds.length-1) {
+		    			offset += 10;
+						console.log(offset);
+						roread.getFeed_now(currentURL, offset);	
+		    		}
+				}
 			}
+			console.log('scrollTo: ' + scrollTo);
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
-
-				if (scrollTo>0) {
-					scrollTo--;
-				}
 				
-				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -42});
+				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -43});
 				
 				if (scrollTo>0) {
 					scrollTo--;
