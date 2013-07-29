@@ -51,7 +51,7 @@ html,body {
 		.item_box {
 			margin: 0px 0px 5px 0px;
 			border-radius: 0px;
-			border: 1px solid #888;
+			border: 1px solid #eee;
 			background-color: #eee;
 		}
 
@@ -70,9 +70,11 @@ html,body {
 
 			.item_unread {
 				background-color: #eee;
+				border-color: #eee;
 			}
 			.item_read {
 				background-color: #fff;
+				border-color: #888;
 			}
 
 			.item_box > h3 {
