@@ -21,8 +21,8 @@ var roreader = (function(){
 	}
 
 	function saveToPocket(url){
-		fullurl = 'https://getpocket.com/edit?url=' + encodeURIComponent(url);
-		window.open(fullurl, '_blank');
+		url = 'https://getpocket.com/edit?url=' + encodeURIComponent(url);
+		window.href(url, '_blank');
 	}
 
 	var roread = {
@@ -122,7 +122,10 @@ var roreader = (function(){
 				}
 				html += 
 				'<div class="item_box 	' + item_readStatus + '" id="' + thisItem + '">'+
-					'<h3><a href="' + items[i].link + '" target="_blank">' + (addL+i) + '. ' + items[i].title + '</a></h3>' +
+					'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
+					'<a href="https://getpocket.com/edit?url=' + items[i].link +'&title=' + items[i].title + '" target="_blank">Save to Pocket</a>' +
+					' | ' +
+					'<a class="item_status_btn" id="' + items[i].link + '">'  + item_btn_text + '</a>' +
 					'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 					'<br />' + 
 						content + 
@@ -137,20 +140,16 @@ var roreader = (function(){
 						'<a href="mailto:?Subject=' + items[i].title + '&Body=' + items[i].link + ' Sent%20from%20roreader"><img src="img/sharing/email.png" alt="Email" /></a>' +
 					'</div>' +
 					'<br />' +
-					'<br />' +
-					'<button class="item_status_btn btn-small" id="' + items[i].link + '">'  + item_btn_text + '</button>' +
+					'<a href="https://getpocket.com/edit?url=' + items[i].link +'&title=' + items[i].title + '" target="_blank">Save to Pocket</a>' +
 				'</div>';
 
 				$('#items_list').append(html);
 				itemHeights.push($('#'+thisItem).outerHeight(true));
 
-			//add to hidden navbar for scrollspy
-				scroll_html += '<li class="" id="_'+thisItem+'"><a href="#' + thisItem + '">' + (addL+i) + '</a></li>';
-
 			}
 
 			//console.log(itemIds);
-			$('.item_status_btn').click(function(){
+			$('.item_status_btn').on('click', function(){
 				var a_id = $(this)[0].id;
 				var f_id = meta.feed_id;
 				if ($(this).parent().hasClass('item_unread')){
@@ -178,10 +177,6 @@ var roreader = (function(){
 					$(this).text('Mark Read');
 				}
 			});
-
-			window.onload=function(){
-				//console.log('loaded');
-			};
 		},
 
 		getFeed_now: function (url, off) {
@@ -238,7 +233,7 @@ var roreader = (function(){
 				else if (it < off){
 					scrollTo++;	
 					if ($(ia[scrollTo]).hasClass('item_unread')){
-		    			$(ia[scrollTo] + ' > button.item_status_btn').trigger('click');
+		    			$(ia[scrollTo] + ' > a.item_status_btn').trigger('click');
 		    			//console.log('trigger read');
 		    		}
 				}
@@ -254,7 +249,7 @@ var roreader = (function(){
 					$('#main_content').scrollTo(ist, {offset: -41});	
 
 					if ($(ist).hasClass('item_unread')){
-		    			$(ist + ' > button.item_status_btn').trigger('click');
+		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    			//console.log('trigger read');
 		    		}
 
@@ -278,7 +273,7 @@ var roreader = (function(){
 			}
 		});
 		$(document).bind('keydown', 'm', function(){
-			$(itemIds[scrollTo] + ' > button.item_status_btn').trigger('click');
+			$(itemIds[scrollTo] + ' > a.item_status_btn').trigger('click');
 		});
 	});
 	return roread;

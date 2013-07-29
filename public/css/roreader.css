@@ -87,6 +87,9 @@ html,body {
 			.item_box > h3 > a:hover {
 				color: #0073C3;
 			}
+		.item_status_btn {
+			cursor: pointer;
+		}
 
 
 	#feedList {
@@ -138,3 +141,4 @@ html,body {
 	border: 0;
 	box-shadow: 0;
 }
+
