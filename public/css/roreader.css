@@ -53,6 +53,7 @@ html,body {
 			border-radius: 0px;
 			border: 1px solid #eee;
 			background-color: #eee;
+			max-width: 600px;
 		}
 
 		#item_feed_info {
