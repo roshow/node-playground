@@ -5,29 +5,39 @@
 		<title>roreader</title>
 		<link rel='stylesheet' type='text/css' href='bootstrap/css/bootstrap.min.css'>
 		<link rel='stylesheet' type='text/css' href='bootstrap/css/bootstrap-responsive.min.css'>
-		<link rel='stylesheet' type='text/css' href='roreader.css'>
-		<script type='text/javascript' src='jquery-1.9.1.js'></script>
-		<script type='text/javascript' src='roreader.js'></script>
+		<link rel='stylesheet' type='text/css' href='css/roreader.css'>
+		<script type='text/javascript' src='js/jquery-1.9.1.js'></script>
+		<script type="text/javascript" src='js/jquery.hotkeys-0.7.9.min.js'></script>
+		<script type="text/javascript" src='js/jquery.scrollTo-1.4.3.1-min.js'></script>
+		<script type='text/javascript' src='js/roreader.js'></script>
 		<script type="text/javascript" src='bootstrap/js/bootstrap.min.js'></script>
 	</head>
 
 	<body>
-		<div class="container">
 
-			<div class='navbar navbar-inverse'>
-		      <div class='navbar-inner nav-collapse' style="height: auto;">
-		        <ul class="nav">
-		        	<li><h4 style='color: white; font-weight:900; margin-right:50px'>ro<span style='font-weight:200;'>reader v0.0.2</span></h4></li>
-		          <li class="btn"><a href="/logout">logout</a></li>
-		        </ul>
-		      </div>
-		    </div>
+		<div class="container-fluid" id="top_container">
 
-		    <div id='read' class='row-fluid fill'>
-				<div id="feedList" class='accordion span3'></div>
-				<div id="itemsList" class='span9'>
-					<div class="navbar" id="item_feed_info">
+			<div class='row-fluid' id='row_nav'>
+
+				<div class='span3' id='sidebar_nav'>
+					<div class="navbar navbar-inverse" id="top_nav">
 					  <div class="navbar-inner">
+					    <a class='brand' style='color: white; font-weight:900;'>ro<span style='font-weight:200;'>reader</span></a>
+					    <ul class="nav pull-right">
+	         				 <li class="dropdown">
+							    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img src='img/glyphicons_136_cogwheel.png' style='height:17px;width:17px'></img>
+							     </a>
+							    <ul class="dropdown-menu">
+							      <li><a href="/logout">logout</a></li>
+							    </ul>
+							  </li>
+					    </ul>
+					  </div>
+					</div>
+				</div>
+				<div class='span9' id='content_nav'>
+					<div class="navbar" id="item_feed_info">
+					  <div class="navbar-inner" style="width:100%;">
 					    <a class="brand" id="feed_title">Articles</a>
 					    <ul class="nav">
 	         				 <li class="dropdown">
@@ -41,7 +51,21 @@
 					    </ul>
 					  </div>
 					</div>
-					<div id="items_list"></div>
+				</div>
+			</div>
+
+		    <div class='row-fluid' id='row_body'>
+
+				<div class='span3' id='sidebar'>
+					<div style='height:42px;display:block;'></div>
+					<div id="feedList" class='accordion'></div>
+				</div>
+
+				<div class='span9' id='main_content'>
+					<div id="itemsList" style='padding:0px 20px;'>
+						<div id="items_list" style='margin-top:42px;'></div>
+					</div>
+					<!--div style='border:4px solid black;display:block;height:100%;'></div-->
 				</div>
 			</div>
 

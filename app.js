@@ -1,10 +1,13 @@
 try { _config = require('./config.js'); }
 catch(e){ _config = require('./config_example.js'); }
+_config.google.redirect = process.env.PORT ? _config.google.redirect : _config.google.redirect_local;
+
 
 var express = require('express'),
   handler = require('./handler.js').handler,
   app = express(),
-  MongoStore = require('connect-mongo')(express);
+  MongoStore = require('connect-mongo')(express),
+  port = process.env.PORT || '3000';
 
 app.use(express.cookieParser());
 app.use(express.session({
@@ -33,5 +36,5 @@ app.get('/importopml', handler.importopml);
 app.get('/refreshtoken', handler.refreshToken);
 app.get('/updatearticle', handler.updatearticle);
 
-app.listen(process.env.PORT || 3000);
-console.log("roreader Listening on port 3000");
+app.listen(port);
+console.log("roreader Listening on port " + port);

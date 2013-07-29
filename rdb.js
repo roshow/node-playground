@@ -114,20 +114,6 @@ var rdb = {
 					callback && callback(updatedFeed)
 				}
 			});
-			db.users.findAndModify({
-				query: {
-					_id: user_id
-				},
-				update: {
-					$addToSet: {
-						feeds: {
-							id: feed_id,
-							date: new Date(),
-							read: []
-						}
-					}
-				}
-			});
 		},
 		update: function(q, up, cb){
 			console.log('db feeds.update');
@@ -242,7 +228,7 @@ var rdb = {
 			});
 		},
 		markread: function(q, a_id, cb){
-			rdb.articles.get_read(q, console.log)
+			rdb.articles.get_read(q, console.log);
 			console.log(q);
 			db.read.findAndModify({
 				query: q,
@@ -256,10 +242,25 @@ var rdb = {
 				cb && cb(r);
 			});
 		},
+		markunread: function(q, a_id, cb){
+			rdb.articles.get_read(q, console.log);
+			console.log(q);
+			db.read.findAndModify({
+				query: q,
+				update: {
+					$pull: {
+						read: a_id
+					}
+				},
+				new: true
+			}, function(e,r){
+				cb && cb(r);
+			});
+		},
 		get_read: function(q, cb){
 			var rd;
 			db.read.find(q, function(e, r){
-				cb && cb(r[0].read);
+				cb && cb(r[0]);
 			});
 		},
 		__get_bydate: function(){
@@ -279,19 +280,28 @@ var rdb = {
 							console.log('articles inserted');
 							j=j+1;
 						}
-					})
+					});
 				}
 			});
 		}
 	},
 
 	read: {
+		insert: function(u_id, f_id){
+			db.read.insert({
+				_id: u_id + '/' + f_id,
+				user: u_id,
+				read: [],
+				date: new Date()
+			}, function(e,r){
+				if(!e){
+					cb && cb(r);
+				}
+			});
+		},
 		remove: function(q, a_id, cb){
 			db.read.findAndModify({
-				query: {
-					user_id: u,
-					feed_id: f
-				},
+				query: q,
 				update: {
 					$pull: {
 						read: a_id
