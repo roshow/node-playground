@@ -32,7 +32,7 @@ html,body {
 	#sidebar {
 		height: 100%;
 		overflow: auto;
-		background-color: #cccccc;
+		background-color: #eee;
 	}
 
 	#main_content {
@@ -52,7 +52,7 @@ html,body {
 			margin: 0px 0px 5px 0px;
 			border-radius: 0px;
 			border: 1px solid #888;
-			background-color: #ddd;
+			background-color: #eee;
 		}
 
 		#item_feed_info {
@@ -69,7 +69,7 @@ html,body {
 			}
 
 			.item_unread {
-				background-color: #ddd;
+				background-color: #eee;
 			}
 			.item_read {
 				background-color: #fff;
