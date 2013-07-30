@@ -17,7 +17,7 @@ var roread = (function(){
 	function feedTemplate(sub) {
 		return "<div id='" + sub.xmlurl + "' class='feedList_feed'><a>" + 
 			sub.title + 
-			"</a></div>";
+		"</a></div>";
 	}
 
 	function saveToPocket(url){
@@ -79,40 +79,37 @@ var roread = (function(){
 			viewAll = false;
 			this.getFeed_now(currentURL);
 		},
-
 		set_itemStatus : function(a_id, f_id, i_id){
-				if ($('#'+i_id).hasClass('item_unread')){
-					$.ajax({
-						url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
-						dataType: 'json',
-						success: function(r){
-							console.log('marked read');
-						}
-					});
-					$('#'+i_id).removeClass('item_unread');
-					$('#'+i_id).addClass('item_read');
-					$('#'+i_id+' .item_status_btn').text('Mark Unread');
-				}
-				else {
-					$.ajax({
-						url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
-						dataType: 'json',
-						success: function(r){
-							console.log('marked unread');
-						}
-					});
-					$('#'+i_id).removeClass('item_read');
-					$('#'+i_id).addClass('item_unread');
-					$('#'+i_id+' .item_status_btn').text('Mark Read');
-				}
+			if ($('#'+i_id).hasClass('item_unread')){
+				$.ajax({
+					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					dataType: 'json',
+					success: function(r){
+						console.log('marked read');
+					}
+				});
+				$('#'+i_id).removeClass('item_unread');
+				$('#'+i_id).addClass('item_read');
+				$('#'+i_id+' .item_status_btn').text('Mark Unread');
+			}
+			else {
+				$.ajax({
+					url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					dataType: 'json',
+					success: function(r){
+						console.log('marked unread');
+					}
+				});
+				$('#'+i_id).removeClass('item_read');
+				$('#'+i_id).addClass('item_unread');
+				$('#'+i_id+' .item_status_btn').text('Mark Read');
+			}
 		},
-
 		items_display: function(items, add, addL) {
 			if (!add){
 				itemIds = [];
 				scrollTo = 0;
 				addL = 0;
-				itemHeights = [];
 			}
 			var meta = items[0];
 			items = items[1];
@@ -129,7 +126,6 @@ var roread = (function(){
 				var thisItem = 'item'+(addL+i);
 				itemIds.push('#'+thisItem);
 
-			//make item_box with article
 				var content = items[i].description || items[i].content;
 				var item_readStatus;
 				var item_btn_text;
@@ -165,11 +161,8 @@ var roread = (function(){
 				'</div>';
 
 				$('#items_list').append(html);
-				itemHeights.push($('#'+thisItem).outerHeight(true));
-
 			}
 		},
-
 		getFeed_now: function (url, off) {
 			loading = true;
 			var that = this;
@@ -215,19 +208,16 @@ var roread = (function(){
 					if (scrollTo !== 0) {
 						scrollTo--;
 					}
-					//console.log('--');
 				}
 				else if (it < off){
 					scrollTo++;	
 					if ($(ia[scrollTo]).hasClass('item_unread')){
 		    			$(ia[scrollTo] + ' > a.item_status_btn').trigger('click');
-		    			//console.log('trigger read');
 		    		}
 				}
 			}(itemIds, 42));
 		});
-		$(document).bind('keydown', 'j', function(){
-			
+		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
 				if(scrollTo < itemIds.length-1) {
 					
@@ -237,30 +227,25 @@ var roread = (function(){
 
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
-		    			//console.log('trigger read');
 		    		}
 
 		    		if (scrollTo === itemIds.length-1) {
 		    			offset += 10;
-						//console.log(offset);
 						roread.getFeed_now(currentURL, offset);	
 		    		}
 				}
 			}
-			//console.log('scrollTo: ' + scrollTo);
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
-				
 				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -43});
-				
 				if (scrollTo>0) {
 					scrollTo--;
 				}
 			}
 		});
 		$(document).bind('keydown', 'm', function(){
-			$(itemIds[scrollTo] + ' > a.item_status_btn').trigger('click');
+			$(itemIds[scrollTo] + ' .item_status_btn').trigger('click');
 		});
 	});
 	return roread;
