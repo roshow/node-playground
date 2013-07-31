@@ -11,8 +11,9 @@ var roread = (function(tmpl){
 	var currentURL = null;
 	var currentItems = null;
 	var viewAll = false;
-	var itemIds = [];
 	var itemHeights = [];
+
+	var allItems = [];
 
 	function saveToPocket(url){
 		url = 'https://getpocket.com/edit?url=' + encodeURIComponent(url);
@@ -20,6 +21,7 @@ var roread = (function(tmpl){
 	}
 
 	var roread = {
+		//Get stuff
 		getSubscriptions: function() {
 			var that = this;
 			$.ajax({
@@ -30,6 +32,24 @@ var roread = (function(tmpl){
 				}
 			});
 		},
+		getFeed_now: function (url, off) {
+			loading = true;
+			var that = this;
+			currentURL = url || null;
+			var status = viewAll ? 'all' : false;
+			offset = off || 0;
+			$.ajax({
+				url: 'getarticles?xmlurl=' + encodeURIComponent(url) +'&status=' + encodeURIComponent(status)  + "&offset=" + offset,
+				dataType: 'json',
+				success: function(result){
+					var add = off ? true : false;
+					that.items_display(result, add, allItems.length);
+					loading = false;
+				}
+			});
+		},
+
+		//Display stuff
 		subs_display: function(subs) {
 			var that = this,
 				L = subs.length,
@@ -88,7 +108,7 @@ var roread = (function(tmpl){
 		},
 		items_display: function(items, add, addL) {
 			if (!add){
-				itemIds = [];
+				allItems = [];
 				scrollTo = 0;
 				addL = 0;
 			}
@@ -103,41 +123,19 @@ var roread = (function(tmpl){
 			var L = items.length;
 			
 			for (i = 0; i < L; i++){
+
+				items[i].content = items[i].description || items[i].content;
+				items[i].feed_id = meta.feed_id;
+				items[i].$rr = {
+					index: addL+i,
+					id: '#item'+(addL+i)
+				};
 				html = '';
-				var thisItem = 'item'+(addL+i);
-				itemIds.push('#'+thisItem);
-
-				var content = items[i].description || items[i].content;
-				var item_readStatus;
-				var item_btn_text;
-				if(items[i].read){
-					item_readStatus = 'item_read';
-					item_btn_text = 'Mark Unread';
-				}
-				else {
-					item_readStatus = 'item_unread';
-					item_btn_text = 'Mark Read';
-				}
-				html += tmpl.items_fullItem(item_readStatus, thisItem, item_btn_text, meta, content, items, i);
-
+				html += tmpl.items_fullItem(items, i);
 				$('#items_list').append(html);
+
+				allItems.push(items[i]);
 			}
-		},
-		getFeed_now: function (url, off) {
-			loading = true;
-			var that = this;
-			currentURL = url || null;
-			var status = viewAll ? 'all' : false;
-			offset = off || 0;
-			$.ajax({
-				url: 'getarticles?xmlurl=' + encodeURIComponent(url) +'&status=' + encodeURIComponent(status)  + "&offset=" + offset,
-				dataType: 'json',
-				success: function(result){
-					var add = off ? true : false;
-					that.items_display(result, add, itemIds.length);
-					loading = false;
-				}
-			});
 		}
 	};
 
@@ -159,7 +157,7 @@ var roread = (function(tmpl){
 
 			(function(ia, off)	{
 				off = off || 0;
-				var ist = ia[scrollTo];
+				var ist = ia[scrollTo].$rr.id;
 				var it = $(ist).position().top;
 				if (it > off - $(ist).outerHeight(true) && it < off) {
 					//console.log(ist + '...');
@@ -171,25 +169,25 @@ var roread = (function(tmpl){
 				}
 				else if (it < off){
 					scrollTo++;	
-					if ($(ia[scrollTo]).hasClass('item_unread')){
-		    			$(ia[scrollTo] + ' > a.item_status_btn').trigger('click');
+					if ($(ist).hasClass('item_unread')){
+		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
 				}
-			}(itemIds, 42));
+			}(allItems, 42));
 		});
 		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
-				if(scrollTo < itemIds.length-1) {
+				if(scrollTo < allItems.length-1) {
 					
 					scrollTo++;
-					var ist = itemIds[scrollTo];
+					var ist = allItems[scrollTo].$rr.id;
 					$('#main_content').scrollTo(ist, {offset: -41});	
 
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
 
-		    		if (scrollTo === itemIds.length-1) {
+		    		if (scrollTo === allItems.length-1) {
 		    			offset += 10;
 						roread.getFeed_now(currentURL, offset);	
 		    		}
@@ -198,14 +196,14 @@ var roread = (function(tmpl){
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
-				$('#main_content').scrollTo(itemIds[scrollTo], {offset: -43});
+				$('#main_content').scrollTo(allItems[scrollTo].$rr.id, {offset: -43});
 				if (scrollTo>0) {
 					scrollTo--;
 				}
 			}
 		});
 		$(document).bind('keydown', 'm', function(){
-			$(itemIds[scrollTo] + ' .item_status_btn').trigger('click');
+			$(allItems[scrollTo].$rr.id + ' .item_status_btn').trigger('click');
 		});
 	});
 	return roread;

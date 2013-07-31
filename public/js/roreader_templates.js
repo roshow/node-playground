@@ -28,17 +28,28 @@ var roread_templates = (function(){
   		'</div>';
 	};
 
-	templates.items_fullItem = function(item_readStatus, thisItem, item_btn_text, meta, content, items, i){
+	templates.items_fullItem = function(items, i){
+		console.log(items[i]);
+		var readStatus, btnText;
+		if(items[i].read){
+			readStatus = 'item_read';
+			btnText = 'Mark Unread';
+		}
+		else {
+			readStatus = 'item_unread';
+			btnText = 'Mark Read';
+		}
+
 		return ' '+
 
-		'<div class="item_box 	' + item_readStatus + '" id="' + thisItem + '">'+
+		'<div class="item_box 	' + readStatus + '" id="item' + items[i].$rr.index + '">'+
 			'<h3><a href="' + items[i].link + '" target="_blank">' + items[i].title + '</a></h3>' +
 			'<a href="https://getpocket.com/edit?url=' + items[i].link +'&title=' + items[i].title + '" target="_blank">Save to Pocket</a>' +
 			' | ' +
-			'<a class="item_status_btn" onclick="roread.set_itemStatus(\'' + items[i].link + '\', \'' + meta.feed_id + '\', \'' + thisItem + '\');" id="' + items[i].link + '">'  + item_btn_text + '</a>' +
+			'<a class="item_status_btn" onclick="roread.set_itemStatus(\'' + items[i].link + '\', \'' + items[i].feed_id + '\', \'item' + items[i].$rr.index + '\');" id="' + items[i].link + '">'  + btnText + '</a>' +
 			'<p class="item_byline">Posted by ' + items[i].author + ' on '+ new Date(items[i].publishedDate).toLocaleString() + '</p>' +
 			'<br />' + 
-				content + 
+				items[i].content + 
 			'<br />' +
 			'<br />' +
 			//Article sharing: basic html for this from http://www.simplesharebuttons.com/html-share-buttons/ 
