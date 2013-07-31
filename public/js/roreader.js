@@ -9,11 +9,9 @@ var roread = (function(tmpl){
 	var offset = 0;
 	var loading = false;
 	var currentURL = null;
-	var currentItems = null;
 	var viewAll = false;
-	var itemHeights = [];
 
-	var allItems = [];
+	var cItems = [];
 
 	function saveToPocket(url){
 		url = 'https://getpocket.com/edit?url=' + encodeURIComponent(url);
@@ -43,7 +41,7 @@ var roread = (function(tmpl){
 				dataType: 'json',
 				success: function(result){
 					var add = off ? true : false;
-					that.items_display(result, add, allItems.length);
+					that.items_display(result, add);
 					loading = false;
 				}
 			});
@@ -106,12 +104,13 @@ var roread = (function(tmpl){
 				$('#'+i_id+' .item_status_btn').text('Mark Read');
 			}
 		},
-		items_display: function(items, add, addL) {
+		items_display: function(items, add) {
 			if (!add){
-				allItems = [];
+				cItems = [];
 				scrollTo = 0;
-				addL = 0;
 			}
+
+			var indexOffset = cItems.length;
 			var meta = items[0];
 			items = items[1];
 
@@ -127,14 +126,14 @@ var roread = (function(tmpl){
 				items[i].content = items[i].description || items[i].content;
 				items[i].feed_id = meta.feed_id;
 				items[i].$rr = {
-					index: addL+i,
-					id: '#item'+(addL+i)
+					index: indexOffset+i,
+					id: '#item'+(indexOffset+i)
 				};
 				html = '';
-				html += tmpl.items_fullItem(items, i);
+				html += tmpl.items_fullItem(items[i]);
 				$('#items_list').append(html);
 
-				allItems.push(items[i]);
+				cItems.push(items[i]);
 			}
 		}
 	};
@@ -173,21 +172,21 @@ var roread = (function(tmpl){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
 				}
-			}(allItems, 42));
+			}(cItems, 42));
 		});
 		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
-				if(scrollTo < allItems.length-1) {
+				if(scrollTo < cItems.length-1) {
 					
 					scrollTo++;
-					var ist = allItems[scrollTo].$rr.id;
+					var ist = cItems[scrollTo].$rr.id;
 					$('#main_content').scrollTo(ist, {offset: -41});	
 
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
 
-		    		if (scrollTo === allItems.length-1) {
+		    		if (scrollTo === cItems.length-1) {
 		    			offset += 10;
 						roread.getFeed_now(currentURL, offset);	
 		    		}
@@ -196,14 +195,14 @@ var roread = (function(tmpl){
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
-				$('#main_content').scrollTo(allItems[scrollTo].$rr.id, {offset: -43});
+				$('#main_content').scrollTo(cItems[scrollTo].$rr.id, {offset: -43});
 				if (scrollTo>0) {
 					scrollTo--;
 				}
 			}
 		});
 		$(document).bind('keydown', 'm', function(){
-			$(allItems[scrollTo].$rr.id + ' .item_status_btn').trigger('click');
+			$(cItems[scrollTo].$rr.id + ' .item_status_btn').trigger('click');
 		});
 	});
 	return roread;
