@@ -140,7 +140,10 @@ var roread = (function(tmpl){
 			}
 
 			if(!add){
-				$('#main_content').scrollTop(-10);
+				$('#main_content').scrollTop(0);
+				if (!citems[0].read) {
+					this.set_itemStatus(0);
+				}
 			}
 		}
 	};
