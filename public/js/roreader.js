@@ -153,20 +153,22 @@ var roread = (function(tmpl){
 				offset += 10;
 				roread.getFeed_now(currentURL, offset);
 			}
-
+			
 			(function(ia, off)	{
 				off = off || 0;
 				var ist = '#item' + scrollTo;
 				var it = $(ist).position().top;
-				if (it > off - $(ist).outerHeight(true) && it < off) {
+				if (it >= off - $(ist).outerHeight(true) && it <= off) {
 					//console.log(ist + '...');
 				}
 				else if (it > off - $(ist).outerHeight(true)) {
 					if (scrollTo !== 0) {
+						console.log('it: '+it);
 						scrollTo--;
 					}
 				}
 				else if (it < off){
+					console.log('it: '+it);
 					scrollTo++;	
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
@@ -174,13 +176,14 @@ var roread = (function(tmpl){
 				}
 			}(citems, 42));
 		});
+		var plus;
 		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
 				if(scrollTo < citems.length-1) {
 					
 					scrollTo++;
 					var ist = '#item' + scrollTo;
-					$('#main_content').scrollTo(ist, {offset: -41});	
+					$('#main_content').scrollTop($(ist)[0].offsetTop-42);	
 
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
@@ -195,7 +198,8 @@ var roread = (function(tmpl){
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
-				$('#main_content').scrollTo('#item' + scrollTo, {offset: -43});
+
+				$('#main_content').scrollTop($('#item' + scrollTo)[0].offsetTop-42);
 				if (scrollTo>0) {
 					scrollTo--;
 				}
@@ -207,5 +211,3 @@ var roread = (function(tmpl){
 	});
 	return roread;
 }(roread_templates.ini()));
-
-console.log('#item +!');
