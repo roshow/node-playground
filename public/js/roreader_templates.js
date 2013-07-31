@@ -45,7 +45,7 @@ var roread_templates = (function(){
 			'<h3><a href="' + item.link + '" target="_blank">' + item.title + '</a></h3>' +
 			'<a href="https://getpocket.com/edit?url=' + item.link +'&title=' + item.title + '" target="_blank">Save to Pocket</a>' +
 			' | ' +
-			'<a class="item_status_btn" onclick="roread.set_itemStatus(\'' + item.link + '\', \'' + item.feed_id + '\', \'item' + item.$rr.index + '\');" id="' + item.link + '">'  + btnText + '</a>' +
+			'<a class="item_status_btn" onclick="roread.set_itemStatus(' + item.$rr.index + ');" id="' + item.link + '">'  + btnText + '</a>' +
 			'<p class="item_byline">Posted by ' + item.author + ' on '+ new Date(item.publishedDate).toLocaleString() + '</p>' +
 			'<br />' + 
 				item.content + 

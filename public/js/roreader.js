@@ -78,7 +78,12 @@ var roread = (function(tmpl){
 			viewAll = false;
 			this.getFeed_now(currentURL);
 		},
-		set_itemStatus : function(a_id, f_id, i_id){
+		set_itemStatus : function(ix){
+			var thisItem = citems[ix],
+				a_id = thisItem.link,
+				f_id = thisItem.feed_id,
+				i_id = 'item' + ix;
+
 			if ($('#'+i_id).hasClass('item_unread')){
 				$.ajax({
 					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
@@ -133,6 +138,10 @@ var roread = (function(tmpl){
 
 				citems.push(items[i]);
 			}
+
+			if(!add){
+				$('#main_content').scrollTop(-10);
+			}
 		}
 	};
 
@@ -147,7 +156,7 @@ var roread = (function(tmpl){
 			document.getElementById('items_view_menu').innerHTML = 'Unread Items <b class="caret"></b>';
 		});
 
-
+		//This is such a ghetto hack but it works. Worth revisiting.
 		var key = {
 			j: 0,
 			k: 0
@@ -186,7 +195,7 @@ var roread = (function(tmpl){
 		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
 				if(scrollTo < citems.length-1) {
-					if(scrollTo !=0 && key.k > 0 && scrollTo < citems.length-1){
+					if(scrollTo !==0 && key.k > 0 && scrollTo < citems.length-1){
 						scrollTo++;
 					}
 					scrollTo++;
@@ -225,4 +234,4 @@ var roread = (function(tmpl){
 	return roread;
 }(roread_templates.ini()));
 
-console.log('refactorin');
+console.log('ix');
