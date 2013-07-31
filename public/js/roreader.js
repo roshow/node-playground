@@ -186,7 +186,7 @@ var roread = (function(tmpl){
 		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
 				if(scrollTo < citems.length-1) {
-					if(key.k > 0 && scrollTo < citems.length-1){
+					if(scrollTo !=0 && key.k > 0 && scrollTo < citems.length-1){
 						scrollTo++;
 					}
 					scrollTo++;
