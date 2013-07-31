@@ -141,7 +141,9 @@ var roread = (function(tmpl){
 
 			if(!add){
 				$('#main_content').scrollTop(0);
-				this.set_itemStatus(0);
+				if (!citems[0].read) {
+					this.set_itemStatus(0);
+				}
 			}
 		}
 	};
