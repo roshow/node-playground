@@ -11,7 +11,7 @@ var roread = (function(tmpl){
 	var currentURL = null;
 	var viewAll = false;
 
-	var cItems = [];
+	var citems = [];
 
 	function saveToPocket(url){
 		url = 'https://getpocket.com/edit?url=' + encodeURIComponent(url);
@@ -106,11 +106,11 @@ var roread = (function(tmpl){
 		},
 		items_display: function(items, add) {
 			if (!add){
-				cItems = [];
+				citems = [];
 				scrollTo = 0;
 			}
 
-			var indexOffset = cItems.length;
+			var indexOffset = citems.length;
 			var meta = items[0];
 			items = items[1];
 
@@ -133,7 +133,7 @@ var roread = (function(tmpl){
 				html += tmpl.items_fullItem(items[i]);
 				$('#items_list').append(html);
 
-				cItems.push(items[i]);
+				citems.push(items[i]);
 			}
 		}
 	};
@@ -156,7 +156,7 @@ var roread = (function(tmpl){
 
 			(function(ia, off)	{
 				off = off || 0;
-				var ist = ia[scrollTo].$rr.id;
+				var ist = '#item' + scrollTo;
 				var it = $(ist).position().top;
 				if (it > off - $(ist).outerHeight(true) && it < off) {
 					//console.log(ist + '...');
@@ -172,21 +172,21 @@ var roread = (function(tmpl){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
 				}
-			}(cItems, 42));
+			}(citems, 42));
 		});
 		$(document).bind('keydown', 'j', function(){	
 			if(!loading){
-				if(scrollTo < cItems.length-1) {
+				if(scrollTo < citems.length-1) {
 					
 					scrollTo++;
-					var ist = cItems[scrollTo].$rr.id;
+					var ist = '#item' + scrollTo;
 					$('#main_content').scrollTo(ist, {offset: -41});	
 
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
 
-		    		if (scrollTo === cItems.length-1) {
+		    		if (scrollTo === citems.length-1) {
 		    			offset += 10;
 						roread.getFeed_now(currentURL, offset);	
 		    		}
@@ -195,15 +195,17 @@ var roread = (function(tmpl){
 		});
 		$(document).bind('keydown', 'k', function(){
 			if(scrollTo >= 0) {
-				$('#main_content').scrollTo(cItems[scrollTo].$rr.id, {offset: -43});
+				$('#main_content').scrollTo('#item' + scrollTo, {offset: -43});
 				if (scrollTo>0) {
 					scrollTo--;
 				}
 			}
 		});
 		$(document).bind('keydown', 'm', function(){
-			$(cItems[scrollTo].$rr.id + ' .item_status_btn').trigger('click');
+			$('#item' + scrollTo + ' .item_status_btn').trigger('click');
 		});
 	});
 	return roread;
 }(roread_templates.ini()));
+
+console.log('#item +!');
