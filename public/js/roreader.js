@@ -104,25 +104,23 @@ var roread = (function(tmpl){
 				$('#'+i_id+' .item_status_btn').text('Mark Read');
 			}
 		},
-		items_display: function(items, add) {
+		items_display: function(feed, add) {
+
+			var items = feed[1],
+				meta = feed[0],
+				L = items.length,
+				html;
+			
 			if (!add){
 				citems = [];
 				scrollTo = 0;
-			}
-
-			var indexOffset = citems.length;
-			var meta = items[0];
-			items = items[1];
-
-			if (!add) {
 				$("#items_list").empty();
 				document.getElementById('feed_title').innerHTML = meta.title.slice(0,30);
 			}
-			var html;
-			var L = items.length;
+
+			var indexOffset = citems.length;
 			
 			for (i = 0; i < L; i++){
-
 				items[i].content = items[i].description || items[i].content;
 				items[i].feed_id = meta.feed_id;
 				items[i].$rr = {
@@ -170,6 +168,7 @@ var roread = (function(tmpl){
 				else if (it < off){
 					console.log('it: '+it);
 					scrollTo++;	
+					ist = '#item' + scrollTo;
 					if ($(ist).hasClass('item_unread')){
 		    			$(ist + ' > a.item_status_btn').trigger('click');
 		    		}
@@ -211,3 +210,5 @@ var roread = (function(tmpl){
 	});
 	return roread;
 }(roread_templates.ini()));
+
+console.log('refactorin');
