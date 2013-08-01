@@ -31,15 +31,11 @@ html, body {
   margin: 0px;
   padding: 0px; }
 
-#itemsList {
-  /*border: 1px dotted blue;*/ }
-
 .item_box {
   margin: 0px 0px 5px 0px;
   border-radius: 0px;
   border: 1px solid #eee;
-  background-color: #eee;
-  max-width: 600px; }
+  background-color: #eee; }
 
 #item_feed_info {
   margin-bottom: 0; }
