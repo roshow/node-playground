@@ -80,13 +80,11 @@ var roread = (function(tmpl){
 		},
 		set_itemStatus : function(ix){
 			var thisItem = citems[ix],
-				a_id = thisItem.link,
-				f_id = thisItem.feed_id,
 				i_id = 'item' + ix;
 
 			if ($('#'+i_id).hasClass('item_unread')){
 				$.ajax({
-					url: 'updatearticle?aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					url: 'updatearticle?aId=' + encodeURIComponent(thisItem.link) + "&fId=" + encodeURIComponent(thisItem.feed_id),
 					dataType: 'json',
 					success: function(r){
 						console.log('marked read');
@@ -98,7 +96,7 @@ var roread = (function(tmpl){
 			}
 			else {
 				$.ajax({
-					url: 'updatearticle?unread=true&aId=' + encodeURIComponent(a_id) + "&fId=" + encodeURIComponent(f_id),
+					url: 'updatearticle?unread=true&aId=' + encodeURIComponent(thisItem.link) + "&fId=" + encodeURIComponent(thisItem.feed_id),
 					dataType: 'json',
 					success: function(r){
 						console.log('marked unread');
@@ -109,25 +107,22 @@ var roread = (function(tmpl){
 				$('#'+i_id+' .item_status_btn').text('Mark Read');
 			}
 		},
-		items_display: function(feed, add) {
+		items_display: function(items, add) {
 
-			var items = feed[1],
-				meta = feed[0],
-				L = items.length,
+			var L = items.length,
 				html;
 			
 			if (!add){
 				citems = [];
 				scrollTo = 0;
 				$("#items_list").empty();
-				document.getElementById('feed_title').innerHTML = meta.title.slice(0,30);
+				document.getElementById('feed_title').innerHTML = items[0].feed_title.slice(0,30);
 			}
 
 			var indexOffset = citems.length;
 			
 			for (i = 0; i < L; i++){
 				items[i].content = items[i].description || items[i].content;
-				items[i].feed_id = meta.feed_id;
 				items[i].$rr = {
 					index: indexOffset+i,
 					id: '#item'+(indexOffset+i)

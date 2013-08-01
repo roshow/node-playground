@@ -107,6 +107,8 @@ var handler = {
 					for(i = 0; i <l; i++){
 						if(rd.read.indexOf(a[i].link) === -1 /*&& new Date(a[i].publishedDate) >= new Date(rd.date)*/){
 							a[i].read = false;
+							a[i].feed_id = m.feed_id;
+							a[i].feed_title = m.title;
 							apub.push(a[i]);
 						}
 						//add items that are read to the array.
@@ -117,7 +119,7 @@ var handler = {
 					}
 
 					console.log(apub.slice(off, off+10).length);
-					res.send([m, apub.slice(off, off+10)]);
+					res.send(apub.slice(off, off+10));
 				}
 				else {	
 					res.send([m, a.slice(off,off+10)]);
