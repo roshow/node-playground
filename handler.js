@@ -105,10 +105,10 @@ var handler = {
 			}, function(rd){
 				if(rd.read && rd.read.constructor === Array){
 					for(i = 0; i <l; i++){
+						a[i].feed_id = m.feed_id;
+						a[i].feed_title = m.title;
 						if(rd.read.indexOf(a[i].link) === -1 /*&& new Date(a[i].publishedDate) >= new Date(rd.date)*/){
 							a[i].read = false;
-							a[i].feed_id = m.feed_id;
-							a[i].feed_title = m.title;
 							apub.push(a[i]);
 						}
 						//add items that are read to the array.
@@ -143,6 +143,7 @@ var handler = {
 		// read/unread back on.
 		rdb.articles.markunread(q, a_id, function(r){
 				res.send(r);
+				console.log("mark unread")
 			});
 		/*if(req.query.unread && req.query.unread === 'true'){
 			rdb.articles.markunread(q, a_id, function(r){
