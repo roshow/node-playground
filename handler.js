@@ -137,7 +137,12 @@ var handler = {
 		var a_id = req.query.aId || 'no article ID',
 			f_id = req.query.fId || 'no feed ID',
 			q = { _id: req.session.user._id + '/' + f_id };
-		if(req.query.unread && req.query.unread === 'true'){
+		//comment this method out and the if statement back in to turn
+		// read/unread back on.
+		rdb.articles.markunread(q, a_id, function(r){
+				res.send(r);
+			});
+		/*if(req.query.unread && req.query.unread === 'true'){
 			rdb.articles.markunread(q, a_id, function(r){
 				res.send(r);
 			});
@@ -146,7 +151,7 @@ var handler = {
 			rdb.articles.markread(q, a_id, function(r){
 				res.send(r);
 			});
-		}
+		}*/
 	},
 
 	__getarticles_direct: function(req, res) {
