@@ -39,17 +39,18 @@ html,body {
 	}
 
 	#items_list {
+		//border: 2px dotted red;
+		//max-width:6
 	}
 
 	#itemsList {
-		/*border: 1px dotted blue;*/
+		//border: 2px dotted blue;
 	}
 		.item_box {
 			margin: 0px 0px 5px 0px;
 			border-radius: 0px;
 			border: 1px solid #eee;
 			background-color: #eee;
-			max-width: 600px;
 		}
 
 		#item_feed_info {
