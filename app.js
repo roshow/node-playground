@@ -7,7 +7,7 @@ var express = require('express'),
   handler = require('./handler.js').handler,
   app = express(),
   MongoStore = require('connect-mongo')(express),
-  port = process.env.PORT || '3000';
+  port = process.env.PORT || '5000';
 
 app.use(express.cookieParser());
 app.use(express.session({

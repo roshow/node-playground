@@ -1,6 +1,10 @@
+@import url(http://fonts.googleapis.com/css?family=Fauna+One);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
+
 html,body {
     height: 100%;
     overflow: hidden;
+    font-family: 'Droid Sans', Arial, sans-serif;
 }
 
 .container-fluid, .row-fluid {
@@ -77,6 +81,8 @@ html,body {
 			.item_box > h3 {
 				margin-bottom: 0;
 				line-height: 1.15;
+				font-weight: 900;
+				font-family: 'Fauna One', Arial, sans-serif;
 			}
 			.item_box > h3 > a {
 				text-decoration: none;
