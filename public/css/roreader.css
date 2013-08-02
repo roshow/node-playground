@@ -1,6 +1,9 @@
+@import url(http://fonts.googleapis.com/css?family=Fauna+One);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
 html, body {
   height: 100%;
-  overflow: hidden; }
+  overflow: hidden;
+  font-family: 'Droid Sans', Arial, sans-serif; }
 
 .container-fluid, .row-fluid {
   margin: 0px;
@@ -31,14 +34,20 @@ html, body {
   margin: 0px;
   padding: 0px; }
 
+#itemsList {
+  /*border: 1px dotted blue;*/ }
+
 .item_box {
   margin: 0px 0px 5px 0px;
   border-radius: 0px;
   border: 1px solid #eee;
-  background-color: #eee; }
+  background-color: #eee;
+  max-width: 700px; }
 
 #item_feed_info {
   margin-bottom: 0; }
+  #item_feed_info .navbar-inner {
+    width: 100%; }
 
 .item_box {
   padding: 25px; }
@@ -57,7 +66,9 @@ html, body {
 
 .item_box > h3 {
   margin-bottom: 0;
-  line-height: 1.15; }
+  line-height: 1.15;
+  font-weight: 900;
+  font-family: 'Fauna One', Arial, sans-serif; }
 
 .item_box > h3 > a {
   text-decoration: none;
@@ -102,9 +113,8 @@ html, body {
   border-radius: 35px;
   padding: 2px;
   display: inline-block; }
-
-#share-buttons img {
-  width: 32px;
-  padding: 5px;
-  border: 0;
-  box-shadow: 0; }
+  #share-buttons img {
+    width: 32px;
+    padding: 5px;
+    border: 0;
+    box-shadow: 0; }
