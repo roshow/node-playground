@@ -42,10 +42,12 @@ html, body {
   border-radius: 0px;
   border: 1px solid #eee;
   background-color: #eee;
-  max-width: 600px; }
+  max-width: 700px; }
 
 #item_feed_info {
   margin-bottom: 0; }
+  #item_feed_info .navbar-inner {
+    width: 100%; }
 
 .item_box {
   padding: 25px; }
@@ -111,9 +113,8 @@ html, body {
   border-radius: 35px;
   padding: 2px;
   display: inline-block; }
-
-#share-buttons img {
-  width: 32px;
-  padding: 5px;
-  border: 0;
-  box-shadow: 0; }
+  #share-buttons img {
+    width: 32px;
+    padding: 5px;
+    border: 0;
+    box-shadow: 0; }
