@@ -71,7 +71,7 @@ var handler = {
 						.execute(function(err, user) {
 						rdb.login(err, user, oauth2Client.credentials, function(userDB, newUser) {
 							req.session.user = userDB;
-							res.redirect(newUser ? '/importopml' : '/');
+							res.redirect('/');
 						});
 					});
 				});
@@ -157,7 +157,7 @@ var handler = {
 		}*/
 	},
 
-	__getarticles_direct: function(req, res) {
+	_getarticles_direct_: function(req, res) {
 		console.log('handling /__getarticles_direct');
 		var all = [];
 		var meta;
@@ -193,7 +193,7 @@ var handler = {
 		});
 	},
 
-	__getarticles_db: function(req, res){
+	_getarticles_db_: function(req, res){
 		console.log('handling /__getarticles_db');
 		var uri = req.query.xmlurl || 'http://roshow.net/feed/',
 			feed_id = 'feed/' + uri,
