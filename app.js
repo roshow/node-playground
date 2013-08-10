@@ -1,6 +1,6 @@
-try { _config = require('./config.js'); }
-catch(e){ _config = require('./config_example.js'); }
-_config.google.redirect = process.env.PORT ? _config.google.redirect : _config.google.redirect_local;
+try { CONFIG = require('./config.js'); }
+catch(e){ CONFIG = require('./config_example.js'); }
+CONFIG.google.redirect = process.env.PORT ? CONFIG.google.redirect : CONFIG.google.redirect_local;
 
 
 var express = require('express'),
@@ -12,13 +12,13 @@ var express = require('express'),
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    db: _config.mongo.db,
-    host: _config.mongo.host,
-    port: _config.mongo.port,
-    username: _config.mongo.username,
-    password: _config.mongo.password
+    db: CONFIG.mongo.db,
+    host: CONFIG.mongo.host,
+    port: CONFIG.mongo.port,
+    username: CONFIG.mongo.username,
+    password: CONFIG.mongo.password
   }),
-  secret: _config.session.secret
+  secret: CONFIG.session.secret
 }));
 
 app.use(express.static(__dirname + '/public'));

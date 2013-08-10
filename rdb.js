@@ -1,7 +1,7 @@
-//try { _config = require('./config.js');console.log('config.js'); }
-//catch(e){ _config = require('./config_example.js');console.log('config_example.js'); }
+//try { CONFIG = require('./config.js');console.log('config.js'); }
+//catch(e){ CONFIG = require('./config_example.js');console.log('config_example.js'); }
 
-var db = require('mongojs').connect(_config.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'read']),
+var db = require('mongojs').connect(CONFIG.mongo.uri, ['feeds', 'users', 'tags', 'articles', 'read']),
 	request = require('request');
 
 function User(u, t) {

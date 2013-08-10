@@ -2,10 +2,7 @@ var parser = require('xml2json'),
 	FeedParser = require('feedparser'),
 	request = require('request'),
 	googleapis = require('googleapis'),
-	client_id = _config.google.client_id,
-	client_secret = _config.google.client_secret,
-	redirect = _config.google.redirect,
-	oauth2Client = new googleapis.OAuth2Client(client_id, client_secret, redirect),
+	oauth2Client = new googleapis.OAuth2Client(CONFIG.google.client_id, CONFIG.google.client_secret, CONFIG.google.redirect),
 	rdb = require('./rdb.js').rdb,
 	OpmlParser = require('opmlparser');
 
@@ -298,8 +295,8 @@ var handler = {
 		request.post({
 			url: 'https://accounts.google.com/o/oauth2/token',
 			form: {
-				client_id: client_id,
-				client_secret: client_secret,
+				client_id: CONFIG.google.client_id,
+				client_secret: CONFIG.google.client_secret,
 				refresh_token: req.session.user.tokens.refresh_token,
 				grant_type: 'refresh_token'
 			}
