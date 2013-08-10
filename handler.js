@@ -9,6 +9,8 @@ var parser = require('xml2json'),
 	rdb = require('./rdb.js').rdb,
 	OpmlParser = require('opmlparser');
 
+var _markunread = false;
+
 function addfeeds_loop(j, subs, callback) {
 	var L = subs.length;
 	rdb.feeds.get({
@@ -139,22 +141,26 @@ var handler = {
 		var a_id = req.query.aId || 'no article ID',
 			f_id = req.query.fId || 'no feed ID',
 			q = { _id: req.session.user._id + '/' + f_id };
-		//comment this method out and the if statement back in to turn
-		// read/unread back on.
-		rdb.articles.markunread(q, a_id, function(r){
+
+		//_markunread variable to determine whether it will be marked in db or not.
+		if(_markunread){
+			if(req.query.unread && req.query.unread === 'true'){
+				rdb.articles.markunread(q, a_id, function(r){
+					res.send(r);
+				});
+			}
+			else {
+				rdb.articles.markread(q, a_id, function(r){
+					res.send(r);
+				});
+			}
+		}
+		else{
+			rdb.articles.markunread(q, a_id, function(r){
 				res.send(r);
 				console.log("mark unread")
 			});
-		/*if(req.query.unread && req.query.unread === 'true'){
-			rdb.articles.markunread(q, a_id, function(r){
-				res.send(r);
-			});
 		}
-		else {
-			rdb.articles.markread(q, a_id, function(r){
-				res.send(r);
-			});
-		}*/
 	},
 
 	_getarticles_direct_: function(req, res) {
