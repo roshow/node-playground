@@ -2,11 +2,13 @@ var parser = require('xml2json'),
 	FeedParser = require('feedparser'),
 	request = require('request'),
 	googleapis = require('googleapis'),
-	oauth2Client = new googleapis.OAuth2Client(CONFIG.google.client_id, CONFIG.google.client_secret, CONFIG.google.redirect),
 	rdb = require('./rdb.js').rdb,
 	OpmlParser = require('opmlparser');
+	
+var oauth2Client = new googleapis.OAuth2Client(CONFIG.google.client_id, CONFIG.google.client_secret, CONFIG.google.redirect);
 
 var _markunread = false;
+
 
 function addfeeds_loop(j, subs, callback) {
 	var L = subs.length;
@@ -14,7 +16,8 @@ function addfeeds_loop(j, subs, callback) {
 		_id: {
 			$in: subs[j].feed_ids
 		}
-	}, false, function(f) {
+	}, false, 
+	function(f) {
 		subs[j].feeds = f;
 		if (j < L - 1) {
 			addfeeds_loop(j + 1, subs, callback);
@@ -80,7 +83,7 @@ var handler = {
 
 	getarticles: function(req, res) {
 		var url = req.query.xmlurl || 'http://roshow.net/feed/';
-		var off = parseInt(req.query.offset) || 0;
+		var off = parseInt(req.query.offset, 10) || 0;
 
 		request({
 			url: 'http://ajax.googleapis.com/ajax/services/feed/load',
@@ -90,7 +93,8 @@ var handler = {
 				num: 100,
 				scoring: 'h'
 			}
-		}, function(e, r, b){
+		},
+		function(e, r, b){
 			var d = JSON.parse(b).responseData.feed;
 			var m = {
 				title: d.title,
@@ -101,7 +105,8 @@ var handler = {
 			var apub = [];
 			rdb.articles.get_read({
 				_id: req.session.user._id + '/' + m.feed_id
-			}, function(rd){
+			}, 
+			function(rd){
 				if(rd.read && rd.read.constructor === Array){
 					for(i = 0; i <l; i++){
 						a[i].feed_id = m.feed_id;
@@ -110,7 +115,7 @@ var handler = {
 							a[i].read = false;
 							apub.push(a[i]);
 						}
-						//add items that are read to the array.
+						//add items that are read to the array//
 						else if (req.query.status === 'all'){
 							a[i].read = true;
 							apub.push(a[i]);
@@ -129,7 +134,7 @@ var handler = {
 					};
 				}
 			});
-			//save articles to DB:
+			//save articles to DB//
 			//savearticles(d.entries, url);
 		});
 	},
@@ -139,7 +144,7 @@ var handler = {
 			f_id = req.query.fId || 'no feed ID',
 			q = { _id: req.session.user._id + '/' + f_id };
 
-		//_markunread variable to determine whether it will be marked in db or not.
+		//_markunread variable to determine whether it will be marked in db or not.//
 		if(_markunread){
 			if(req.query.unread && req.query.unread === 'true'){
 				rdb.articles.markunread(q, a_id, function(r){
@@ -155,7 +160,7 @@ var handler = {
 		else{
 			rdb.articles.markunread(q, a_id, function(r){
 				res.send(r);
-				console.log("mark unread")
+				console.log("mark unread");
 			});
 		}
 	},
@@ -237,14 +242,16 @@ var handler = {
 		if (req.query.allfeeds === 'true') {
 			rdb.feeds.get({
 				users: user._id
-			}, false, function(f) {
+			}, false,
+			function(f) {
 				res.send(f);
 			});
 		}
 		else {
 			rdb.tags.get({
 				user: user._id
-			}, false, function(r) {
+			}, false, 
+			function(r) {
 				if (r.length > 0) {
 					addfeeds_loop(0, r, function(f) {
 						res.send(f);
@@ -263,7 +270,7 @@ var handler = {
 				access_token: req.session.user.tokens.access_token
 			}
 		};
-		request(reqOpt)
+		request({url:'http://localhost:3000/subscriptions.xml'})
 			.pipe(new OpmlParser())
 			.on('error', function(error) {
 			console.log(error);
@@ -306,6 +313,22 @@ var handler = {
 			req.session.user.tokens.access_token = newToken;
 			req.session.user.tokens.access_token_date = new Date();
 			res.redirect('/' + (req.query.url || ''));
+		});
+	},
+
+	logout: function(req, res){
+		req.session.user = null;
+  		req.session.feed = null;
+		res.redirect('/');
+	},
+
+	loginGeneric: function(req, res){
+		var user = {
+			email: "genericuser@roreader"
+		};
+		rdb.login(false, user, false, function(userDB, newUser) {
+			req.session.user = userDB;
+			res.redirect('/');
 		});
 	}
 };

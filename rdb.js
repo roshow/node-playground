@@ -87,11 +87,13 @@ var rdb = {
 			}
 			else {
 				console.log('user exists');
-				that.updateAccessToken(entry[0], tokens.access_token);
+				//that.updateAccessToken(entry[0], tokens.access_token);
 				callback(entry[0]);
 			}
 		});
 	},
+
+
 
 	feeds: {
 		adduser: function(feed_id, user_id, callback) {
@@ -126,16 +128,26 @@ var rdb = {
 		},
 		insert: function(feed, user, callback) {
 			console.log('db feeds.insert');
+			
 			var that = this;
+			
+			//parse feed into DB object//
 			var feedDB = new Feed(feed, user);
+			
 			db.feeds.insert(feedDB, function(e) {
+				
+				//if feed exists, add user//
 				if (e && e.code === 11000) {
 					console.log(feedDB._id + ' is already in db');
 					that.adduser(feedDB._id, user._id);
 				}
+
+				//error handling//
 				else if (e) {
 					console.log(e);
 				}
+
+				//callback after adding feed//
 				else {
 					callback && callback(feedDB);
 				}
