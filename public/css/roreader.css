@@ -114,17 +114,12 @@ html, body {
     margin-right: 5px;
     margin-bottom: 5px;
     display: inline-block;
-    box-shadow: 1px 1px #666;
+    box-shadow: 1px 1px #888;
     border-width: 1px;
     border-color: grey;
     border-style: solid; }
     #share-buttons a:hover {
-      box-shadow: 0px 0px #666;
-      transform: skew(-5deg, 0deg);
-      -ms-transform: skew(-5deg, 0deg);
-      /* IE 9 */
-      -webkit-transform: skew(-5deg, 0deg);
-      /* Safari and Chrome */
+      box-shadow: 0px 0px #888;
       transform: translate(1px, 1px);
       -ms-transform: translate(1px, 1px);
       /* IE 9 */
