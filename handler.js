@@ -1,5 +1,4 @@
-var parser = require('xml2json'),
-	FeedParser = require('feedparser'),
+var FeedParser = require('feedparser'),
 	request = require('request'),
 	googleapis = require('googleapis'),
 	rdb = require('./rdb.js').rdb,
