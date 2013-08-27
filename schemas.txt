@@ -1,0 +1,53 @@
+db.read:
+
+{
+	"_id" : users._id + "/" + feeds._id,
+	"date" : ISODate,
+	"read" : [ articleIDs ],
+	"user" : users._id 
+}
+
+db.feeds:
+
+{
+	"_id" : "feed/" + xmlurl,
+	"title" : string,
+	"title_alpha" : title.toLowerCase(),
+	"type" : string,
+	"xmlurl" : string,
+	"htmlurl" : string,
+	"users" : [ users._id ]
+}
+
+db.users: 
+
+{
+	"_id" : "108346745381541061499",
+	"email" : string,
+	"feeds" : [
+		{
+			"id" : feed._id,
+			"date" : ISODate,
+			"read" : [ ]
+		}
+	],
+	"first_name" : string,
+	"last_name" : string,
+	"name" : first_name + " " + last_name,
+	"starred" : [ ],
+	"tokens" : {
+		"access_token" : string,
+		"access_token_date" : ISODate,
+		"refresh_token" : string
+	}
+}
+
+db.tags:
+
+{
+	"_id" : users._id + "/" + stringTag,
+	"tag" : string,
+	"tag_alpha" : string.toLowerCase(),
+	"user" : users._id,
+	"feed_ids" : [ feeds._id ]
+}

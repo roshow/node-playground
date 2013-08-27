@@ -29,6 +29,7 @@ app.use(express.session({
 
 /*Router*/
 
+app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 app.get('/', handler.getroot);
 app.get('/getsubs', handler.getsubs);

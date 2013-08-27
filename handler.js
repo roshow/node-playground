@@ -46,7 +46,7 @@ var handler = {
 			res.send('<a href="/googleoauth" style="text-decoration:none;font-weight:bold;">LOG IN WITH GOOGLE</a>');
 		}
 		else {
-			res.redirect('/roreader.html');
+			res.render('index.jade');
 		}
 	},
 

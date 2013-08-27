@@ -15,6 +15,7 @@
     "mongojs": "0.7.5",
     "googleapis": "0.2.11-alpha",
     "connect-mongo" : "0.3.x",
-    "opmlparser": "0.5.0"
+    "opmlparser": "0.5.0",
+    "jade": "0.34.x"
   }
 }

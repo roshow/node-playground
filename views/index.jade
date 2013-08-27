@@ -1,0 +1,51 @@
+!!! 5
+html
+  head
+    title roreader - jade
+    link(rel='stylesheet', type='text/css', href='bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='css/roreader.css')
+    script(type='text/javascript', src='js/jquery-1.9.1.js')
+    script(type='text/javascript', src='js/jquery.hotkeys-0.7.9.min.js')
+    script(type='text/javascript', src='js/jquery.scrollTo-1.4.3.1-min.js')
+    script(type='text/javascript', src='js/roreader_templates.js')
+    script(type='text/javascript', src='js/roreader.js')
+    script(type='text/javascript', src='bootstrap/js/bootstrap.min.js')
+  body
+    #top_container.container-fluid
+      #row_nav.row-fluid
+        #sidebar_nav.span3
+          #top_nav.navbar.navbar-inverse
+            .navbar-inner
+              a.brand(style='color: white; font-weight: 900;')
+                | ro
+                span(style='font-weight: 200;') reader
+              ul.nav.pull-right
+                li.dropdown
+                  a.dropdown-toggle(data-toggle='dropdown', href='#')
+                    img(src='img/glyphicons_136_cogwheel.png', style='height: 17px; width: 17px;')
+                  ul.dropdown-menu
+                    li
+                      a(href='/logout') logout
+        #content_nav.span9
+          #item_feed_info.navbar
+            .navbar-inner
+              a#feed_title.brand Articles
+              ul.nav
+                li.dropdown
+                  a#items_view_menu.dropdown-toggle(data-toggle='dropdown', href='#')
+                    | Unread Items
+                    b.caret
+                  ul.dropdown-menu
+                    li
+                      a#readunread Unread Items
+                    li
+                      a#readall All Items
+      #row_body.row-fluid
+        #sidebar.span3
+          div(style='height: 42px; display: block;')
+          #feedList.accordion
+        #main_content.span9
+          #itemsList(style='padding: 0px 20px;')
+            #items_list(style='margin-top: 42px;')
+          //
+            div style='border:4px solid black;display:block;height:100%;'></div
